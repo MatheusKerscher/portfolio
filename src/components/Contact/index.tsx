@@ -35,7 +35,7 @@ const Contact = ({elementRef}: ContactProps) => {
 
           <li className="bg-white mb-3 p-2 rounded-lg font-medium cursor-pointer shadow duration-150 hover:shadow-md">
             <a href="https://github.com/MatheusKerscher" target="_blank" rel="noopner noreferrer" className="flex justify-between">
-              Git Hub
+              GitHub
 
               <FiGithub size={24} color="171515" />
             </a>
