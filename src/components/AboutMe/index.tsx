@@ -12,7 +12,7 @@ const AboutMe = () => {
       ))}
 
       <img
-        src="/src/assets/images/about-me-cartoon.png"
+        src="images/about-me-cartoon.png"
         alt="Matheus Kerscher estilo cartoon"
         className="h-2/12 rounded-full z-[98]"
       />

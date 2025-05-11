@@ -3,21 +3,21 @@ import type { Project } from "./types";
 export const projects: Project[] = [
   {
     title: "Pet na porta",
-    cover: "../../assets/images/thumbnail-pet-na-porta.png",
+    cover: "images/thumbnail-pet-na-porta.png",
     description: "Website de produtos para pet destinado a listar produtos, visualizar detalhes do produto e gerenciar o carrinho do cliente",
     githubLink: "https://github.com/MatheusKerscher/pet-na-porta",
     websiteLink: "https://pet-na-porta.vercel.app/"
   },
   {
     title: "Space App",
-    cover: "../../src/assets/images/thumbnail-space-app.png",
+    cover: "images/thumbnail-space-app.png",
     description: "Projeto com uma galeria de imagens do espaço, permitindo filtrar por categoria e/ou nome da foto e favoritar ela",
     githubLink: "https://github.com/MatheusKerscher/space-app",
     websiteLink: "https://space-app-lemon-nine.vercel.app/"
   },
   {
     title: "Cripto Currency",
-    cover: "../../src/assets/images/thumbnail-cripto-currency.png",
+    cover: "images/thumbnail-cripto-currency.png",
     description: "Site para exibir a cotação e detalhes de criptmoedas consumindo uma API externa",
     githubLink: "https://github.com/MatheusKerscher/cripto-currency",
     websiteLink: "https://cripto-currency-orcin.vercel.app/"

@@ -2,7 +2,7 @@
 
 Website feito em React destinado a exibir meu portfólio. No site você encontrará as linguagens e frameworks que uso, meus melhores projetos e as formas de entrar em contato comigo
 
-![Thumbnail](/thumbnail.png)
+![Thumbnail](/public/images/thumbnail.png)
 
 ## Instalação e Uso
 
