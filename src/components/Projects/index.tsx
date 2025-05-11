@@ -1,10 +1,16 @@
+import type { RefObject } from "react";
+
 import { IoLogoGithub } from "react-icons/io";
 import { projects } from "./project.data";
 import { LuLink } from "react-icons/lu";
 
-const Projects = () => {
+type ProjectsProps = {
+  elementRef: RefObject<HTMLElement>
+}
+
+const Projects = ({elementRef}: ProjectsProps) => {
   return (
-    <section id="projects" className="flex flex-col items-center">
+    <section ref={elementRef} className="flex flex-col items-center">
       <h2 className="text-green text-3xl md:text-4xl font-bold mb-8">
         Meus projetos
       </h2>
@@ -20,11 +26,11 @@ const Projects = () => {
               />
 
               <div>
-                <h3 className="font-bold text-lg">
+                <h3 className="font-bold md:text-lg">
                   {project.title}
                 </h3>
 
-                <p className="text-justify my-2">{project.description}</p>
+                <p className="text-justify mt-2 mb-4 text-sm md:text-base">{project.description}</p>
 
                 <div className="flex gap-4 justify-end">
                 {project.websiteLink && (
@@ -55,7 +61,7 @@ const Projects = () => {
             href="https://github.com/MatheusKerscher"
             target="_blank"
             rel="noopner noreferrer"
-            className="flex flex-wrap justify-center text-center gap-2 items-center font-medium bg-white text-primary p-3 rounded-4xl shadow duration-150 hover:shadow-lg"
+            className="flex flex-wrap justify-center text-center gap-2 items-center font-medium bg-white text-primary md:text-lg p-3 rounded-xl shadow duration-150 hover:shadow-lg"
           >
             Visualizar todos os meus projetos
             <IoLogoGithub size={26} />
