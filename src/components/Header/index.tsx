@@ -12,8 +12,13 @@ const Header = () => {
 
         <nav>
           <ul className="flex gap-3">
-            <li className="cursor-pointer ">Projetos</li>
-            <li className="cursor-pointer ">Contato</li>
+            <li className="cursor-pointer duration-200 hover:font-medium">
+              Projetos
+            </li>
+            
+            <li className="cursor-pointer duration-200 hover:font-medium">
+              Contato
+            </li>
           </ul>
         </nav>
       </div>
