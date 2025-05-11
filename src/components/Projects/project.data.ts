@@ -24,7 +24,7 @@ export const projects: Project[] = [
   },
   {
     title: "Portfólio",
-    cover: "../../../thumbnail.png",
+    cover: "images/thumbnail.png",
     description: "Website contendo as linguagens e frameworks que uso, meus melhores projetos e canais de comunicação comigo",
     githubLink: "https://github.com/MatheusKerscher/pet-na-porta",
     websiteLink: "https://portfolio-theta-orpin-65.vercel.app/"
