@@ -29,4 +29,11 @@ export const projects: Project[] = [
     githubLink: "https://github.com/MatheusKerscher/portfolio",
     websiteLink: "https://portfolio-theta-orpin-65.vercel.app/"
   },
+  {
+    title: "MyMock",
+    cover: "images/thumbnail-my-mock.png",
+    description: "Aplicação para geração de dados mock feito com StyledComponents, i18n (internacionalização) e troca de tema",
+    githubLink: "https://github.com/MatheusKerscher/my-mock",
+    websiteLink: "https://my-mock-ecru.vercel.app/"
+  },
 ]

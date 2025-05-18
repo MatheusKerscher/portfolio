@@ -33,7 +33,7 @@ export const floatIconList: FloatIconProps[] = [
   },
   {
     cover: "logos/typescript.svg",
-    position: "bottom-[20%] right-[26%]",
+    position: "bottom-[16%] right-[26%]",
     duration: 20,
   },
   {
