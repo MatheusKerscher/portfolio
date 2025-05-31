@@ -9,11 +9,11 @@ export const projects: Project[] = [
     websiteLink: "https://pet-na-porta.vercel.app/"
   },
   {
-    title: "Space App",
-    cover: "images/thumbnail-space-app.png",
-    description: "Projeto com uma galeria de imagens do espaço, permitindo filtrar por categoria e/ou nome da foto e favoritar ela",
-    githubLink: "https://github.com/MatheusKerscher/space-app",
-    websiteLink: "https://space-app-lemon-nine.vercel.app/"
+    title: "Web Carros",
+    cover: "images/thumbnail-web-carros.png",
+    description: "Projeto com uma loja de carros, permitindo visualizar os carros, criar uma conta e cadastrar, editar ou remover um carro",
+    githubLink: "https://github.com/MatheusKerscher/web-carros",
+    websiteLink: "https://web-carros-pi.vercel.app/"
   },
   {
     title: "Cripto Currency",
