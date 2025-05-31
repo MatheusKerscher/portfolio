@@ -22,7 +22,7 @@ const Projects = ({elementRef}: ProjectsProps) => {
               <img
                 src={project.cover}
                 alt={project.title}
-                className="rounded mb-4"
+                className="rounded mb-4 drop-shadow-sm"
               />
 
               <div>
