@@ -22,13 +22,18 @@ const AboutMe = () => {
       </h1>
 
       <p className="text-primary text-center font-medium text-lg md:text-2xl my-4 z-[98]">
-        Desenvolvedor FrontEnd
+        Desenvolvedor FullStack
       </p>
 
       <p className="text-secondary text-center text-sm md:text-lg z-[98]">
         Apaixonado por{" "}
         <span className="text-green font-bold">
-          <Typewriter words={typewriterWords} loop={false} cursor={true} cursorColor="#707070"/>
+          <Typewriter
+            words={typewriterWords}
+            loop={false}
+            cursor={true}
+            cursorColor="#707070"
+          />
         </span>
       </p>
     </main>
