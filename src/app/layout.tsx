@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Catamaran, Geist, Geist_Mono } from "next/font/google";
+import { Catamaran } from "next/font/google";
 import "./globals.css";
 
 const catamaran = Catamaran({
