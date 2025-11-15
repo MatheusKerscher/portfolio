@@ -6,7 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint:eslint:check": "eslint",
+    "lint:eslint:check": "eslint .",
     "lint:prettier:check": "prettier -c .",
     "lint:prettier:fix": "prettier -w ."
   },
