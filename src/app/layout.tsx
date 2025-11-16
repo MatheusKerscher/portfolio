@@ -4,6 +4,7 @@ import "./globals.css";
 
 import Navigation from "./components/navigation";
 import Footer from "./components/footer";
+import Header from "./components/header";
 
 const catamaran = Catamaran({
   variable: "--font-catamaran",
@@ -24,7 +25,7 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body className={`${catamaran.className} antialiased bg-white`}>
         <main className="min-h-[calc(100dvh-45px)] w-screen max-w-6xl mx-auto lg:grid lg:grid-cols-4 gap-3 px-3 lg:px-1 pt-3">
-          <header className="mb-3 lg:mb-0">Header content</header>
+          <Header />
 
           <section className="col-span-3">
             <Navigation />
