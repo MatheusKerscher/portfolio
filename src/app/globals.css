@@ -4,3 +4,13 @@
   --color-white: #fafafa;
   --color-black: #171717;
 }
+
+@layer components {
+  .button-nav {
+    @apply border border-black rounded-full px-6 py-0.5 hover:bg-black hover:text-white transition-all ease-in-out duration-300 text-sm;
+  }
+
+  .button-nav-active {
+    @apply bg-black text-white;
+  }
+}
