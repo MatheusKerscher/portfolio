@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Catamaran } from "next/font/google";
 import "./globals.css";
 
+import Navigation from "./components/navigation";
+
 const catamaran = Catamaran({
   variable: "--font-catamaran",
   subsets: ["latin"],
@@ -25,7 +27,11 @@ export default function RootLayout({
         <main className="min-h-[calc(100dvh-45px)] w-screen max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-3 px-3 lg:px-1 pt-3">
           <header>Header content</header>
 
-          <section className="col-span-3">{children}</section>
+          <section className="col-span-3">
+            <Navigation />
+
+            {children}
+          </section>
         </main>
 
         <footer className="w-screen border-t border-gray-300 text-sm select-none">
