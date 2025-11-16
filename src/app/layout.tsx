@@ -17,9 +17,19 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const currentYear = new Date().getFullYear();
+
   return (
-    <html lang="en">
-      <body className={`${catamaran.className} antialiased`}>{children}</body>
+    <html lang="pt-BR">
+      <body className={`${catamaran.className} antialiased bg-white`}>
+        {children}
+        <footer className="w-screen border-t border-gray-300 text-sm select-none">
+          <div className="w-screen max-w-5xl mx-auto flex flex-wrap gap-4 justify-between p-3 lg:px-0">
+            <p>&copy; {currentYear}</p>
+            <p>Feito com ❤️ por Matheus Kerscher</p>
+          </div>
+        </footer>
+      </body>
     </html>
   );
 }
