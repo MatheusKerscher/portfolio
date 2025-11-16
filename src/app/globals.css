@@ -17,14 +17,14 @@
   }
 
   .tag-link {
-    @apply underline lg:no-underline lg:hover:underline transition-all duration-200 ease-in-out
+    @apply underline lg:no-underline lg:hover:underline transition-all duration-200 ease-in-out;
   }
 
   .social-media-item {
-    @apply flex gap-2
+    @apply flex gap-2;
   }
 
   .stack-icon-container {
-    @apply p-2 rounded-full w-10 h-10 bg-border flex justify-center items-center
+    @apply p-2 rounded-full w-10 h-10 bg-border flex justify-center items-center;
   }
 }
