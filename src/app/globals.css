@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-white: #fafafa;
+  --color-white: #ffffff;
   --color-black: #171717;
+  --color-gray: #737373;
+  --color-border: #e5e5e5;
 }
 
 @layer components {
@@ -12,5 +14,17 @@
 
   .button-nav-active {
     @apply bg-black text-white;
+  }
+
+  .tag-link {
+    @apply underline lg:no-underline lg:hover:underline transition-all duration-200 ease-in-out
+  }
+
+  .social-media-item {
+    @apply flex gap-2
+  }
+
+  .stack-icon-container {
+    @apply p-2 rounded-full w-10 h-10 bg-border flex justify-center items-center
   }
 }
