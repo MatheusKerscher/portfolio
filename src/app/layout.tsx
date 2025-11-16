@@ -22,9 +22,14 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={`${catamaran.className} antialiased bg-white`}>
-        {children}
+        <main className="min-h-[calc(100dvh-45px)] w-screen max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-3 px-3 lg:px-1 pt-3">
+          <header>Header content</header>
+
+          <section className="col-span-3">{children}</section>
+        </main>
+
         <footer className="w-screen border-t border-gray-300 text-sm select-none">
-          <div className="w-screen max-w-5xl mx-auto flex flex-wrap gap-4 justify-between p-3 lg:px-0">
+          <div className="w-screen max-w-6xl mx-auto flex flex-wrap gap-4 justify-between p-3 lg:px-1">
             <p>&copy; {currentYear}</p>
             <p>Feito com ❤️ por Matheus Kerscher</p>
           </div>
