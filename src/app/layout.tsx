@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={`${catamaran.className} antialiased bg-white`}>
-        <main className="min-h-[calc(100dvh-45px)] w-screen max-w-6xl mx-auto lg:grid lg:grid-cols-4 gap-3 px-3 lg:px-1 pt-3">
+        <main className="min-h-[calc(100dvh-45px)] w-screen max-w-6xl mx-auto lg:grid lg:grid-cols-4 gap-3 px-3 lg:px-1 pt-6">
           <Header />
 
           <section className="col-span-3">
