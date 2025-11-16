@@ -3,6 +3,7 @@ import { Catamaran } from "next/font/google";
 import "./globals.css";
 
 import Navigation from "./components/navigation";
+import Footer from "./components/footer";
 
 const catamaran = Catamaran({
   variable: "--font-catamaran",
@@ -19,8 +20,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const currentYear = new Date().getFullYear();
-
   return (
     <html lang="pt-BR">
       <body className={`${catamaran.className} antialiased bg-white`}>
@@ -34,12 +33,7 @@ export default function RootLayout({
           </section>
         </main>
 
-        <footer className="w-screen border-t border-gray-300 text-sm select-none">
-          <div className="w-screen max-w-6xl mx-auto flex flex-wrap gap-4 justify-between p-3 lg:px-1">
-            <p>&copy; {currentYear}</p>
-            <p>Feito com ❤️ por Matheus Kerscher</p>
-          </div>
-        </footer>
+        <Footer />
       </body>
     </html>
   );
