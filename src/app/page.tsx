@@ -1,7 +1,10 @@
+import ProjectCard from "./components/project-card";
+
 export default function Home() {
   return (
-    <div>
-      <h1>Work in progress</h1>
-    </div>
+    <section className="w-full grid grid-cols-1 md:grid-cols-2">
+      <ProjectCard />
+      <ProjectCard />
+    </section>
   );
 }
