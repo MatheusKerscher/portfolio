@@ -6,8 +6,6 @@ import { usePathname } from "next/navigation";
 const Navigation = () => {
   const currentPath = usePathname();
 
-  console.log(currentPath === "/");
-
   return (
     <nav className="mb-3">
       <ul className="flex gap-3 justify-center md:justify-start">
