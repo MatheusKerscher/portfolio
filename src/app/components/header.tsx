@@ -25,7 +25,7 @@ const Header = () => {
       </section>
 
       <section className="text-gray mt-4 not-md:text-sm">
-        <ul className="flex flex-col gap-2 items-center lg:items-start">
+        <ul className="flex flex-col gap-3 lg:gap-2 items-center lg:items-start">
           <li className="social-media-item">
             <MapPin size={20} />
 
@@ -67,7 +67,7 @@ const Header = () => {
             >
               <Github size={20} color="#171717" />
 
-              <span>MatheusKerscher</span>
+              <span>/MatheusKerscher</span>
             </a>
           </li>
 
@@ -80,7 +80,7 @@ const Header = () => {
             >
               <Instagram size={20} color="#dd2a7b" />
 
-              <span>MatheusKerscher</span>
+              <span>@MatheusKerscher</span>
             </a>
           </li>
         </ul>
