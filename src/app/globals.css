@@ -17,7 +17,7 @@
   }
 
   .tag-link {
-    @apply underline lg:no-underline lg:hover:underline transition-all duration-200 ease-in-out;
+    @apply lg:hover:underline lg:hover:scale-105 transition-all duration-200 ease-in-out bg-border p-3 rounded-full drop-shadow-sm lg:bg-transparent lg:p-0 lg:rounded-none lg:drop-shadow-none;
   }
 
   .social-media-item {
@@ -25,6 +25,6 @@
   }
 
   .stack-icon-container {
-    @apply p-2 rounded-full w-10 h-10 bg-border flex justify-center items-center;
+    @apply p-2 rounded-full w-10 h-10 bg-border flex justify-center items-center lg:hover:scale-105 duration-150 transition-all;
   }
 }
