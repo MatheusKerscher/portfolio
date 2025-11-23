@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Catamaran } from "next/font/google";
 import "./globals.css";
 
-import Navigation from "./components/navigation";
 import Footer from "./components/footer";
 import Header from "./components/header";
 
@@ -27,11 +26,7 @@ export default function RootLayout({
         <main className="min-h-[calc(100dvh-45px)] w-screen max-w-6xl mx-auto lg:grid lg:grid-cols-4 gap-3 px-3 lg:px-1 pt-6">
           <Header />
 
-          <section className="col-span-3">
-            <Navigation />
-
-            {children}
-          </section>
+          <section className="col-span-3">{children}</section>
         </main>
 
         <Footer />
