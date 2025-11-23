@@ -1,4 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ProjectCard from "./components/project-card";
 
 export default function Home() {
   return (
@@ -9,7 +10,9 @@ export default function Home() {
           <TabsTrigger value="curriculum">Currículo</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="projects"></TabsContent>
+        <TabsContent value="projects">
+          <ProjectCard />
+        </TabsContent>
 
         <TabsContent value="curriculum"></TabsContent>
       </Tabs>
