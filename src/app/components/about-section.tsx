@@ -103,9 +103,9 @@ function AnimatedStat({ value, label, suffix = "+" }: StatProps) {
       ref={ref}
       className="text-center lg:text-left flex flex-col-reverse gap-1"
     >
-      <dt className="text-xs text-gray uppercase tracking-widest">{label}</dt>
+      <dt className="text-xs text-gray dark:text-neutral-400 uppercase tracking-widest">{label}</dt>
       <dd
-        className="font-bold text-black leading-none"
+        className="font-bold text-black dark:text-white leading-none"
         style={{
           fontFamily: "var(--font-syne), sans-serif",
           fontSize: "clamp(2rem, 4vw, 3rem)",
@@ -146,7 +146,7 @@ export default function AboutSection() {
           </MotionSection>
 
           <MotionSection delay={0.3}>
-            <p className="text-gray text-lg leading-relaxed">
+            <p className="text-gray dark:text-neutral-400 text-lg leading-relaxed">
               Sou desenvolvedor FullStack com foco em React e Node.js, baseado
               no Paraná, Brasil. Gosto de transformar ideias complexas em
               interfaces simples e funcionais, sempre com atenção aos detalhes e
@@ -162,7 +162,7 @@ export default function AboutSection() {
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 text-gray hover:text-[#16a34a] w-fit"
+                    className="flex items-center gap-3 text-gray dark:text-neutral-400 hover:text-[#16a34a] w-fit"
                     style={{
                       transition:
                         "color 0.3s var(--ease-cubic), opacity 0.3s var(--ease-cubic)",
@@ -178,7 +178,7 @@ export default function AboutSection() {
 
           <MotionSection delay={0.5}>
             <div>
-              <p className="text-xs font-semibold tracking-widest uppercase text-gray mb-4">
+              <p className="text-xs font-semibold tracking-widest uppercase text-gray dark:text-neutral-400 mb-4">
                 Principais Stacks
               </p>
               <div className="flex flex-wrap gap-3">
@@ -215,7 +215,7 @@ export default function AboutSection() {
                       {hoveredStack === stack.label && (
                         <motion.div
                           role="tooltip"
-                          className="hidden md:flex absolute bottom-[calc(100%+10px)] left-1/2 -translate-x-1/2 z-10 w-44 p-3 rounded-xl bg-white border border-border shadow-lg flex-col items-center gap-2 pointer-events-none"
+                          className="hidden md:flex absolute bottom-[calc(100%+10px)] left-1/2 -translate-x-1/2 z-10 w-44 p-3 rounded-xl bg-white dark:bg-[#1a1a1a] border border-border shadow-lg flex-col items-center gap-2 pointer-events-none"
                           initial={{ opacity: 0, y: 6, scale: 0.95 }}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: 6, scale: 0.95 }}
@@ -231,14 +231,14 @@ export default function AboutSection() {
                             height={32}
                           />
                           <p
-                            className="font-semibold text-sm text-black"
+                            className="font-semibold text-sm text-black dark:text-white"
                             style={{
                               fontFamily: "var(--font-syne), sans-serif",
                             }}
                           >
                             {stack.label}
                           </p>
-                          <p className="text-xs text-gray text-center leading-relaxed">
+                          <p className="text-xs text-gray dark:text-neutral-400 text-center leading-relaxed">
                             {stack.description}
                           </p>
                         </motion.div>

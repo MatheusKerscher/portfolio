@@ -43,7 +43,7 @@ export default function ContactSection() {
 
         <div className="max-w-2xl">
           <motion.h2
-            className="font-bold text-black leading-tight mb-8"
+            className="font-bold text-black dark:text-white leading-tight mb-8"
             style={{
               fontFamily: "var(--font-syne), sans-serif",
               fontSize: "clamp(2rem, 5vw, 4rem)",
@@ -62,7 +62,7 @@ export default function ContactSection() {
           </motion.h2>
 
           <motion.p
-            className="text-gray text-lg leading-relaxed mb-10"
+            className="text-gray dark:text-neutral-400 text-lg leading-relaxed mb-10"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{
@@ -91,7 +91,7 @@ export default function ContactSection() {
               className="group flex items-center gap-3 w-fit mb-12"
             >
               <span
-                className="font-bold text-black group-hover:text-[#16a34a]"
+                className="font-bold text-black dark:text-white group-hover:text-[#16a34a]"
                 style={{
                   fontFamily: "var(--font-syne), sans-serif",
                   fontSize: "clamp(1rem, 2.5vw, 1.4rem)",
@@ -142,7 +142,7 @@ export default function ContactSection() {
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-gray hover:text-[#16a34a]"
+                  className="flex items-center gap-2 text-gray dark:text-neutral-400 hover:text-[#16a34a]"
                   style={{ transition: "color 0.3s var(--ease-cubic)" }}
                   aria-label={`${link.label} de Matheus Kerscher`}
                 >

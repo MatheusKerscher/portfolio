@@ -7,6 +7,7 @@ import Footer from "./components/footer";
 import JsonLd from "./components/json-ld";
 import Navbar from "./components/navbar";
 import SmoothScrollProvider from "./components/smooth-scroll-provider";
+import { ThemeProvider } from "./components/theme-provider";
 
 const catamaran = Catamaran({
   variable: "--font-catamaran",
@@ -84,23 +85,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" suppressHydrationWarning>
       <body
         className={`${catamaran.variable} ${syne.variable} font-(family-name:--font-catamaran) antialiased`}
       >
-        <a
-          href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-100 focus:px-4 focus:py-2 focus:bg-[#16a34a] focus:text-white focus:rounded focus:font-semibold"
-        >
-          Pular para o conteúdo principal
-        </a>
-        <SmoothScrollProvider>
-          <JsonLd />
-          <Navbar />
-          <main id="main-content">{children}</main>
-          <Footer />
-          <BackToTop />
-        </SmoothScrollProvider>
+        <ThemeProvider>
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-100 focus:px-4 focus:py-2 focus:bg-[#16a34a] focus:text-white focus:rounded focus:font-semibold"
+          >
+            Pular para o conteúdo principal
+          </a>
+          <SmoothScrollProvider>
+            <JsonLd />
+            <Navbar />
+            <main id="main-content">{children}</main>
+            <Footer />
+            <BackToTop />
+          </SmoothScrollProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

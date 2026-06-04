@@ -44,7 +44,7 @@ export default function HeroSection() {
           trigger="mount"
           delay={0.4}
           stagger={0.05}
-          className="font-bold text-black leading-none mb-6"
+          className="font-bold text-black dark:text-white leading-none mb-6"
           style={{
             fontFamily: "var(--font-syne), sans-serif",
             fontSize: "clamp(3rem, 9vw, 7.5rem)",
@@ -59,7 +59,7 @@ export default function HeroSection() {
           trigger="mount"
           delay={0.6}
           stagger={0.03}
-          className="text-lg md:text-xl text-gray max-w-xl mb-10 leading-relaxed"
+          className="text-lg md:text-xl text-gray dark:text-neutral-400 max-w-xl mb-10 leading-relaxed"
         >
           Construo aplicações web com foco em experiência de usuário,
           performance e código limpo.
@@ -85,7 +85,7 @@ export default function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.4, duration: 0.8 }}
-        className="absolute bottom-10 right-6 lg:left-8 flex flex-col items-center gap-2 text-gray"
+        className="absolute bottom-10 right-6 lg:left-8 flex flex-col items-center gap-2 text-gray dark:text-neutral-400"
       >
         <span className="text-xs tracking-widest uppercase rotate-90 origin-left translate-x-6 mb-2">
           Scroll
