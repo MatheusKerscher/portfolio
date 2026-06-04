@@ -29,8 +29,8 @@ export default function Navbar() {
   }
 
   function handleExitComplete() {
-    if (pendingHref && lenis) {
-      lenis.scrollTo(pendingHref, { offset: -80 });
+    if (pendingHref && lenis.current) {
+      lenis.current.scrollTo(pendingHref, { offset: -80 });
       setPendingHref(null);
     }
   }
