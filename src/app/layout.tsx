@@ -94,12 +94,13 @@ export default function RootLayout({
         >
           Pular para o conteúdo principal
         </a>
-        <JsonLd />
-        <SmoothScrollProvider />
-        <Navbar />
-        <main id="main-content">{children}</main>
-        <Footer />
-        <BackToTop />
+        <SmoothScrollProvider>
+          <JsonLd />
+          <Navbar />
+          <main id="main-content">{children}</main>
+          <Footer />
+          <BackToTop />
+        </SmoothScrollProvider>
       </body>
     </html>
   );

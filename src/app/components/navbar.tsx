@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLenis } from "./lenis-context";
 
 const links = [
   { label: "Projetos", href: "#projetos" },
@@ -10,14 +11,28 @@ const links = [
 ];
 
 export default function Navbar() {
+  const lenis = useLenis();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [pendingHref, setPendingHref] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 80);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  function handleMobileLinkClick(href: string) {
+    setPendingHref(href);
+    setMenuOpen(false);
+  }
+
+  function handleExitComplete() {
+    if (pendingHref && lenis) {
+      lenis.scrollTo(pendingHref, { offset: -80 });
+      setPendingHref(null);
+    }
+  }
 
   return (
     <nav
@@ -84,7 +99,7 @@ export default function Navbar() {
         </button>
       </div>
 
-      <AnimatePresence>
+      <AnimatePresence onExitComplete={handleExitComplete}>
         {menuOpen && (
           <motion.div
             id="mobile-nav"
@@ -109,7 +124,10 @@ export default function Navbar() {
                   <a
                     href={link.href}
                     className="text-base font-medium text-black"
-                    onClick={() => setMenuOpen(false)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleMobileLinkClick(link.href);
+                    }}
                   >
                     {link.label}
                   </a>
