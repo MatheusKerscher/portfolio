@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLenis } from "./lenis-context";
+import ThemeToggle from "./theme-toggle";
 
 const links = [
   { label: "Projetos", href: "#projetos" },
@@ -10,8 +12,10 @@ const links = [
 ];
 
 export default function Navbar() {
+  const lenis = useLenis();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [pendingHref, setPendingHref] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 80);
@@ -19,11 +23,23 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  function handleMobileLinkClick(href: string) {
+    setPendingHref(href);
+    setMenuOpen(false);
+  }
+
+  function handleExitComplete() {
+    if (pendingHref && lenis.current) {
+      lenis.current.scrollTo(pendingHref, { offset: -80 });
+      setPendingHref(null);
+    }
+  }
+
   return (
     <nav
       className="fixed top-0 left-0 right-0 z-50"
       style={{
-        background: scrolled ? "rgba(248,247,243,0.88)" : "transparent",
+        background: scrolled ? "var(--nav-scrolled-bg)" : "transparent",
         backdropFilter: scrolled ? "blur(12px)" : "none",
         borderBottom: scrolled ? "1px solid #e5e5e5" : "1px solid transparent",
         transition:
@@ -33,7 +49,7 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
         <a
           href="#hero"
-          className="font-bold text-xl tracking-tight text-black"
+          className="font-bold text-xl tracking-tight text-black dark:text-white"
           style={{ fontFamily: "var(--font-syne), sans-serif" }}
         >
           MK
@@ -44,7 +60,7 @@ export default function Navbar() {
             <li key={link.href}>
               <a
                 href={link.href}
-                className="text-sm font-medium text-black relative group"
+                className="text-sm font-medium text-black dark:text-white relative group"
                 style={{ transition: "opacity 0.3s var(--ease-cubic)" }}
               >
                 {link.label}
@@ -57,34 +73,38 @@ export default function Navbar() {
           ))}
         </ul>
 
-        <button
-          className="md:hidden flex flex-col gap-1.5 p-1"
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
-          aria-expanded={menuOpen}
-          aria-controls="mobile-nav"
-        >
-          <motion.span
-            animate={menuOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
-            transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
-            className="block w-6 h-0.5 bg-black"
-          />
-          <motion.span
-            animate={
-              menuOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }
-            }
-            transition={{ duration: 0.2 }}
-            className="block w-6 h-0.5 bg-black"
-          />
-          <motion.span
-            animate={menuOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
-            transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
-            className="block w-6 h-0.5 bg-black"
-          />
-        </button>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+
+          <button
+            className="md:hidden flex flex-col gap-1.5 p-1"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-nav"
+          >
+            <motion.span
+              animate={menuOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
+              transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
+              className="block w-6 h-0.5 bg-black dark:bg-white"
+            />
+            <motion.span
+              animate={
+                menuOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }
+              }
+              transition={{ duration: 0.2 }}
+              className="block w-6 h-0.5 bg-black dark:bg-white"
+            />
+            <motion.span
+              animate={menuOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
+              transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
+              className="block w-6 h-0.5 bg-black dark:bg-white"
+            />
+          </button>
+        </div>
       </div>
 
-      <AnimatePresence>
+      <AnimatePresence onExitComplete={handleExitComplete}>
         {menuOpen && (
           <motion.div
             id="mobile-nav"
@@ -92,7 +112,7 @@ export default function Navbar() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.45, ease: [0.19, 1, 0.22, 1] }}
-            className="md:hidden overflow-hidden bg-[#F8F7F3] border-t border-border"
+            className="md:hidden overflow-hidden bg-[var(--page-bg)] border-t border-border"
           >
             <ul className="flex flex-col px-6 py-4 gap-4">
               {links.map((link, i) => (
@@ -108,8 +128,11 @@ export default function Navbar() {
                 >
                   <a
                     href={link.href}
-                    className="text-base font-medium text-black"
-                    onClick={() => setMenuOpen(false)}
+                    className="text-base font-medium text-black dark:text-white"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleMobileLinkClick(link.href);
+                    }}
                   >
                     {link.label}
                   </a>

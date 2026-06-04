@@ -22,7 +22,7 @@ export default function BackToTop() {
           transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           aria-label="Voltar ao topo"
-          className="cursor-pointer fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-md border border-border bg-[#F8F7F3] text-gray shadow-sm transition-colors duration-200 hover:border-[#16a34a] hover:text-[#16a34a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#16a34a] focus-visible:ring-offset-2"
+          className="cursor-pointer fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-md border border-border bg-[var(--page-bg)] text-gray dark:text-neutral-400 shadow-sm transition-colors duration-200 hover:border-[#16a34a] hover:text-[#16a34a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#16a34a] focus-visible:ring-offset-2"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

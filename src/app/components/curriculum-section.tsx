@@ -12,14 +12,14 @@ function TimelineEntry({ item, index }: { item: TimelineItem; index: number }) {
                 ? `${item.startDate}/${item.endDate}`
                 : item.startDate
             }
-            className="text-sm text-gray font-medium"
+            className="text-sm text-gray dark:text-neutral-400 font-medium"
           >
             {item.period}
           </time>
         </div>
         <div className="md:col-span-3 space-y-1">
           <h3
-            className="font-bold text-lg text-black leading-tight"
+            className="font-bold text-lg text-black dark:text-white leading-tight"
             style={{ fontFamily: "var(--font-syne), sans-serif" }}
           >
             {item.title}
@@ -27,7 +27,7 @@ function TimelineEntry({ item, index }: { item: TimelineItem; index: number }) {
           <p className="text-[#16a34a] text-sm font-semibold">
             {item.organization}
           </p>
-          <p className="text-gray text-sm leading-relaxed mt-2">
+          <p className="text-gray dark:text-neutral-400 text-sm leading-relaxed mt-2">
             {item.description}
           </p>
         </div>
@@ -54,7 +54,7 @@ export default function CurriculumSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           <div>
             <MotionSection delay={0.15}>
-              <h3 className="text-xs font-semibold tracking-widest uppercase text-gray mb-2">
+              <h3 className="text-xs font-semibold tracking-widest uppercase text-gray dark:text-neutral-400 mb-2">
                 Experiência
               </h3>
               <div className="w-8 h-0.5 bg-[#16a34a] mb-6" />
@@ -67,7 +67,7 @@ export default function CurriculumSection() {
                 ))
               ) : (
                 <MotionSection delay={0.2}>
-                  <p className="text-gray text-sm py-8 border-b border-border">
+                  <p className="text-gray dark:text-neutral-400 text-sm py-8 border-b border-border">
                     Em breve...
                   </p>
                 </MotionSection>
@@ -77,7 +77,7 @@ export default function CurriculumSection() {
 
           <div>
             <MotionSection delay={0.15}>
-              <h3 className="text-xs font-semibold tracking-widest uppercase text-gray mb-2">
+              <h3 className="text-xs font-semibold tracking-widest uppercase text-gray dark:text-neutral-400 mb-2">
                 Formação
               </h3>
               <div className="w-8 h-0.5 bg-[#16a34a] mb-6" />
@@ -90,7 +90,7 @@ export default function CurriculumSection() {
                 ))
               ) : (
                 <MotionSection delay={0.2}>
-                  <p className="text-gray text-sm py-8 border-b border-border">
+                  <p className="text-gray dark:text-neutral-400 text-sm py-8 border-b border-border">
                     Em breve...
                   </p>
                 </MotionSection>

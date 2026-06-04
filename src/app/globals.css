@@ -49,6 +49,8 @@
 }
 
 :root {
+  --page-bg: #f8f7f3;
+  --nav-scrolled-bg: rgba(248, 247, 243, 0.88);
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -84,6 +86,8 @@
 }
 
 .dark {
+  --page-bg: #111111;
+  --nav-scrolled-bg: rgba(17, 17, 17, 0.88);
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
@@ -129,7 +133,7 @@
   }
 
   body {
-    @apply bg-[#F8F7F3] text-black antialiased;
+    @apply bg-[var(--page-bg)] text-black dark:text-white antialiased;
     font-feature-settings: "kern" 1;
   }
 
@@ -140,7 +144,7 @@
 
 @layer components {
   .section-label {
-    @apply text-xs font-semibold tracking-widest uppercase text-gray mb-6;
+    @apply text-xs font-semibold tracking-widest uppercase text-gray dark:text-neutral-400 mb-6;
     font-family: var(--font-catamaran), sans-serif;
   }
 
@@ -150,7 +154,7 @@
     font-size: clamp(2rem, 4vw, 3.5rem);
     line-height: 1.1;
     letter-spacing: -0.02em;
-    color: #111111;
+    color: var(--foreground);
   }
 
   .accent-link {
@@ -174,7 +178,7 @@
   }
 
   .btn-outline {
-    @apply inline-flex items-center gap-2 border border-black text-black px-6 py-3 font-semibold hover:bg-black hover:text-white hover:gap-4;
+    @apply inline-flex items-center gap-2 border border-black dark:border-white text-black dark:text-white px-6 py-3 font-semibold hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black hover:gap-4;
     transition:
       background-color 0.3s var(--ease-expo),
       color 0.3s var(--ease-expo),
@@ -182,7 +186,7 @@
   }
 
   .stack-icon-container {
-    @apply p-2 rounded-full w-10 h-10 bg-white border border-border flex justify-center items-center;
+    @apply p-2 rounded-full w-10 h-10 bg-white dark:bg-[#1a1a1a] border border-border flex justify-center items-center;
     transition:
       transform 0.4s var(--ease-expo),
       border-color 0.3s var(--ease-cubic);
