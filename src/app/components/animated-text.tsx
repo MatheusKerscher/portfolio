@@ -30,8 +30,7 @@ export default function AnimatedText({
   trigger = "scroll",
 }: AnimatedTextProps) {
   const words = children.split(" ");
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const ref = useRef<any>(null);
+  const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, margin: "0px" });
 
   return (
