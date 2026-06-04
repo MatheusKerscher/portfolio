@@ -1,0 +1,72 @@
+# Matheus Kerscher
+
+> Desenvolvedor FullStack especializado em React, Next.js e Node.js.
+> Baseado no Paraná, Brasil. Disponível para trabalho, freelas e colaborações.
+
+## Sobre
+
+Matheus Kerscher é desenvolvedor FullStack com mais de 3 anos de experiência,
+especializado em React, Next.js, Node.js e TypeScript. Atua com liderança
+técnica na CWB Tecnologia em Curitiba, PR, e também como freelancer.
+
+## Stack principal
+
+- Frontend: React, Next.js, TypeScript, Tailwind CSS, HTML5, CSS3
+- Backend: Node.js, PostgreSQL
+- Ferramentas: Git, JavaScript
+
+## Experiência profissional
+
+- FullStack Developer @ CWB Tecnologia (Mai 2024 — Presente) — Curitiba, PR
+  Liderança técnica em dois produtos: Up Agenda e Programa Salão.
+  Reduziu 30% dos custos de hospedagem, otimizou banco PostgreSQL,
+  criou novas funcionalidades, elaborou documentação e treinou colaboradores.
+
+- FullStack Developer Freelancer (Jan 2023 — Presente)
+  Landing pages, portfólios, páginas web e sistemas sob demanda.
+  Trabalho em parceria com outros desenvolvedores em projetos de maior complexidade.
+
+- Angular Developer @ Vetor Sistemas (Fev 2022 — Out 2022) — Curitiba, PR
+  Automatização de tarefas manuais, manutenção de código-fonte e modernização
+  de layout e código de softwares de automação comercial.
+
+## Formação
+
+- Tecnologia em Análise e Desenvolvimento de Sistemas (Set 2021 — Dez 2023)
+  Universidade Federal do Paraná (UFPR)
+  Foco em desenvolvimento de software, estruturas de dados, banco de dados
+  e engenharia de sistemas.
+
+## Projetos selecionados
+
+- To-do List: https://coopers-front.kerscher.dev.br/
+  Aplicação de to-do list com autenticação e formulário de contato.
+  Stack: Next.js, React, TypeScript, Tailwind
+
+- Web Carros: https://web-carros-pi.vercel.app/
+  Plataforma de compra e venda de veículos com filtros avançados.
+  Stack: Next.js, React, TypeScript, Tailwind
+
+- Dev Controle: https://dev-controle-topaz.vercel.app/
+  Sistema de controle de chamados para desenvolvedores freelancers.
+  Stack: Next.js, PostgreSQL, TypeScript, Tailwind
+
+- MyMock: https://my-mock-ecru.vercel.app/
+  Ferramenta para criação e gerenciamento de mock APIs.
+  Stack: Next.js, React, Node.js, TypeScript
+
+- Cripto Currency: https://cripto-currency-orcin.vercel.app/
+  Dashboard de acompanhamento de criptomoedas em tempo real.
+  Stack: React, API REST, Tailwind
+
+## Contato
+
+- Email: matheus@programasalao.com.br
+- GitHub: https://github.com/MatheusKerscher
+- LinkedIn: https://www.linkedin.com/in/matheus-kerscher/
+- Instagram: https://www.instagram.com/matheuskerscher/
+- Site: https://kerscher.dev.br
+
+## Idioma
+
+Português (pt-BR)
