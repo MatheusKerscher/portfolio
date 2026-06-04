@@ -1,4 +1,4 @@
-import { Github, Linkedin } from "lucide-react";
+import { GithubIcon, LinkedinIcon } from "./social-icons";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -19,7 +19,7 @@ export default function Footer() {
             aria-label="GitHub de Matheus Kerscher"
             title="GitHub"
           >
-            <Github size={18} aria-hidden="true" />
+            <GithubIcon size={18} />
           </a>
           <a
             href="https://www.linkedin.com/in/matheus-kerscher/"
@@ -29,7 +29,7 @@ export default function Footer() {
             aria-label="LinkedIn de Matheus Kerscher"
             title="LinkedIn"
           >
-            <Linkedin size={18} aria-hidden="true" />
+            <LinkedinIcon size={18} />
           </a>
         </div>
       </div>
