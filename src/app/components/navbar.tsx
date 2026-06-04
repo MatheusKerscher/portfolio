@@ -78,28 +78,28 @@ export default function Navbar() {
 
           <button
             className="md:hidden flex flex-col gap-1.5 p-1"
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
-          aria-expanded={menuOpen}
-          aria-controls="mobile-nav"
-        >
-          <motion.span
-            animate={menuOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
-            transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
-            className="block w-6 h-0.5 bg-black dark:bg-white"
-          />
-          <motion.span
-            animate={
-              menuOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }
-            }
-            transition={{ duration: 0.2 }}
-            className="block w-6 h-0.5 bg-black dark:bg-white"
-          />
-          <motion.span
-            animate={menuOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
-            transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
-            className="block w-6 h-0.5 bg-black dark:bg-white"
-          />
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-nav"
+          >
+            <motion.span
+              animate={menuOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
+              transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
+              className="block w-6 h-0.5 bg-black dark:bg-white"
+            />
+            <motion.span
+              animate={
+                menuOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }
+              }
+              transition={{ duration: 0.2 }}
+              className="block w-6 h-0.5 bg-black dark:bg-white"
+            />
+            <motion.span
+              animate={menuOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
+              transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
+              className="block w-6 h-0.5 bg-black dark:bg-white"
+            />
           </button>
         </div>
       </div>

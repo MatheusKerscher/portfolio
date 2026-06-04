@@ -103,7 +103,9 @@ function AnimatedStat({ value, label, suffix = "+" }: StatProps) {
       ref={ref}
       className="text-center lg:text-left flex flex-col-reverse gap-1"
     >
-      <dt className="text-xs text-gray dark:text-neutral-400 uppercase tracking-widest">{label}</dt>
+      <dt className="text-xs text-gray dark:text-neutral-400 uppercase tracking-widest">
+        {label}
+      </dt>
       <dd
         className="font-bold text-black dark:text-white leading-none"
         style={{

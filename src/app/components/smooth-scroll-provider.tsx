@@ -33,5 +33,7 @@ export default function SmoothScrollProvider({
     };
   }, []);
 
-  return <LenisContext.Provider value={lenis}>{children}</LenisContext.Provider>;
+  return (
+    <LenisContext.Provider value={lenis}>{children}</LenisContext.Provider>
+  );
 }
