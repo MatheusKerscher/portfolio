@@ -1,16 +1,10 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
+import nextConfig from "eslint-config-next/core-web-vitals";
+import prettierConfig from "eslint-config-prettier";
+import tsPlugin from "@typescript-eslint/eslint-plugin";
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript", "prettier"),
+  ...nextConfig,
+  prettierConfig,
   {
     ignores: [
       "node_modules/**",
@@ -21,6 +15,7 @@ const eslintConfig = [
     ],
   },
   {
+    plugins: { "@typescript-eslint": tsPlugin },
     rules: {
       "@typescript-eslint/no-unused-vars": "error",
     },
