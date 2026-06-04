@@ -1,23 +1,24 @@
 "use client";
 
-import { Github, Linkedin, Instagram, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { GithubIcon, LinkedinIcon, InstagramIcon } from "./social-icons";
 import { motion } from "framer-motion";
 
 const vp = { once: true, amount: 0 } as const;
 
 const socialLinks = [
   {
-    icon: <Github size={20} />,
+    icon: <GithubIcon size={20} />,
     label: "GitHub",
     href: "https://github.com/MatheusKerscher",
   },
   {
-    icon: <Linkedin size={20} />,
+    icon: <LinkedinIcon size={20} />,
     label: "LinkedIn",
     href: "https://www.linkedin.com/in/matheus-kerscher/",
   },
   {
-    icon: <Instagram size={20} />,
+    icon: <InstagramIcon size={20} />,
     label: "Instagram",
     href: "https://www.instagram.com/matheuskerscher/",
   },

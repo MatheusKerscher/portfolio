@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { Github, Linkedin, Mail, Instagram } from "lucide-react";
+import { Mail } from "lucide-react";
+import { GithubIcon, LinkedinIcon, InstagramIcon } from "./social-icons";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import AnimatedText from "./animated-text";
@@ -14,17 +15,17 @@ const socialLinks = [
     href: "mailto:matheuskerscher@outlook.com",
   },
   {
-    icon: <Linkedin size={18} />,
+    icon: <LinkedinIcon size={18} />,
     label: "in/matheus-kerscher",
     href: "https://www.linkedin.com/in/matheus-kerscher/",
   },
   {
-    icon: <Github size={18} />,
+    icon: <GithubIcon size={18} />,
     label: "/MatheusKerscher",
     href: "https://github.com/MatheusKerscher",
   },
   {
-    icon: <Instagram size={18} />,
+    icon: <InstagramIcon size={18} />,
     label: "@MatheusKerscher",
     href: "https://www.instagram.com/matheuskerscher/",
   },
