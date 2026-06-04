@@ -31,15 +31,51 @@ const socialLinks = [
 ];
 
 const stacks = [
-  { src: "/nextjs.svg", label: "Next.js", description: "Framework React com SSR e geração estática" },
-  { src: "/react.svg", label: "React", description: "Biblioteca para interfaces declarativas e reativas" },
-  { src: "/typescript.svg", label: "TypeScript", description: "JavaScript com tipagem estática e maior previsibilidade" },
-  { src: "/nodejs.svg", label: "Node.js", description: "Runtime JavaScript para servidores e APIs" },
-  { src: "/tailwindcss.svg", label: "Tailwind CSS", description: "Framework CSS utilitário para estilização rápida" },
-  { src: "/git.svg", label: "Git", description: "Controle de versão distribuído para colaboração" },
-  { src: "/javascript.svg", label: "JavaScript", description: "Linguagem dinâmica base da web moderna" },
-  { src: "/html.svg", label: "HTML5", description: "Linguagem de marcação para estrutura de páginas" },
-  { src: "/css.svg", label: "CSS3", description: "Linguagem de estilo para design e animações" },
+  {
+    src: "/nextjs.svg",
+    label: "Next.js",
+    description: "Framework React com SSR e geração estática",
+  },
+  {
+    src: "/react.svg",
+    label: "React",
+    description: "Biblioteca para interfaces declarativas e reativas",
+  },
+  {
+    src: "/typescript.svg",
+    label: "TypeScript",
+    description: "JavaScript com tipagem estática e maior previsibilidade",
+  },
+  {
+    src: "/nodejs.svg",
+    label: "Node.js",
+    description: "Runtime JavaScript para servidores e APIs",
+  },
+  {
+    src: "/tailwindcss.svg",
+    label: "Tailwind CSS",
+    description: "Framework CSS utilitário para estilização rápida",
+  },
+  {
+    src: "/git.svg",
+    label: "Git",
+    description: "Controle de versão distribuído para colaboração",
+  },
+  {
+    src: "/javascript.svg",
+    label: "JavaScript",
+    description: "Linguagem dinâmica base da web moderna",
+  },
+  {
+    src: "/html.svg",
+    label: "HTML5",
+    description: "Linguagem de marcação para estrutura de páginas",
+  },
+  {
+    src: "/css.svg",
+    label: "CSS3",
+    description: "Linguagem de estilo para design e animações",
+  },
 ];
 
 type StatProps = { value: number; label: string; suffix?: string };
@@ -62,10 +98,11 @@ function AnimatedStat({ value, label, suffix = "+" }: StatProps) {
   }, [inView, value]);
 
   return (
-    <div ref={ref} className="text-center lg:text-left flex flex-col-reverse gap-1">
-      <dt className="text-xs text-gray uppercase tracking-widest">
-        {label}
-      </dt>
+    <div
+      ref={ref}
+      className="text-center lg:text-left flex flex-col-reverse gap-1"
+    >
+      <dt className="text-xs text-gray uppercase tracking-widest">{label}</dt>
       <dd
         className="font-bold text-black leading-none"
         style={{
@@ -181,7 +218,10 @@ export default function AboutSection() {
                           initial={{ opacity: 0, y: 6, scale: 0.95 }}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: 6, scale: 0.95 }}
-                          transition={{ duration: 0.18, ease: [0.19, 1, 0.22, 1] }}
+                          transition={{
+                            duration: 0.18,
+                            ease: [0.19, 1, 0.22, 1],
+                          }}
                         >
                           <Image
                             src={stack.src}
@@ -189,7 +229,12 @@ export default function AboutSection() {
                             width={32}
                             height={32}
                           />
-                          <p className="font-semibold text-sm text-black" style={{ fontFamily: "var(--font-syne), sans-serif" }}>
+                          <p
+                            className="font-semibold text-sm text-black"
+                            style={{
+                              fontFamily: "var(--font-syne), sans-serif",
+                            }}
+                          >
                             {stack.label}
                           </p>
                           <p className="text-xs text-gray text-center leading-relaxed">

@@ -26,7 +26,8 @@ export default function Navbar() {
         background: scrolled ? "rgba(248,247,243,0.88)" : "transparent",
         backdropFilter: scrolled ? "blur(12px)" : "none",
         borderBottom: scrolled ? "1px solid #e5e5e5" : "1px solid transparent",
-        transition: "background 0.4s var(--ease-in-out), border-color 0.4s var(--ease-in-out)",
+        transition:
+          "background 0.4s var(--ease-in-out), border-color 0.4s var(--ease-in-out)",
       }}
     >
       <div className="max-w-6xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -69,7 +70,9 @@ export default function Navbar() {
             className="block w-6 h-0.5 bg-black"
           />
           <motion.span
-            animate={menuOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }}
+            animate={
+              menuOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }
+            }
             transition={{ duration: 0.2 }}
             className="block w-6 h-0.5 bg-black"
           />
@@ -97,7 +100,11 @@ export default function Navbar() {
                   key={link.href}
                   initial={{ opacity: 0, x: -12 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.06, duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
+                  transition={{
+                    delay: i * 0.06,
+                    duration: 0.4,
+                    ease: [0.19, 1, 0.22, 1],
+                  }}
                 >
                   <a
                     href={link.href}

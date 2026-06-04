@@ -168,17 +168,24 @@
 
   .btn-accent {
     @apply inline-flex items-center gap-2 bg-[#16a34a] text-white px-6 py-3 font-semibold hover:bg-accent-dark hover:gap-4;
-    transition: background-color 0.3s var(--ease-expo), gap 0.3s var(--ease-expo);
+    transition:
+      background-color 0.3s var(--ease-expo),
+      gap 0.3s var(--ease-expo);
   }
 
   .btn-outline {
     @apply inline-flex items-center gap-2 border border-black text-black px-6 py-3 font-semibold hover:bg-black hover:text-white hover:gap-4;
-    transition: background-color 0.3s var(--ease-expo), color 0.3s var(--ease-expo), gap 0.3s var(--ease-expo);
+    transition:
+      background-color 0.3s var(--ease-expo),
+      color 0.3s var(--ease-expo),
+      gap 0.3s var(--ease-expo);
   }
 
   .stack-icon-container {
     @apply p-2 rounded-full w-10 h-10 bg-white border border-border flex justify-center items-center;
-    transition: transform 0.4s var(--ease-expo), border-color 0.3s var(--ease-cubic);
+    transition:
+      transform 0.4s var(--ease-expo),
+      border-color 0.3s var(--ease-cubic);
     outline: none;
   }
 
