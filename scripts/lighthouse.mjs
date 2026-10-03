@@ -1,13 +1,23 @@
 /**
  * Measures the production build with Lighthouse, mobile and desktop.
  *
- *   node scripts/lighthouse.mjs [--runs=5] [--min=95] [--write] [--url=<url>]
+ *   node scripts/lighthouse.mjs [--runs=5] [--min=95] [--latency=40] [--presets=mobile,desktop]
+ *                               [--write] [--external] [--url=<url>]
  *
  * Without --url it builds the site and serves it with `next start`. Each preset runs --runs
  * times and the median is reported. It exits 1 when the median Performance is below --min or
  * any other category is below 95. --write stores the medians in src/app/data/audit.json.
+ *
+ * --latency delays every response by that many milliseconds. On localhost every script arrives
+ * before the first frame, so the first paint lands before or after hydration by chance, and
+ * Lighthouse's simulated LCP flips between two values 500 ms apart. A real connection always
+ * has a round trip; 40 ms is a fast one. --latency=0 measures the raw localhost.
+ *
+ * --external measures a server that is already listening on port 3100 (another build of the
+ * site, for a comparison) instead of building and starting this one.
  */
 import { execFile, spawn } from "node:child_process";
+import http from "node:http";
 import { writeFile } from "node:fs/promises";
 import { promisify } from "node:util";
 import { chromium } from "@playwright/test";
@@ -16,8 +26,9 @@ import * as prettier from "prettier";
 const run = promisify(execFile);
 
 const PORT = 3100;
+const PROXY_PORT = 3101;
 const OTHER_CATEGORIES_MIN = 95;
-const PRESETS = ["mobile", "desktop"];
+const ALL_PRESETS = ["mobile", "desktop"];
 const CATEGORIES = ["performance", "accessibility", "best-practices", "seo"];
 const AUDIT_FILE = "src/app/data/audit.json";
 
@@ -27,9 +38,13 @@ const options = Object.fromEntries(
     return [key, value];
   }),
 );
+const PRESETS = options.presets ? options.presets.split(",") : ALL_PRESETS;
 const runs = Number(options.runs ?? 5);
 const min = Number(options.min ?? 95);
-const url = options.url ?? `http://localhost:${PORT}/`;
+const latency = Number(options.latency ?? 40);
+const origin = `http://localhost:${PORT}/`;
+const url =
+  options.url ?? (latency > 0 ? `http://localhost:${PROXY_PORT}/` : origin);
 
 const median = (values) => {
   const sorted = [...values].sort((a, b) => a - b);
@@ -94,26 +109,57 @@ async function lighthouse(preset) {
   return JSON.parse(stdout);
 }
 
+/** Forwards every request to `next start` after `latency` milliseconds. */
+function startProxy() {
+  const proxy = http.createServer((request, response) => {
+    setTimeout(() => {
+      const upstream = http.request(
+        {
+          host: "127.0.0.1",
+          port: PORT,
+          path: request.url,
+          method: request.method,
+          headers: request.headers,
+        },
+        (answer) => {
+          response.writeHead(answer.statusCode ?? 502, answer.headers);
+          answer.pipe(response);
+        },
+      );
+      upstream.on("error", () => response.destroy());
+      request.pipe(upstream);
+    }, latency);
+  });
+  return new Promise((resolve) =>
+    proxy.listen(PROXY_PORT, () => resolve(proxy)),
+  );
+}
+
 async function waitForServer() {
   for (let attempt = 0; attempt < 120; attempt += 1) {
     try {
-      if ((await fetch(url)).ok) return;
+      if ((await fetch(origin)).ok) return;
     } catch {
       // Not listening yet.
     }
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
-  throw new Error(`No answer from ${url}`);
+  throw new Error(`No answer from ${origin}`);
 }
 
 let server;
+let proxy;
 if (!options.url) {
-  await run("npm", ["run", "build"], { maxBuffer: 64 * 1024 * 1024 });
-  server = spawn("npx", ["next", "start", "-p", String(PORT)], {
-    stdio: "ignore",
-    detached: true,
-  });
+  if (!options.external) {
+    await run("npm", ["run", "build"], { maxBuffer: 64 * 1024 * 1024 });
+    server = spawn("npx", ["next", "start", "-p", String(PORT)], {
+      stdio: "ignore",
+      detached: true,
+    });
+  }
   await waitForServer();
+  if (latency > 0) proxy = await startProxy();
+  console.log(`Measuring ${url} with ${latency} ms of latency per response\n`);
 }
 
 const results = {};
@@ -152,6 +198,8 @@ try {
     );
   }
 } finally {
+  proxy?.close();
+  proxy?.closeAllConnections();
   if (server) process.kill(-server.pid);
 }
 
