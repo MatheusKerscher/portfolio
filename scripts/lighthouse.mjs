@@ -54,7 +54,12 @@ function summarise(report) {
     audits["largest-contentful-paint-element"] ??
     audits["lcp-breakdown-insight"] ??
     audits["lcp-discovery-insight"];
+  // Unthrottled timings of the real load. The simulated ones are estimated from them, and on
+  // localhost that estimate counts every request that ended before the first paint.
+  const observed = audits.metrics?.details?.items?.[0] ?? {};
   return {
+    observedFcp: Math.round(observed.observedFirstContentfulPaint ?? 0),
+    observedLcp: Math.round(observed.observedLargestContentfulPaint ?? 0),
     scores: Object.fromEntries(
       CATEGORIES.map((id) => [
         id,
@@ -123,7 +128,7 @@ try {
       summaries.push(summary);
       const s = summary.scores;
       console.log(
-        `${preset} run ${index}: perf ${s.performance} a11y ${s.accessibility} bp ${s["best-practices"]} seo ${s.seo} | FCP ${summary.fcp} ms LCP ${summary.lcp} ms TBT ${summary.tbt} ms CLS ${summary.cls} SI ${summary.speedIndex} ms | JS ${(summary.scriptBytes / 1024).toFixed(1)} KB`,
+        `${preset} run ${index}: perf ${s.performance} a11y ${s.accessibility} bp ${s["best-practices"]} seo ${s.seo} | FCP ${summary.fcp} ms LCP ${summary.lcp} ms TBT ${summary.tbt} ms CLS ${summary.cls} SI ${summary.speedIndex} ms | observed FCP ${summary.observedFcp} ms LCP ${summary.observedLcp} ms | JS ${(summary.scriptBytes / 1024).toFixed(1)} KB`,
       );
     }
     results[preset] = {
@@ -136,12 +141,14 @@ try {
       tbt: median(summaries.map((s) => s.tbt)),
       cls: median(summaries.map((s) => s.cls)),
       speedIndex: median(summaries.map((s) => s.speedIndex)),
+      observedFcp: median(summaries.map((s) => s.observedFcp)),
+      observedLcp: median(summaries.map((s) => s.observedLcp)),
       scriptBytes: median(summaries.map((s) => s.scriptBytes)),
       lcpElement: summaries[0].lcpElement,
     };
     const m = results[preset];
     console.log(
-      `${preset} MEDIAN of ${runs}: perf ${m.performance} a11y ${m.accessibility} bp ${m.bestPractices} seo ${m.seo} | FCP ${m.fcp} ms LCP ${m.lcp} ms TBT ${m.tbt} ms CLS ${m.cls} SI ${m.speedIndex} ms | JS ${(m.scriptBytes / 1024).toFixed(1)} KB\n  LCP element: ${m.lcpElement}`,
+      `${preset} MEDIAN of ${runs}: perf ${m.performance} a11y ${m.accessibility} bp ${m.bestPractices} seo ${m.seo} | FCP ${m.fcp} ms LCP ${m.lcp} ms TBT ${m.tbt} ms CLS ${m.cls} SI ${m.speedIndex} ms | observed FCP ${m.observedFcp} ms LCP ${m.observedLcp} ms | JS ${(m.scriptBytes / 1024).toFixed(1)} KB\n  LCP element: ${m.lcpElement}`,
     );
   }
 } finally {
