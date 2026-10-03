@@ -15,6 +15,7 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:install": "playwright install chromium firefox webkit",
     "audit": "node scripts/lighthouse.mjs",
+    "assets:pixel": "node scripts/pixel-assets.mjs",
     "prepare": "husky",
     "commit": "cz",
     "update-dependencies": "npx npm-check-updates -i"
@@ -52,6 +53,7 @@
     "prettier": "3.9.9",
     "prettier-plugin-tailwindcss": "0.8.1",
     "schema-dts": "2.1.0",
+    "sharp": "0.35.5",
     "tailwindcss": "^4",
     "typescript": "6"
   },

@@ -1,75 +1,104 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { heroCopy, site } from "./data/site";
 
+export const alt = site.title;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default function OgImage() {
+// The light-theme tokens of globals.css: the image renderer has no CSS variables.
+const PAPER = "#f8f7f3";
+const INK = "#111111";
+const MUTED = "#5f5f5f";
+const BRAND = "#137a3a";
+const YELLOW = "#f0da50";
+
+const [firstName, lastName] = heroCopy.heading.split(" ");
+
+export default async function OgImage() {
+  // Pre-scaled 5× by scripts/pixel-assets.mjs: the renderer would blur an enlarged sprite.
+  const sprite = await readFile(
+    join(process.cwd(), "public/avatar/avatar-460.png"),
+    "base64",
+  );
+
   return new ImageResponse(
     <div
       style={{
-        background: "#f8f7f3",
+        background: PAPER,
         width: "100%",
         height: "100%",
         display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        padding: "80px",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "0 80px",
         fontFamily: "sans-serif",
-        position: "relative",
       }}
     >
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <div style={{ display: "flex", gap: 8, marginBottom: 36 }}>
+          {[0, 1, 2, 3, 4].map((dot) => (
+            <div
+              key={dot}
+              style={{ width: 12, height: 12, background: BRAND }}
+            />
+          ))}
+        </div>
+
+        <p
+          style={{
+            fontSize: 22,
+            color: MUTED,
+            margin: "0 0 20px 0",
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+          }}
+        >
+          {heroCopy.eyebrow}
+        </p>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            fontSize: 84,
+            fontWeight: 800,
+            color: INK,
+            lineHeight: 1,
+            letterSpacing: "-0.03em",
+            marginBottom: 36,
+          }}
+        >
+          <span>{firstName}</span>
+          <span>{lastName}</span>
+        </div>
+
+        <p style={{ fontSize: 22, color: MUTED, margin: "0 0 28px 0" }}>
+          {site.knowsAbout.slice(0, 4).join(" · ")}
+        </p>
+
+        <p style={{ fontSize: 22, color: BRAND, margin: 0, fontWeight: 600 }}>
+          {site.url.replace("https://", "")}
+        </p>
+      </div>
+
       <div
         style={{
-          width: 48,
-          height: 4,
-          background: "#137a3a",
-          marginBottom: 40,
-        }}
-      />
-
-      <p
-        style={{
-          fontSize: 24,
-          color: "#5f5f5f",
-          margin: "0 0 16px 0",
-          letterSpacing: "0.08em",
-          textTransform: "uppercase",
+          display: "flex",
+          width: 460,
+          height: 460,
+          background: YELLOW,
+          boxShadow: `16px 16px 0 ${INK}`,
         }}
       >
-        {heroCopy.eyebrow}
-      </p>
-
-      <h1
-        style={{
-          fontSize: 84,
-          fontWeight: 800,
-          color: "#111111",
-          lineHeight: 1,
-          margin: "0 0 40px 0",
-          letterSpacing: "-0.03em",
-        }}
-      >
-        {heroCopy.heading}
-      </h1>
-
-      <p style={{ fontSize: 22, color: "#5f5f5f", margin: 0 }}>
-        React · Next.js · Node.js · TypeScript
-      </p>
-
-      <p
-        style={{
-          position: "absolute",
-          bottom: 60,
-          right: 80,
-          fontSize: 20,
-          color: "#137a3a",
-          margin: 0,
-          fontWeight: 600,
-        }}
-      >
-        {site.url.replace("https://", "")}
-      </p>
+        <img
+          src={`data:image/png;base64,${sprite}`}
+          width={460}
+          height={460}
+          alt=""
+        />
+      </div>
     </div>,
     { ...size },
   );

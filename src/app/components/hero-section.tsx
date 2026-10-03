@@ -14,7 +14,7 @@ export default function HeroSection() {
     >
       <div className="mx-auto grid w-full max-w-6xl items-center gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-16">
         <div className="order-2 lg:order-1">
-          <div aria-hidden="true" className="mb-8 h-0.5 w-16 bg-brand" />
+          <div aria-hidden="true" className="pixel-dots mb-8" />
 
           <p className="mb-6 text-sm font-semibold tracking-widest text-brand uppercase">
             {heroCopy.eyebrow}
@@ -57,7 +57,9 @@ export default function HeroSection() {
         <span className="text-xs tracking-widest uppercase">
           {heroCopy.scrollCue}
         </span>
-        <div className="scroll-cue-line h-8 w-px bg-ink-muted" />
+        <div className="h-8">
+          <div className="scroll-cue" />
+        </div>
       </div>
     </section>
   );

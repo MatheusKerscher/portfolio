@@ -89,9 +89,32 @@
 }
 
 @layer components {
+  /* Squares instead of hairlines: the pixel-art accent of the normal skin. */
+  .pixel-dots {
+    width: 46px;
+    height: 6px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--brand) 0 6px,
+      transparent 6px 10px
+    );
+  }
+
   .section-label {
-    @apply mb-6 text-xs font-semibold tracking-widest text-ink-muted uppercase;
+    @apply mb-6 flex items-center gap-3 text-xs font-semibold tracking-widest text-ink-muted uppercase;
     font-family: var(--font-catamaran), sans-serif;
+  }
+
+  .section-label::before {
+    content: "";
+    width: 26px;
+    height: 6px;
+    flex: none;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--brand) 0 6px,
+      transparent 6px 10px
+    );
   }
 
   .section-heading {
@@ -107,15 +130,28 @@
     @apply inline-flex items-center gap-2 bg-brand px-6 py-3 font-semibold text-on-brand hover:gap-4 hover:bg-brand-hover;
     transition:
       background-color 0.3s var(--ease-expo),
+      box-shadow 0.2s var(--ease-expo),
       gap 0.3s var(--ease-expo);
+  }
+
+  /* Hard-edged offset shadows, on hover and on keyboard focus. */
+  .btn-accent:hover,
+  .btn-accent:focus-visible {
+    box-shadow: 4px 4px 0 var(--ink);
   }
 
   .btn-outline {
     @apply inline-flex items-center gap-2 border border-ink px-6 py-3 font-semibold text-ink hover:gap-4 hover:bg-ink hover:text-paper;
     transition:
       background-color 0.3s var(--ease-expo),
+      box-shadow 0.2s var(--ease-expo),
       color 0.3s var(--ease-expo),
       gap 0.3s var(--ease-expo);
+  }
+
+  .btn-outline:hover,
+  .btn-outline:focus-visible {
+    box-shadow: 4px 4px 0 var(--brand);
   }
 
   /*
@@ -177,8 +213,9 @@
     display: none;
   }
 
+  /* The padding leaves room for the offset shadow of a card, which the region would clip. */
   .carousel-track {
-    @apply flex w-max gap-5 py-1;
+    @apply flex w-max gap-5 pt-2 pb-3;
   }
 
   .carousel-item {
@@ -200,6 +237,13 @@
     outline-offset: 2px;
   }
 
+  .slide-card:has(a:hover),
+  .slide-card:has(a:focus-visible) {
+    border-color: var(--ink);
+    box-shadow: 5px 5px 0 var(--ink);
+    transform: translate(-2px, -2px);
+  }
+
   .slide-card a:focus-visible {
     outline: none;
   }
@@ -212,24 +256,26 @@
     opacity: 1;
   }
 
-  .scroll-cue-line {
-    transform-origin: top;
-    animation: scroll-cue 1.6s ease-in-out infinite;
+  /* A square that drops in four discrete steps. */
+  .scroll-cue {
+    width: 6px;
+    height: 6px;
+    background: var(--ink-muted);
+    animation: scroll-cue 1.2s steps(4, end) infinite;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .scroll-cue-line {
+    .scroll-cue {
       animation: none;
     }
   }
 }
 
 @keyframes scroll-cue {
-  0%,
-  100% {
-    transform: scaleY(1);
+  from {
+    transform: translateY(0);
   }
-  50% {
-    transform: scaleY(0.4);
+  to {
+    transform: translateY(24px);
   }
 }

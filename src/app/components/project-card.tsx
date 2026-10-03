@@ -17,7 +17,7 @@ export default function ProjectCard({
   const number = String(index + 1).padStart(2, "0");
 
   return (
-    <article className="slide-card group hover:border-brand">
+    <article className="slide-card group">
       <div className="aspect-5/3 overflow-hidden border-b border-line bg-paper">
         <Image
           src={thumbnail.src}

@@ -99,6 +99,10 @@ test.describe("SEO and GEO", () => {
       "/llms.txt",
       "/manifest.webmanifest",
       "/favicon.ico",
+      "/icon.png",
+      "/apple-icon.png",
+      "/avatar/icon-192.png",
+      "/avatar/icon-512.png",
       "/opengraph-image",
     ]) {
       expect((await request.get(path)).status(), path).toBe(200);

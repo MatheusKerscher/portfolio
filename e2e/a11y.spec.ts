@@ -37,7 +37,7 @@ test.describe("accessibility", () => {
     await expect(page.locator("#sobre-heading")).toBeVisible();
     expect(
       await page
-        .locator(".scroll-cue-line")
+        .locator(".scroll-cue")
         .evaluate((element) => getComputedStyle(element).animationName),
     ).toBe("none");
   });
