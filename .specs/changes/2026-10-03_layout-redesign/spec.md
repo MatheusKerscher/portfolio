@@ -194,7 +194,9 @@ All commands are run from the repository root. The Playwright projects are `chro
 - [ ] **Reflow:** at a 320 px wide viewport, `document.documentElement.scrollWidth` does not exceed the
       viewport width on both routes.
 - [ ] **Server HTML:** the raw HTML of `/` contains the `h1` text, every project title, every timeline
-      title and the stats `3+` and `8+`. With JavaScript disabled all of them are visible.
+      title and the stats `3+` and `8+`. With JavaScript disabled all of them are visible. The text
+      content of every heading keeps the spaces between its words (`MATHEUS KERSCHER`, not
+      `MATHEUSKERSCHER` — see `findings.md`).
 - [ ] **SEO and GEO:** `/` has exactly one `h1`. The canonical of `/` is `https://kerscher.dev.br` and
       the canonical of `/email-signature` is `https://kerscher.dev.br/email-signature`, which also has
       its own title and description. One JSON-LD script holds a `@graph` with `WebSite`, `ProfilePage`,

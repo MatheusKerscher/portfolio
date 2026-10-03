@@ -19,21 +19,22 @@ and with a site that can be published.
 
 ### Phase 0 — tooling and baseline
 
-- [ ] `prettier-plugin-tailwindcss@0.8.1` and `.prettierrc` — _verified by:_ one commit that only
-      reorders classes; `npm run lint:prettier:check` passes.
-- [ ] `@playwright/test@1.63.0`, `@axe-core/playwright@4.13.0` and `lighthouse@13.5.0` installed as
+- [x] `prettier-plugin-tailwindcss@0.8.1` and `.prettierrc` — _verified by:_ one commit that only
+      reorders classes (`96880d8`); `npm run lint:prettier:check` passes.
+- [x] `@playwright/test@1.63.0`, `@axe-core/playwright@4.13.0` and `lighthouse@13.5.0` installed as
       exact dev dependencies — _verified by:_ `npm ls` reports no `invalid`.
-- [ ] `playwright.config.ts`, `e2e/helpers.ts`, the scripts `test:e2e`, `test:e2e:ui`,
+- [x] `playwright.config.ts`, `e2e/helpers.ts`, the scripts `test:e2e`, `test:e2e:ui`,
       `test:e2e:install` and `typecheck`, and the report folders in `.gitignore` and the ESLint ignores —
-      _verified by:_ a smoke test passes in the five projects.
-- [ ] `scripts/lighthouse.mjs` and the `audit` script — _verified by:_ it prints every run and the
+      _verified by:_ a smoke test passes in the five projects (10 passed).
+- [x] `scripts/lighthouse.mjs` and the `audit` script — _verified by:_ it prints every run and the
       median for both presets.
-- [ ] Baseline of the current site in `findings.md`: Lighthouse mobile and desktop (median of 5), the
+- [x] Baseline of the current site in `findings.md`: Lighthouse mobile and desktop (median of 5), the
       LCP element, LCP, TBT, CLS and the script bytes transferred — _verified by:_ the numbers are in
       `findings.md`.
-- [ ] PageSpeed Insights baseline of production — _verified by:_ the numbers are in `findings.md`, or it
-      states why they could not be measured.
-- [ ] `.github/workflows/e2e.yaml` — _verified by:_ the workflow is green on the pull request.
+- [x] PageSpeed Insights baseline of production — _verified by:_ `findings.md` states why it could not
+      be measured (API quota, 429).
+- [~] `.github/workflows/e2e.yaml` — _verified by:_ the workflow is green on the pull request. The file
+  exists; it runs for the first time when the pull request is opened.
 
 ### Phase 1 — foundations, with no change to the layout
 
