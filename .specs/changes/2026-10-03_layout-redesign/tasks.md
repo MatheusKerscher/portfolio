@@ -38,21 +38,22 @@ and with a site that can be published.
 
 ### Phase 1 — foundations, with no change to the layout
 
-- [ ] `src/app/data/site.ts` holds the facts, socials, technologies, stats and interface copy, and the
+- [x] `src/app/data/site.ts` holds the facts, socials, technologies, stats and interface copy, and the
       components read from it — _verified by:_ the `ssr` suite finds those strings in the raw HTML.
-- [ ] Colour tokens and shadcn mapping; literals, `dark:` colour pairs, `tw-animate-css` and unused
+- [x] Colour tokens and shadcn mapping; literals, `dark:` colour pairs, `tw-animate-css` and unused
       variables removed — _verified by:_ `grep -rn "#16a34a" src` is empty; the `palette` suite passes in
-      light and dark.
-- [ ] Hero as a static Server Component — _verified by:_ the `ssr` suite: no `opacity:0` and no
+      light and dark. The `dark:` variants inside `src/components/ui/tabs.tsx` stay until phase 6, where
+      the component is first used and restyled.
+- [x] Hero as a static Server Component — _verified by:_ the `ssr` suite: no `opacity:0` and no
       `translateY(` inside `#hero`; `h1` at opacity 1 at load.
-- [ ] `MotionProvider`, `data-reveal` with the `<noscript>` rule, and `MotionSection` and `AnimatedText`
+- [x] `MotionProvider`, `data-reveal` with the `<noscript>` rule, and `MotionSection` and `AnimatedText`
       as the only reveal primitives — _verified by:_ the reduced-motion test of the `a11y` suite and the
       no-JavaScript test of the `ssr` suite.
-- [ ] `CountUp` renders the final values on the server — _verified by:_ the `ssr` suite finds `3+` and
+- [x] `CountUp` renders the final values on the server — _verified by:_ the `ssr` suite finds `3+` and
       `8+` in the raw HTML.
-- [ ] Lenis with `autoRaf`, `anchors` and `allowNestedScroll`; CSS smooth scrolling removed; `BackToTop`
+- [x] Lenis with `autoRaf`, `anchors` and `allowNestedScroll`; CSS smooth scrolling removed; `BackToTop`
       through Lenis — _verified by:_ the navigation tests of the `home` suite.
-- [ ] Measurement after the phase — _verified by:_ the `npm run audit` medians are in `findings.md` next
+- [x] Measurement after the phase — _verified by:_ the `npm run audit` medians are in `findings.md` next
       to the baseline.
 
 ### Phase 2 — SEO and GEO
