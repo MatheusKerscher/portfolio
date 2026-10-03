@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant pixel (&:is([data-skin="8bit"] *));
 
 @theme inline {
   --color-paper: var(--paper);
@@ -53,6 +54,7 @@
   --on-yellow: #111111;
   --danger: #c10007;
 
+  --font-display: var(--font-syne), sans-serif;
   --radius: 0.625rem;
   --ease-expo: cubic-bezier(0.19, 1, 0.22, 1);
   --ease-cubic: cubic-bezier(0.215, 0.61, 0.355, 1);
@@ -118,7 +120,7 @@
   }
 
   .section-heading {
-    font-family: var(--font-syne), sans-serif;
+    font-family: var(--font-display);
     font-weight: 700;
     font-size: clamp(2rem, 4vw, 3.5rem);
     line-height: 1.1;
@@ -277,5 +279,87 @@
   }
   to {
     transform: translateY(24px);
+  }
+}
+
+/*
+ * 8-bit skin. It changes type, shape and imagery and keeps the colour tokens, so the contrast
+ * contract of the palette holds in both skins. Unlayered on purpose: these rules have to win over
+ * Tailwind utilities.
+ */
+[data-skin="8bit"] {
+  --font-display: var(--font-pixel), var(--font-syne), sans-serif;
+}
+
+[data-skin="8bit"] * {
+  border-radius: 0;
+  transition-timing-function: steps(3, end) !important;
+}
+
+[data-skin="8bit"] ::selection {
+  background: var(--pixel-yellow);
+  color: var(--on-yellow);
+}
+
+/* Inline letter-spacing is tuned for the normal display font. */
+[data-skin="8bit"] :is(h1, h2, h3) {
+  letter-spacing: 0 !important;
+}
+
+[data-skin="8bit"] :is(.section-label, .btn-accent, .btn-outline, nav a) {
+  font-family: var(--font-display);
+}
+
+[data-skin="8bit"] :is(.btn-accent, .btn-outline) {
+  border: 2px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+[data-skin="8bit"] :is(.btn-accent, .btn-outline):active {
+  box-shadow: none;
+  transform: translate(4px, 4px);
+}
+
+[data-skin="8bit"] :is(.slide-card, [data-slot="card"]) {
+  border: 2px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+[data-skin="8bit"] :is(input, kbd) {
+  border-width: 2px;
+  border-color: var(--ink);
+}
+
+[data-skin="8bit"] nav[data-scrolled="true"] {
+  border-bottom: 2px solid var(--ink);
+  background: var(--paper);
+  backdrop-filter: none;
+}
+
+/* A stepped edge where one panel slides over the other. */
+[data-skin="8bit"] .stack-slot + .stack-slot > .stack-panel {
+  border-top: 2px solid var(--ink);
+  box-shadow: none;
+}
+
+[data-skin="8bit"] .stack-slot + .stack-slot > .stack-panel::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: -10px;
+  height: 8px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--ink) 0 8px,
+    transparent 8px 16px
+  );
+}
+
+/* Switching skin cross-fades in steps, where the browser supports view transitions. */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.35s;
+    animation-timing-function: steps(5, end);
   }
 }

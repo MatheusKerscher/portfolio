@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Catamaran, Syne } from "next/font/google";
+import { Catamaran, Pixelify_Sans, Syne } from "next/font/google";
 import "./globals.css";
 
 import BackToTop from "./components/back-to-top";
@@ -8,6 +8,7 @@ import { MotionProvider } from "./components/motion-provider";
 import Navbar from "./components/navbar";
 import SmoothScrollProvider from "./components/smooth-scroll-provider";
 import { ThemeProvider } from "./components/theme-provider";
+import { skinScript } from "@/lib/skin-script";
 import { layoutCopy, site } from "./data/site";
 
 const catamaran = Catamaran({
@@ -19,6 +20,14 @@ const syne = Syne({
   variable: "--font-syne",
   subsets: ["latin"],
   weight: ["700", "800"],
+});
+
+// Only the 8-bit skin uses it. Not preloaded, so the normal skin never downloads it.
+const pixelify = Pixelify_Sans({
+  variable: "--font-pixel",
+  subsets: ["latin"],
+  display: "swap",
+  preload: false,
 });
 
 /**
@@ -64,10 +73,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang={site.language} suppressHydrationWarning>
-      <body
-        className={`${catamaran.variable} ${syne.variable} font-(family-name:--font-catamaran) antialiased`}
-      >
+    // The font variables sit on <html> so the custom properties of :root can refer to them.
+    <html
+      lang={site.language}
+      className={`${catamaran.variable} ${syne.variable} ${pixelify.variable}`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: skinScript }} />
+      </head>
+      <body className="font-(family-name:--font-catamaran) antialiased">
         <noscript>
           <style dangerouslySetInnerHTML={{ __html: noScriptCss }} />
         </noscript>

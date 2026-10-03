@@ -42,7 +42,7 @@ export default function AboutSection() {
                   <dd
                     className="leading-none font-bold text-ink"
                     style={{
-                      fontFamily: "var(--font-syne), sans-serif",
+                      fontFamily: "var(--font-display)",
                       fontSize: "clamp(2rem, 4vw, 3rem)",
                     }}
                   >
@@ -105,7 +105,7 @@ export default function AboutSection() {
                     </span>
                     <p
                       className="font-bold text-ink"
-                      style={{ fontFamily: "var(--font-syne), sans-serif" }}
+                      style={{ fontFamily: "var(--font-display)" }}
                     >
                       {technology.name}
                     </p>

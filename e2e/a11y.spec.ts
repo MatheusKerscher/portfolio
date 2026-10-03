@@ -5,6 +5,7 @@ import { revealAll } from "./helpers";
 const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 const ROUTES = ["/", "/email-signature"];
 const THEMES = ["light", "dark"] as const;
+const SKINS = ["normal", "8-bit"] as const;
 
 export async function violations(page: Page) {
   const results = await new AxeBuilder({ page }).withTags(WCAG_TAGS).analyze();
@@ -17,14 +18,29 @@ export async function violations(page: Page) {
 test.describe("accessibility", () => {
   for (const route of ROUTES) {
     for (const theme of THEMES) {
-      test(`${route} in the ${theme} theme has no axe violations`, async ({
-        page,
-      }) => {
-        await page.emulateMedia({ colorScheme: theme });
-        await page.goto(route);
-        await revealAll(page);
-        expect(await violations(page)).toEqual([]);
-      });
+      for (const skin of SKINS) {
+        test(`${route} in the ${theme} theme and the ${skin} skin has no axe violations`, async ({
+          page,
+          browserName,
+          isMobile,
+        }) => {
+          // The tokens are the same for every engine; the others check the default mode.
+          test.skip(
+            (browserName !== "chromium" || isMobile) &&
+              (theme !== "light" || skin !== "normal"),
+            "the full theme and skin matrix runs in desktop Chromium",
+          );
+          await page.emulateMedia({ colorScheme: theme });
+          if (skin === "8-bit") {
+            await page.addInitScript(() =>
+              localStorage.setItem("skin", "8bit"),
+            );
+          }
+          await page.goto(route);
+          await revealAll(page);
+          expect(await violations(page)).toEqual([]);
+        });
+      }
     }
   }
 

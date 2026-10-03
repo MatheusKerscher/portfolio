@@ -95,3 +95,29 @@ export async function isUnobscured(locator: Locator) {
     return !!top && (element === top || element.contains(top));
   });
 }
+
+/**
+ * How far the page scrolls sideways, and which elements stick out past the right edge without
+ * being inside something that scrolls sideways on purpose (a carousel, the signature preview).
+ */
+export async function horizontalOverflow(page: Page) {
+  return page.evaluate(() => {
+    const width = document.documentElement.clientWidth;
+    const scrollsSideways = (element: Element) => {
+      for (let node = element.parentElement; node; node = node.parentElement) {
+        if (getComputedStyle(node).overflowX === "auto") return true;
+      }
+      return false;
+    };
+    return {
+      overflow: Math.max(0, document.documentElement.scrollWidth - width),
+      clipped: Array.from(document.querySelectorAll("main *, footer *, nav *"))
+        .filter(
+          (element) =>
+            element.getBoundingClientRect().right > width + 1 &&
+            !scrollsSideways(element),
+        )
+        .map((element) => element.tagName.toLowerCase()),
+    };
+  });
+}

@@ -1,6 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { navCopy } from "../src/app/data/site";
 import {
+  horizontalOverflow,
   isUnobscured,
   revealAll,
   scrollToNatural,
@@ -206,38 +207,10 @@ test.describe("stacked sections", () => {
       for (const path of ["/", "/email-signature"]) {
         await page.setViewportSize({ width: 320, height: 640 });
         await page.goto(path);
-        const overflow = await page.evaluate(
-          () =>
-            document.documentElement.scrollWidth -
-            document.documentElement.clientWidth,
-        );
-        expect(overflow, path).toBeLessThanOrEqual(0);
-
-        // Nothing is clipped at the right edge either, apart from content that scrolls sideways
-        // on purpose (carousels, the signature preview).
-        const clipped = await page.evaluate(() => {
-          const width = document.documentElement.clientWidth;
-          const scrollsSideways = (element: Element) => {
-            for (
-              let node = element.parentElement;
-              node;
-              node = node.parentElement
-            ) {
-              if (getComputedStyle(node).overflowX === "auto") return true;
-            }
-            return false;
-          };
-          return Array.from(
-            document.querySelectorAll("main *, footer *, nav *"),
-          )
-            .filter(
-              (element) =>
-                element.getBoundingClientRect().right > width + 1 &&
-                !scrollsSideways(element),
-            )
-            .map((element) => element.tagName.toLowerCase());
+        expect(await horizontalOverflow(page), path).toEqual({
+          overflow: 0,
+          clipped: [],
         });
-        expect(clipped, path).toEqual([]);
       }
     });
   });

@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { animate, useInView, useReducedMotion } from "framer-motion";
+import { useInView, useReducedMotion } from "framer-motion";
 
 type CountUpProps = { value: number; suffix?: string };
+
+const DURATION = 1200;
 
 /**
  * Server-renders the final number, so crawlers and visitors without JavaScript read it, then
@@ -22,14 +24,18 @@ export default function CountUp({ value, suffix = "" }: CountUpProps) {
       node.textContent = `0${suffix}`;
       return;
     }
-    const controls = animate(0, value, {
-      duration: 1.2,
-      ease: [0.22, 1, 0.36, 1],
-      onUpdate: (latest) => {
-        node.textContent = `${Math.round(latest)}${suffix}`;
-      },
-    });
-    return () => controls.stop();
+
+    let frame = 0;
+    let start = 0;
+    const step = (now: number) => {
+      start ||= now;
+      const progress = Math.min((now - start) / DURATION, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      node.textContent = `${Math.round(eased * value)}${suffix}`;
+      if (progress < 1) frame = requestAnimationFrame(step);
+    };
+    frame = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(frame);
   }, [inView, reduceMotion, value, suffix]);
 
   return (

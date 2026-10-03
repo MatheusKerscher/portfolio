@@ -18,7 +18,7 @@ export default function EmailSignaturePage() {
           id="signature-heading"
           className="mb-4 leading-tight font-bold text-ink"
           style={{
-            fontFamily: "var(--font-syne), sans-serif",
+            fontFamily: "var(--font-display)",
             fontSize: "clamp(2rem, 5vw, 3.5rem)",
             letterSpacing: "-0.02em",
           }}

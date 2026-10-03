@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
-import type { Project } from "../data/projects";
+import { pixelThumbnail, type Project } from "../data/projects";
 import { projectsCopy } from "../data/site";
 
 type ProjectCardProps = Project & { index: number };
@@ -25,7 +25,17 @@ export default function ProjectCard({
           width={thumbnail.width}
           height={thumbnail.height}
           sizes="(min-width: 640px) 416px, 85vw"
-          className="h-full w-full object-cover object-top"
+          className="h-full w-full object-cover object-top pixel:hidden"
+        />
+        {/* Shown by the 8-bit skin. Hidden and lazy, so the normal skin never requests it. */}
+        <Image
+          src={pixelThumbnail(thumbnail)}
+          alt={projectsCopy.thumbnailAlt(title)}
+          width={150}
+          height={90}
+          loading="lazy"
+          unoptimized
+          className="hidden h-full w-full object-cover object-top [image-rendering:pixelated] pixel:block"
         />
       </div>
 
@@ -50,7 +60,7 @@ export default function ProjectCard({
 
         <h3
           className="text-lg leading-tight font-bold text-ink md:text-xl"
-          style={{ fontFamily: "var(--font-syne), sans-serif" }}
+          style={{ fontFamily: "var(--font-display)" }}
         >
           {/* The link covers the whole card; the card shows the focus ring. */}
           <a

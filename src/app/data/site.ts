@@ -185,6 +185,11 @@ export const navCopy = {
   backToTop: "Voltar ao topo",
 };
 
+export const skinCopy = {
+  toggle: "Modo 8-bit",
+  chip: "8-bit",
+};
+
 export const carouselCopy = {
   previous: (list: string) => `Anterior em ${list}`,
   next: (list: string) => `Próximo em ${list}`,

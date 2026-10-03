@@ -45,7 +45,7 @@ export default function CurriculumSection() {
                   </p>
                   <h3
                     className="text-lg leading-tight font-bold text-ink"
-                    style={{ fontFamily: "var(--font-syne), sans-serif" }}
+                    style={{ fontFamily: "var(--font-display)" }}
                   >
                     {item.title}
                   </h3>

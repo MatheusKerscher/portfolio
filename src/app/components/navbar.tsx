@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { navCopy, site } from "../data/site";
+import SkinToggle from "./skin-toggle";
 import ThemeToggle from "./theme-toggle";
 
 export default function Navbar() {
@@ -31,7 +32,7 @@ export default function Navbar() {
           href="#hero"
           aria-label={`${site.initials} — ${site.name}`}
           className="text-xl font-bold tracking-tight text-ink"
-          style={{ fontFamily: "var(--font-syne), sans-serif" }}
+          style={{ fontFamily: "var(--font-display)" }}
         >
           {site.initials}
         </a>
@@ -56,6 +57,7 @@ export default function Navbar() {
         </ul>
 
         <div className="flex items-center gap-2">
+          <SkinToggle variant="icon" />
           <ThemeToggle />
 
           <button

@@ -1,5 +1,9 @@
 export type Thumbnail = { src: string; width: number; height: number };
 
+/** The 8-bit version of a thumbnail, written by `scripts/pixel-assets.mjs`. */
+export const pixelThumbnail = (thumbnail: Thumbnail) =>
+  thumbnail.src.replace("/thumbnails/", "/thumbnails/8bit/");
+
 export type Project = {
   title: string;
   description: string;

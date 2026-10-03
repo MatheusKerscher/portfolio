@@ -15,11 +15,19 @@ test.describe("palette contract", () => {
     "computed once, in desktop Chromium",
   );
 
-  for (const theme of ["light", "dark"] as const) {
-    test(`every pair meets its minimum in the ${theme} theme`, async ({
+  for (const [theme, skin] of [
+    ["light", "normal"],
+    ["dark", "normal"],
+    ["light", "8-bit"],
+    ["dark", "8-bit"],
+  ] as const) {
+    test(`every pair meets its minimum in the ${theme} theme and the ${skin} skin`, async ({
       page,
     }) => {
       await page.emulateMedia({ colorScheme: theme });
+      if (skin === "8-bit") {
+        await page.addInitScript(() => localStorage.setItem("skin", "8bit"));
+      }
       await page.goto("/");
       const values = await page.evaluate((names) => {
         const style = getComputedStyle(document.documentElement);

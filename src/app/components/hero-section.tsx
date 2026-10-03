@@ -24,7 +24,7 @@ export default function HeroSection() {
             id="hero-heading"
             className="mb-6 leading-none font-bold text-ink"
             style={{
-              fontFamily: "var(--font-syne), sans-serif",
+              fontFamily: "var(--font-display)",
               // The longest word has to fit a 320 px wide screen and the column next to the portrait.
               fontSize: "clamp(2.5rem, 7.5vw + 1rem, 6.5rem)",
               letterSpacing: "-0.03em",

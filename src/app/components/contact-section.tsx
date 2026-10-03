@@ -21,7 +21,7 @@ export default function ContactSection() {
               id="contato-heading"
               className="mb-8 leading-tight font-bold text-ink"
               style={{
-                fontFamily: "var(--font-syne), sans-serif",
+                fontFamily: "var(--font-display)",
                 fontSize: "clamp(2rem, 5vw, 4rem)",
                 letterSpacing: "-0.02em",
               }}
@@ -44,7 +44,7 @@ export default function ContactSection() {
               <span
                 className="font-bold break-all text-ink group-hover:text-brand"
                 style={{
-                  fontFamily: "var(--font-syne), sans-serif",
+                  fontFamily: "var(--font-display)",
                   fontSize: "clamp(1rem, 2.5vw, 1.4rem)",
                   transition: "color 0.3s var(--ease-cubic)",
                 }}

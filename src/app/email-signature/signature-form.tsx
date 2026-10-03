@@ -55,7 +55,7 @@ const fields: {
 const inputClasses =
   "w-full rounded-lg border border-line-strong bg-transparent px-4 py-3 text-sm text-ink transition-colors duration-200 placeholder:text-ink-muted";
 
-const cardTitleStyle = { fontFamily: "var(--font-syne), sans-serif" };
+const cardTitleStyle = { fontFamily: "var(--font-display)" };
 
 export default function SignatureForm() {
   const [data, setData] = useState<SignatureData>(initialData);

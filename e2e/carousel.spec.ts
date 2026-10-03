@@ -109,7 +109,8 @@ test.describe("carousels", () => {
   test("every project card has a thumbnail that loads", async ({ page }) => {
     const region = page.locator("#carrossel-projetos");
     await scrollToNatural(region);
-    const thumbnails = region.locator("img");
+    // Each card holds both skins' thumbnails; only the current one is rendered.
+    const thumbnails = region.getByRole("img");
     await expect(thumbnails).toHaveCount(projects.length);
     for (const [index, project] of projects.entries()) {
       const thumbnail = thumbnails.nth(index);
