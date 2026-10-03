@@ -62,9 +62,11 @@ function displayUrl(url: string) {
   return url.replace(/^https?:\/\//, "").replace(/\/$/, "");
 }
 
-const ACCENT = "#16a34a";
+// Literal values: the signature is pasted into email clients, where CSS variables do not exist.
+// They are the light-theme `brand`, `ink` and `ink-muted` tokens (5.42:1, 18.88:1 and 6.39:1 on white).
+const ACCENT = "#137a3a";
 const INK = "#111111";
-const MUTED = "#737373";
+const MUTED = "#5f5f5f";
 
 export function SignatureLogo({
   name,
@@ -96,6 +98,10 @@ export function SignatureLogo({
   );
 }
 
+/**
+ * What the pasted signature looks like. The email and the site are plain text here: they are
+ * links only in the copied HTML, where they are useful.
+ */
 export function SignaturePreview({ data }: { data: SignatureData }) {
   const url = data.website ? displayUrl(data.website) : "";
 
@@ -131,22 +137,12 @@ export function SignaturePreview({ data }: { data: SignatureData }) {
 
         {data.email && (
           <p style={{ margin: "2px 0", fontSize: 13, lineHeight: 1.6 }}>
-            <a
-              href={`mailto:${data.email}`}
-              style={{ color: ACCENT, fontWeight: 600, textDecoration: "none" }}
-            >
-              {data.email}
-            </a>
+            <span style={{ color: ACCENT, fontWeight: 600 }}>{data.email}</span>
           </p>
         )}
         {url && (
           <p style={{ margin: "2px 0", fontSize: 13, lineHeight: 1.6 }}>
-            <a
-              href={data.website}
-              style={{ color: ACCENT, fontWeight: 600, textDecoration: "none" }}
-            >
-              {url}
-            </a>
+            <span style={{ color: ACCENT, fontWeight: 600 }}>{url}</span>
           </p>
         )}
       </div>

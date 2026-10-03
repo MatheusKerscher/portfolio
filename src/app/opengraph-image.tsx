@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { heroCopy, site } from "./data/site";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -7,7 +8,7 @@ export default function OgImage() {
   return new ImageResponse(
     <div
       style={{
-        background: "#F8F7F3",
+        background: "#f8f7f3",
         width: "100%",
         height: "100%",
         display: "flex",
@@ -22,7 +23,7 @@ export default function OgImage() {
         style={{
           width: 48,
           height: 4,
-          background: "#16a34a",
+          background: "#137a3a",
           marginBottom: 40,
         }}
       />
@@ -30,13 +31,13 @@ export default function OgImage() {
       <p
         style={{
           fontSize: 24,
-          color: "#737373",
+          color: "#5f5f5f",
           margin: "0 0 16px 0",
           letterSpacing: "0.08em",
           textTransform: "uppercase",
         }}
       >
-        Desenvolvedor FullStack · PR, Brasil
+        {heroCopy.eyebrow}
       </p>
 
       <h1
@@ -49,10 +50,10 @@ export default function OgImage() {
           letterSpacing: "-0.03em",
         }}
       >
-        MATHEUS KERSCHER
+        {heroCopy.heading}
       </h1>
 
-      <p style={{ fontSize: 22, color: "#737373", margin: 0 }}>
+      <p style={{ fontSize: 22, color: "#5f5f5f", margin: 0 }}>
         React · Next.js · Node.js · TypeScript
       </p>
 
@@ -62,12 +63,12 @@ export default function OgImage() {
           bottom: 60,
           right: 80,
           fontSize: 20,
-          color: "#16a34a",
+          color: "#137a3a",
           margin: 0,
           fontWeight: 600,
         }}
       >
-        kerscher.dev.br
+        {site.url.replace("https://", "")}
       </p>
     </div>,
     { ...size },

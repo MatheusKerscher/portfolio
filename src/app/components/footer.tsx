@@ -1,36 +1,32 @@
-import { GithubIcon, LinkedinIcon } from "./social-icons";
+import { layoutCopy, social } from "../data/site";
+import { SocialIcon } from "./social-icons";
+
+const links = [social("github"), social("linkedin")];
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border px-6 py-8 lg:px-8">
+    <footer className="border-t border-line px-6 py-8 lg:px-8">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4">
-        <p className="text-sm text-gray dark:text-neutral-400">
-          &copy; {currentYear} Matheus Kerscher
+        <p className="text-sm text-ink-muted">
+          {layoutCopy.copyright(currentYear)}
         </p>
 
         <div className="flex items-center gap-4">
-          <a
-            href="https://github.com/MatheusKerscher"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-gray transition-colors duration-200 hover:text-black dark:text-neutral-400 dark:hover:text-white"
-            aria-label="GitHub de Matheus Kerscher"
-            title="GitHub"
-          >
-            <GithubIcon size={18} />
-          </a>
-          <a
-            href="https://www.linkedin.com/in/matheus-kerscher/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-gray transition-colors duration-200 hover:text-black dark:text-neutral-400 dark:hover:text-white"
-            aria-label="LinkedIn de Matheus Kerscher"
-            title="LinkedIn"
-          >
-            <LinkedinIcon size={18} />
-          </a>
+          {links.map((link) => (
+            <a
+              key={link.id}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-ink-muted transition-colors duration-200 hover:text-ink"
+              aria-label={layoutCopy.profileOf(link.name)}
+              title={link.name}
+            >
+              <SocialIcon id={link.id} />
+            </a>
+          ))}
         </div>
       </div>
     </footer>

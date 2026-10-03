@@ -5,9 +5,11 @@ import "./globals.css";
 import BackToTop from "./components/back-to-top";
 import Footer from "./components/footer";
 import JsonLd from "./components/json-ld";
+import { MotionProvider } from "./components/motion-provider";
 import Navbar from "./components/navbar";
 import SmoothScrollProvider from "./components/smooth-scroll-provider";
 import { ThemeProvider } from "./components/theme-provider";
+import { layoutCopy, site } from "./data/site";
 
 const catamaran = Catamaran({
   variable: "--font-catamaran",
@@ -20,48 +22,36 @@ const syne = Syne({
   weight: ["700", "800"],
 });
 
-const BASE_URL = "https://kerscher.dev.br";
+/** Without JavaScript the scroll reveals never run, so their hidden start state is undone. */
+const noScriptCss =
+  "[data-reveal]{opacity:1!important;transform:none!important}";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(BASE_URL),
+  metadataBase: new URL(site.url),
   title: {
-    default: "Matheus Kerscher — Desenvolvedor FullStack",
-    template: "%s | Matheus Kerscher",
+    default: site.title,
+    template: `%s | ${site.name}`,
   },
-  description:
-    "Portfólio de Matheus Kerscher, desenvolvedor FullStack especializado em React, Next.js e Node.js. Baseado no Paraná, Brasil.",
-  keywords: [
-    "Matheus Kerscher",
-    "Desenvolvedor FullStack",
-    "React",
-    "Next.js",
-    "Node.js",
-    "TypeScript",
-    "Paraná",
-    "Brasil",
-    "freelancer",
-    "desenvolvimento web",
-  ],
-  authors: [{ name: "Matheus Kerscher", url: BASE_URL }],
-  creator: "Matheus Kerscher",
+  description: site.description,
+  keywords: site.keywords,
+  authors: [{ name: site.name, url: site.url }],
+  creator: site.name,
   alternates: {
-    canonical: BASE_URL,
-    languages: { "pt-BR": BASE_URL },
+    canonical: site.url,
+    languages: { "pt-BR": site.url },
   },
   openGraph: {
     type: "website",
     locale: "pt_BR",
-    url: BASE_URL,
-    siteName: "Matheus Kerscher",
-    title: "Matheus Kerscher — Desenvolvedor FullStack",
-    description:
-      "Portfólio de Matheus Kerscher, desenvolvedor FullStack especializado em React, Next.js e Node.js. Baseado no Paraná, Brasil.",
+    url: site.url,
+    siteName: site.name,
+    title: site.title,
+    description: site.description,
   },
   twitter: {
     card: "summary_large_image",
-    title: "Matheus Kerscher — Desenvolvedor FullStack",
-    description:
-      "Portfólio de Matheus Kerscher, desenvolvedor FullStack especializado em React, Next.js e Node.js. Baseado no Paraná, Brasil.",
+    title: site.title,
+    description: site.description,
   },
   robots: {
     index: true,
@@ -85,24 +75,29 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
+    <html lang={site.language} suppressHydrationWarning>
       <body
         className={`${catamaran.variable} ${syne.variable} font-(family-name:--font-catamaran) antialiased`}
       >
+        <noscript>
+          <style dangerouslySetInnerHTML={{ __html: noScriptCss }} />
+        </noscript>
         <ThemeProvider>
           <a
             href="#main-content"
-            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-100 focus:rounded focus:bg-[#16a34a] focus:px-4 focus:py-2 focus:font-semibold focus:text-white"
+            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-100 focus:rounded focus:bg-brand focus:px-4 focus:py-2 focus:font-semibold focus:text-on-brand"
           >
-            Pular para o conteúdo principal
+            {layoutCopy.skipLink}
           </a>
-          <SmoothScrollProvider>
-            <JsonLd />
-            <Navbar />
-            <main id="main-content">{children}</main>
-            <Footer />
-            <BackToTop />
-          </SmoothScrollProvider>
+          <MotionProvider>
+            <SmoothScrollProvider>
+              <JsonLd />
+              <Navbar />
+              <main id="main-content">{children}</main>
+              <Footer />
+              <BackToTop />
+            </SmoothScrollProvider>
+          </MotionProvider>
         </ThemeProvider>
       </body>
     </html>

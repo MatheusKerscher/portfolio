@@ -16,19 +16,16 @@ export default function SmoothScrollProvider({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
+      autoRaf: true,
+      // In-page links scroll through Lenis instead of jumping.
+      anchors: true,
+      // Lets a horizontally scrollable child (a carousel) take its own wheel gestures.
+      allowNestedScroll: true,
     });
 
     lenisRef.current = instance;
 
-    let rafId: number;
-    function raf(time: number) {
-      instance.raf(time);
-      rafId = requestAnimationFrame(raf);
-    }
-    rafId = requestAnimationFrame(raf);
-
     return () => {
-      cancelAnimationFrame(rafId);
       instance.destroy();
       lenisRef.current = null;
     };

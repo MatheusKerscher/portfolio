@@ -4,6 +4,7 @@ import { useSyncExternalStore } from "react";
 import { useTheme } from "next-themes";
 import { AnimatePresence, motion } from "framer-motion";
 import { Moon, Sun } from "lucide-react";
+import { navCopy } from "../data/site";
 
 export default function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
@@ -20,8 +21,8 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      aria-label={isDark ? "Ativar tema claro" : "Ativar tema escuro"}
-      className="relative flex h-8 w-8 items-center justify-center text-black transition-colors duration-200 hover:text-[#16a34a] dark:text-white dark:hover:text-[#16a34a]"
+      aria-label={isDark ? navCopy.lightTheme : navCopy.darkTheme}
+      className="relative flex h-8 w-8 items-center justify-center text-ink transition-colors duration-200 hover:text-brand"
     >
       <AnimatePresence mode="wait" initial={false}>
         <motion.span
