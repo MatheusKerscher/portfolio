@@ -73,3 +73,46 @@ Consequences:
   links only in the copied HTML, which is unchanged apart from its colours.
 - **The signature preview was unreadable in the dark theme before this work:** the name is `#111111` and
   the preview box was `#1a1a1a`. The box is now white in both themes, since it previews an email.
+
+## Phase 3 — layout (2026-10-03)
+
+`npm run audit`, median of 5 runs, before and after the first contingency step of `design.md`:
+
+| Build                      | Preset  | Performance | Simulated FCP | Simulated LCP | Observed FCP | Observed LCP | Script transferred |
+| -------------------------- | ------- | ----------- | ------------- | ------------- | ------------ | ------------ | ------------------ |
+| stack, carousels, portrait | mobile  | 93          | 905 ms        | 3280 ms       | 39 ms        | 39 ms        | 201.9 KB           |
+| stack, carousels, portrait | desktop | 100         | 244 ms        | 680 ms        | 40 ms        | 40 ms        | 201.9 KB           |
+| + `experimental.inlineCss` | mobile  | 96          | 942 ms        | 2781 ms       | 41 ms        | 41 ms        | 201.9 KB           |
+| + `experimental.inlineCss` | desktop | 100         | 252 ms        | 699 ms        | 50 ms        | 50 ms        | 201.9 KB           |
+
+Accessibility, Best Practices and SEO are 100 in every row. The LCP element is the `h1` in both presets.
+
+- **The portrait cost two points on mobile.** The observed LCP did not change, but the simulated LCP rose
+  by 300 ms: the image is a high-priority request that ends before the first paint, so it counts in both
+  halves of the estimate. JavaScript grew by only 1.2 KB over phase 1.
+- **`experimental.inlineCss` was applied, as the first contingency step.** It removes the only
+  render-blocking request and took the simulated mobile LCP from 3280 ms to 2781 ms. The cost is in the
+  document: the stylesheet is inlined twice, in `<style>` and in the RSC payload, so `index.html` is
+  43.8 KB gzipped. The other steps (`LazyMotion`, Lenis on idle) have not been needed so far.
+
+Behaviour that differed from `design.md`, or was found by the new suites:
+
+- **A Tailwind utility beats a rule of the `components` layer.** The hero had the `relative` class for its
+  scroll cue, which overrode `position: sticky`, so the hero alone did not pin. `.stack-panel` is now
+  positioned in the stylesheet and panels must not carry a position utility.
+- **The back-to-top button covered the footer icons** on viewports narrower than 1216 px, before this
+  work too. Found by the focus test in `mobile-chrome`. The footer now keeps clear of the button.
+- **`/email-signature` scrolled 71 px sideways at 320 px**, before this work too: a grid item is as wide
+  as its widest unbreakable content. Fixed with `min-w-0`.
+- **The `h1` did not fit a 320 px screen** at its 3 rem minimum and was clipped by the hero. Its size is
+  now `clamp(2.5rem, 7.5vw + 1rem, 6.5rem)`, and the reflow test also looks for clipped elements.
+- **Carousel buttons during a smooth scroll.** A second click was computed from the position in between
+  and went nowhere; the controls now continue from where the scroll is heading. At the end of the track
+  the item starts are capped, otherwise "previous" aimed at a position past the end.
+- **Lenis `anchors` and `allowNestedScroll` work as assumed.** In-page links land on the slot in both
+  directions and on a direct load, and a horizontal wheel gesture scrolls the carousel in Chromium,
+  Firefox and WebKit while a vertical one scrolls the page. Whether the anchor scroll shows a visible
+  jump has not been checked by eye.
+- **Playwright facts.** `page.evaluate` works with `javaScriptEnabled: false` in the three engines, so the
+  no-JavaScript tests can measure geometry. `mouse.wheel` does not exist in mobile WebKit. WebKit does
+  not move focus to links with Tab, so the focus test covers links only in Chromium and Firefox.

@@ -70,16 +70,17 @@ and with a site that can be published.
 
 ### Phase 3 — layout
 
-- [ ] Slots, panels and `StackController` — _verified by:_ the `stacking` suite in the five projects.
-- [ ] `Carousel` and the three carousels — _verified by:_ the `carousel` suite in the five projects.
-- [ ] A thumbnail per project, with the To-do List screenshot captured by
-      `scripts/capture-thumbnail.mjs` — _verified by:_ the five cards load an image with a non-empty
-      `alt`.
-- [ ] Portrait in the hero; the photo renamed; `profile-photo.jpg` and `about-me-cartoon.png` deleted —
-      _verified by:_ the `home` suite; Lighthouse names the `h1` or the portrait as the LCP element.
-- [ ] Navbar on tokens, with anchors handled by Lenis — _verified by:_ the in-page link tests of the
-      `home` suite.
-- [ ] Measurement after the phase — _verified by:_ the medians are in `findings.md`.
+- [x] Slots, panels and `StackController` — _verified by:_ the `stacking` suite in the five projects.
+- [x] `Carousel` and the three carousels — _verified by:_ the `carousel` suite in the five projects.
+- [x] A thumbnail per project, with the To-do List screenshot captured by
+      `scripts/capture-thumbnail.mjs` — _verified by:_ the thumbnail test of the `carousel` suite: five
+      images, each with its `alt`, each one loading.
+- [x] Portrait in the hero; the photo renamed; `profile-photo.jpg` and `about-me-cartoon.png` deleted —
+      _verified by:_ the portrait test of the `home` suite; Lighthouse names the `h1` as the LCP element.
+- [x] Navbar on tokens, with anchors handled by Lenis — _verified by:_ the in-page link tests of the
+      `home` and `stacking` suites.
+- [x] Measurement after the phase — _verified by:_ the medians are in `findings.md`. Mobile fell to 93,
+      so the first contingency step (`experimental.inlineCss`) was applied: 96.
 
 ### Phase 4 — pixel art
 
