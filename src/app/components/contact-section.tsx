@@ -6,11 +6,11 @@ import { SocialIcon } from "./social-icons";
 export default function ContactSection() {
   return (
     <section
-      id="contato"
+      data-stack-panel
       aria-labelledby="contato-heading"
-      className="border-t border-line px-6 py-24 lg:px-8"
+      className="stack-panel flex flex-col justify-center px-6 py-24 lg:px-8"
     >
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto w-full max-w-6xl">
         <MotionSection>
           <p className="section-label">{contactCopy.label}</p>
         </MotionSection>
@@ -42,7 +42,7 @@ export default function ContactSection() {
               className="group mb-12 flex w-fit items-center gap-3"
             >
               <span
-                className="font-bold text-ink group-hover:text-brand"
+                className="font-bold break-all text-ink group-hover:text-brand"
                 style={{
                   fontFamily: "var(--font-syne), sans-serif",
                   fontSize: "clamp(1rem, 2.5vw, 1.4rem)",
@@ -64,24 +64,25 @@ export default function ContactSection() {
           </MotionSection>
 
           <MotionSection delay={0.4} className="border-t border-line pt-8">
-            <div className="flex items-center gap-6">
+            <ul className="flex flex-wrap items-center gap-x-6 gap-y-3">
               {socials
                 .filter((link) => link.id !== "email")
                 .map((link) => (
-                  <a
-                    key={link.id}
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-ink-muted hover:text-brand"
-                    style={{ transition: "color 0.3s var(--ease-cubic)" }}
-                    aria-label={layoutCopy.profileOf(link.name)}
-                  >
-                    <SocialIcon id={link.id} size={20} />
-                    <span className="text-sm font-medium">{link.name}</span>
-                  </a>
+                  <li key={link.id}>
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex min-h-6 items-center gap-2 text-ink-muted hover:text-brand"
+                      style={{ transition: "color 0.3s var(--ease-cubic)" }}
+                      aria-label={layoutCopy.profileOf(link.name)}
+                    >
+                      <SocialIcon id={link.id} size={20} />
+                      <span className="text-sm font-medium">{link.name}</span>
+                    </a>
+                  </li>
                 ))}
-            </div>
+            </ul>
           </MotionSection>
         </div>
       </div>

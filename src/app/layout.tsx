@@ -21,9 +21,12 @@ const syne = Syne({
   weight: ["700", "800"],
 });
 
-/** Without JavaScript the scroll reveals never run, so their hidden start state is undone. */
+/**
+ * Without JavaScript the scroll reveals never run, so their hidden start state is undone, and
+ * controls that only work with JavaScript are removed.
+ */
 const noScriptCss =
-  "[data-reveal]{opacity:1!important;transform:none!important}";
+  "[data-reveal]{opacity:1!important;transform:none!important}[data-js-only]{display:none!important}";
 
 // Canonical, Open Graph and Twitter tags are set per page, through `pageMetadata`.
 export const metadata: Metadata = {

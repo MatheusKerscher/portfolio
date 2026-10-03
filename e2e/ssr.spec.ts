@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { education, experience } from "../src/app/data/curriculum";
 import { projects } from "../src/app/data/projects";
-import { aboutCopy, heroCopy, stats } from "../src/app/data/site";
+import { aboutCopy, heroCopy, stats, technologies } from "../src/app/data/site";
 
 test.describe("server rendering", () => {
   test("raw HTML already holds the content", async ({ request }) => {
@@ -12,6 +12,10 @@ test.describe("server rendering", () => {
     }
     for (const item of [...experience, ...education]) {
       expect(html, item.title).toContain(item.title);
+    }
+    // Slides that start outside the carousel viewport are in the HTML too.
+    for (const technology of technologies) {
+      expect(html, technology.name).toContain(technology.description);
     }
     // The stats are the real numbers, not the start of a count-up animation.
     for (const stat of stats) {

@@ -100,7 +100,8 @@ export default function SignatureForm() {
 
   return (
     <div className="grid gap-8 lg:grid-cols-2">
-      <MotionSection delay={0.1}>
+      {/* min-w-0: a grid item is otherwise as wide as its widest unbreakable content. */}
+      <MotionSection delay={0.1} className="min-w-0">
         <Card>
           <CardHeader>
             <CardTitle style={cardTitleStyle} className="text-lg font-bold">
@@ -145,7 +146,7 @@ export default function SignatureForm() {
         </Card>
       </MotionSection>
 
-      <MotionSection delay={0.2} className="flex flex-col gap-8">
+      <MotionSection delay={0.2} className="flex min-w-0 flex-col gap-8">
         <Card>
           <CardHeader>
             <CardTitle style={cardTitleStyle} className="text-lg font-bold">

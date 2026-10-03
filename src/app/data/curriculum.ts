@@ -46,3 +46,11 @@ export const education: TimelineItem[] = [
       "Curso Superior de Tecnologia (CST) com foco em desenvolvimento de software, estruturas de dados, banco de dados e engenharia de sistemas.",
   },
 ];
+
+export type TimelineKind = "experience" | "education";
+
+/** Both lists in the order the page shows them, each entry tagged with its kind. */
+export const timeline: (TimelineItem & { kind: TimelineKind })[] = [
+  ...experience.map((item) => ({ ...item, kind: "experience" as const })),
+  ...education.map((item) => ({ ...item, kind: "education" as const })),
+];

@@ -8,7 +8,8 @@ export default function Footer() {
 
   return (
     <footer className="border-t border-line px-6 py-8 lg:px-8">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4">
+      {/* Right padding below xl: the fixed back-to-top button would cover the icons. */}
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 pr-16 xl:pr-0">
         <p className="text-sm text-ink-muted">
           {layoutCopy.copyright(currentYear)}
         </p>

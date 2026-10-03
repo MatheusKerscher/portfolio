@@ -118,18 +118,90 @@
       gap 0.3s var(--ease-expo);
   }
 
-  .stack-icon-container {
-    @apply flex h-10 w-10 items-center justify-center rounded-full border border-line bg-surface p-2;
-    transition:
-      transform 0.4s var(--ease-expo),
-      border-color 0.3s var(--ease-cubic);
+  /*
+   * Stacked sections. A panel pins when its end reaches the bottom of the viewport and the next
+   * slot slides over it. The spacer and the negative margin cancel out, so the positions and the
+   * height of the page are those of normal flow. `--panel-h` comes from StackController; without
+   * it the fallback `top` can never be reached and the panel does not pin.
+   */
+  .stack-slot {
+    position: relative;
   }
 
-  @media (max-width: 767px) {
-    .stack-icon-container:hover {
-      @apply border-brand;
-      transform: scale(1.1);
+  /* Positioned in every case, so a panel can hold absolute children whether it pins or not. */
+  .stack-panel {
+    position: relative;
+    min-height: 100svh;
+    background: var(--paper);
+  }
+
+  .stack-slot + .stack-slot > .stack-panel {
+    border-top: 1px solid var(--line);
+    box-shadow: 0 -20px 40px -28px rgb(0 0 0 / 0.35);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .stack-slot:not(:last-child)::after {
+      content: "";
+      display: block;
+      height: 100svh;
     }
+
+    .stack-slot + .stack-slot {
+      margin-top: -100svh;
+    }
+
+    .stack-slot:not(:last-child) > .stack-panel {
+      position: sticky;
+      top: min(0px, calc(100svh - var(--panel-h, 100000px)));
+    }
+  }
+
+  /* Carousel: a scrollable region on native scroll snap, bleeding to the edge of the section. */
+  .carousel-viewport {
+    @apply relative -mx-6 px-6 lg:-mx-8 lg:px-8;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 1.5rem;
+    scrollbar-width: none;
+  }
+
+  @media (min-width: 1024px) {
+    .carousel-viewport {
+      scroll-padding-inline: 2rem;
+    }
+  }
+
+  .carousel-viewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  .carousel-track {
+    @apply flex w-max gap-5 py-1;
+  }
+
+  .carousel-item {
+    @apply flex-none;
+    scroll-snap-align: start;
+  }
+
+  .slide-card {
+    @apply relative flex h-full flex-col border border-line bg-surface;
+    transition:
+      border-color 0.3s var(--ease-cubic),
+      box-shadow 0.3s var(--ease-expo),
+      transform 0.3s var(--ease-expo);
+  }
+
+  /* A card whose title link covers it shows the focus ring around the whole card. */
+  .slide-card:has(a:focus-visible) {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+
+  .slide-card a:focus-visible {
+    outline: none;
   }
 
   .nav-links-group:has(a:hover) a {

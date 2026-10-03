@@ -46,7 +46,7 @@ export const site = {
   ],
   employer: { name: "CWB Tecnologia", city: "Curitiba", region: "PR" },
   almaMater: "Universidade Federal do Paraná (UFPR)",
-  portrait: { src: "/profile-photo.jpg", width: 636, height: 636 },
+  portrait: { src: "/images/matheus-kerscher.jpg", width: 886, height: 886 },
   /** The `--paper` token of each theme, for the browser chrome. Checked by e2e/seo.spec.ts. */
   themeColor: { light: "#f8f7f3", dark: "#111111" },
 };
@@ -185,6 +185,11 @@ export const navCopy = {
   backToTop: "Voltar ao topo",
 };
 
+export const carouselCopy = {
+  previous: (list: string) => `Anterior em ${list}`,
+  next: (list: string) => `Próximo em ${list}`,
+};
+
 export const heroCopy = {
   eyebrow: "Desenvolvedor FullStack · PR, Brasil",
   heading: "MATHEUS KERSCHER",
@@ -193,6 +198,7 @@ export const heroCopy = {
   primaryCta: { label: "Ver Projetos", href: "#projetos" },
   secondaryCta: { label: "Entre em Contato", href: "#contato" },
   scrollCue: "Scroll",
+  portraitAlt: `Retrato de ${site.name}`,
 };
 
 export const aboutCopy = {
@@ -200,21 +206,23 @@ export const aboutCopy = {
   heading: "Apaixonado por criar experiências digitais que fazem sentido.",
   bio: "Sou desenvolvedor FullStack com foco em React e Node.js, baseado no Paraná, Brasil. Gosto de transformar ideias complexas em interfaces simples e funcionais, sempre com atenção aos detalhes e à qualidade do código.",
   technologies: "Principais Stacks",
+  socials: "Redes e contato",
 };
 
 export const projectsCopy = {
   label: "02 — Projetos",
   heading: "Trabalhos selecionados.",
   count: (total: number) => `${total} projetos`,
-  open: (title: string) => `Ver projeto ${title} (abre em nova aba)`,
+  carousel: "Projetos",
+  newTab: "(abre em nova aba)",
+  thumbnailAlt: (title: string) => `Tela do projeto ${title}`,
 };
 
 export const curriculumCopy = {
   label: "03 — Currículo",
   heading: "Experiência & Formação.",
-  experience: "Experiência",
-  education: "Formação",
-  empty: "Em breve...",
+  carousel: "Experiência e formação",
+  kinds: { experience: "Experiência", education: "Formação" },
 };
 
 export const contactCopy = {

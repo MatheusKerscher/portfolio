@@ -15,6 +15,16 @@ test.describe("home page", () => {
     }
   });
 
+  test("hero shows the portrait", async ({ page }) => {
+    const portrait = page.getByRole("img", { name: heroCopy.portraitAlt });
+    await expect(portrait).toBeVisible();
+    await expect
+      .poll(() =>
+        portrait.evaluate((image: HTMLImageElement) => image.naturalWidth),
+      )
+      .toBeGreaterThan(0);
+  });
+
   test("desktop nav links scroll to their section", async ({
     page,
     isMobile,
