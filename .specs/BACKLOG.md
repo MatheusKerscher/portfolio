@@ -51,12 +51,3 @@ Reverted to `typescript@6.0.3`. Retry when `typescript-eslint` supports TypeScri
 resolves only because npm hoists it from `eslint-config-next`; any change to the tree shape can remove
 it from the top level, as the TypeScript 7 attempt showed. Declare it as a devDependency, or take the
 plugin from `eslint-config-next`'s own exports.
-
-## B-004 — `opengraph-image` uses the deprecated Edge Runtime
-
-**Found:** 2026-10-03, during `2026-10-03_update-deps-and-docs`. **Severity:** low.
-
-`src/app/opengraph-image.tsx` sets `export const runtime = "edge"`. Since Next 16.3.8 every build prints
-`The Edge Runtime is deprecated. You can use the "nodejs" runtime instead.` and the route is not
-statically generated. Switching the runtime changes how the image is produced, so it was left out of
-the dependency update.
