@@ -25,8 +25,8 @@ all exiting 0.
 
 - [-] `eslint` 10 — _verified by:_ `npm install` without ERESOLVE and the gate passes; otherwise
   reverted and recorded in the backlog.
-- [~] `framer-motion` 14 — _verified by:_ the gate passes and animations work on `/` and
-  `/email-signature`; otherwise reverted and recorded in the backlog.
+- [x] `framer-motion` 14 — _verified by:_ the gate passes and animations work on `/` and
+      `/email-signature`; otherwise reverted and recorded in the backlog.
 - [-] `typescript` 7 — _verified by:_ the gate passes; otherwise reverted and recorded in the backlog.
 - [x] `@types/node` 26 — _verified by:_ the gate passes with zero source changes; otherwise reverted
       and recorded in the backlog.
@@ -45,14 +45,14 @@ all exiting 0.
 ## Rollout
 
 - [x] Full acceptance run — _verified by:_ `npm ci` followed by the gate, from a clean `node_modules`.
-- [~] Manual QA on `npm run dev` — _verified by:_ `/` and `/email-signature` render; theme toggle,
-  smooth scroll, section animations and the signature copy button work; no console errors.
+- [x] Manual QA on `npm run dev` — _verified by:_ `/` and `/email-signature` render; theme toggle,
+      smooth scroll, section animations and the signature copy button work; no console errors.
 - [x] Commits follow the conventional format — _verified by:_ the `commit-msg` hook (commitlint)
       accepts each one.
-- [ ] Pull request opened and CI green — _verified by:_ the `Linting` workflow passes.
+- [~] Pull request opened and CI green — _verified by:_ the `Linting` workflow passes.
 - [x] Findings recorded if anything was measured or surprising — _verified by:_ `findings.md` exists in
       this folder, or nothing worth recording happened.
-- [ ] Folder moved to `.specs/archive/2026-10-03_update-deps-and-docs/` — _verified by:_
+- [x] Folder moved to `.specs/archive/2026-10-03_update-deps-and-docs/` — _verified by:_
       `.specs/changes/` is empty.
 
 ## Blocked
@@ -67,6 +67,8 @@ all exiting 0.
 - `typescript` 7 — `typescript-eslint` requires `<6.1.0` and lint fails to load its plugin. Reverted;
   recorded as B-002.
 
-Manual QA and `framer-motion` 14 are `[~]`: the gate passes, every route returns 200 from the production build and the server-rendered HTML
-carries the animation initial states, but theme toggle, smooth scroll, animations and the copy button
-have not been exercised in a browser.
+Manual QA was done in a browser by the requester on 2026-10-03: both routes, theme toggle, smooth
+scroll, animations and the copy button work.
+
+The pull request item is `[~]`: the folder is archived in the same branch the pull request carries, so
+the CI result lives on the pull request, not here.
