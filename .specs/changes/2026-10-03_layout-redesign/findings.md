@@ -116,3 +116,16 @@ Behaviour that differed from `design.md`, or was found by the new suites:
 - **Playwright facts.** `page.evaluate` works with `javaScriptEnabled: false` in the three engines, so the
   no-JavaScript tests can measure geometry. `mouse.wheel` does not exist in mobile WebKit. WebKit does
   not move focus to links with Tab, so the focus test covers links only in Chromium and Firefox.
+
+## Phase 4 — pixel art (2026-10-03)
+
+- **The sprite is 850 bytes.** `public/avatar/avatar.png` is 92×92, indexed, 18 colours. A second run of
+  `npm run assets:pixel` produces byte-identical files.
+- **Next refuses an ICO that holds an indexed PNG.** With a palette PNG inside `src/app/favicon.ico` the
+  build failed: `Format error decoding Ico: The PNG is not in RGBA format!` The favicon is therefore
+  written as a 32-bit RGBA PNG (450 bytes); every other asset stays indexed.
+- **The `no-img-element` rule does not fire in `opengraph-image.tsx`.** A disable comment there is
+  reported as unused.
+- **The sprite is a draft.** It was drawn from shapes on the grid (ellipses, polygons, rows of pixels)
+  and reviewed by rendering it next to the photo and the reference, three rounds. It still needs the
+  requester's eye for likeness.

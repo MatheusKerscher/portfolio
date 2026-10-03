@@ -258,7 +258,9 @@ transparent background. `sharp` writes `public/avatar/avatar.png`, the favicon, 
 `apple-icon.png`, the manifest icons, a 5× render for the Open Graph image and the quantised 8-bit
 thumbnails. The site shows the sprite with `unoptimized` and `image-rendering: pixelated` at 138, 276 and
 368 CSS px. The mini sprite on the toggle is inline SVG. The requester approves a contact sheet (photo,
-reference, sprite at 1×, 4× and 8× on both themes) before the sprite is used.
+reference, sprite at 1×, 4× and 8× on both themes) before the branch is merged. Until then the sprite on
+the branch is a draft: every derived file comes from the script, so a redrawn or supplied sprite replaces
+them all in one run.
 
 **Why:** a script is reproducible and keeps the art on the project palette. A 92×92 indexed PNG is about
 2 KB, while the image optimiser would re-encode it to a lossy format and blur the pixel edges. The

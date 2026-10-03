@@ -84,16 +84,18 @@ and with a site that can be published.
 
 ### Phase 4 — pixel art
 
-- [ ] `sharp@0.35.5` declared; `scripts/pixel-assets.mjs` and the `assets:pixel` script — _verified by:_
-      a second run leaves `git status` clean.
-- [ ] Contact sheet of the sprite sent to the requester — _verified by:_ the image exists and shows the
-      photo, the reference and the sprite at 1×, 4× and 8× on both themes.
-- [ ] Sprite approved — _verified by:_ explicit approval in the conversation, recorded here with its
-      date.
-- [ ] Favicon, `icon.png`, `apple-icon.png`, manifest icons and the Open Graph image from the sprite —
+- [x] `sharp@0.35.5` declared; `scripts/pixel-assets.mjs` and the `assets:pixel` script — _verified by:_
+      a second run produces byte-identical files (compared with `shasum`).
+- [x] Contact sheet of the sprite sent to the requester — _verified by:_ `sprite-contact-sheet.png` in
+      this folder shows the photo and the sprite at 1×, 4× and 8× on both themes. The copy shown in the
+      conversation also has the style reference, which is not ours to commit.
+- [!] Sprite approved — _verified by:_ explicit approval in the conversation, recorded here with its
+  date. Waiting for the requester. The sprite on the branch is draft v1.
+- [x] Favicon, `icon.png`, `apple-icon.png`, manifest icons and the Open Graph image from the sprite —
       _verified by:_ the metadata routes test of the `seo` suite; a look at `/opengraph-image`.
-- [ ] Pixel accents of the normal skin — _verified by:_ screenshots attached to the pull request; axe
-      passes.
+- [x] Pixel accents of the normal skin — _verified by:_ screenshots taken during the phase (square-dot
+      divider and section markers, stepped scroll cue, hard offset shadows); axe passes. The mini sprite
+      on the toggle arrives with the toggle, in phase 5.
 
 ### Phase 5 — 8-bit mode
 
@@ -151,11 +153,11 @@ and with a site that can be published.
 
 ## Blocked
 
-| Item                                         | Blocked by                                    | Who unblocks it                                |
-| -------------------------------------------- | --------------------------------------------- | ---------------------------------------------- |
-| Using the sprite in the site (phases 4 to 6) | the requester's approval of the contact sheet | Matheus Kerscher                               |
-| PageSpeed Insights on the production URL     | the Vercel primary domain is still `www`      | Matheus Kerscher                               |
-| PageSpeed Insights baseline through the API  | the anonymous quota, exhausted on 2026-10-03  | the quota reset, or a manual run or an API key |
+| Item                                        | Blocked by                                    | Who unblocks it                                |
+| ------------------------------------------- | --------------------------------------------- | ---------------------------------------------- |
+| Merging the branch with the draft sprite    | the requester's approval of the contact sheet | Matheus Kerscher                               |
+| PageSpeed Insights on the production URL    | the Vercel primary domain is still `www`      | Matheus Kerscher                               |
+| PageSpeed Insights baseline through the API | the anonymous quota, exhausted on 2026-10-03  | the quota reset, or a manual run or an API key |
 
 ## Dropped
 
