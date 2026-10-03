@@ -79,8 +79,8 @@ and with a site that can be published.
       _verified by:_ the portrait test of the `home` suite; Lighthouse names the `h1` as the LCP element.
 - [x] Navbar on tokens, with anchors handled by Lenis — _verified by:_ the in-page link tests of the
       `home` and `stacking` suites.
-- [x] Measurement after the phase — _verified by:_ the medians are in `findings.md`. Mobile fell to 93,
-      so the first contingency step (`experimental.inlineCss`) was applied: 96.
+- [x] Measurement after the phase — _verified by:_ the medians are in `findings.md`. Mobile read 93 and
+      `experimental.inlineCss` was turned on. Both the reading and the step were wrong; see phase 5.
 
 ### Phase 4 — pixel art
 
@@ -99,15 +99,20 @@ and with a site that can be published.
 
 ### Phase 5 — 8-bit mode
 
-- [ ] Skin store, the script in `<head>` and `SkinToggle` in the navbar and on the portrait —
+- [x] Skin store, the script in `<head>` and `SkinToggle` in the navbar and on the portrait —
       _verified by:_ the `skin` suite: attribute, `aria-pressed`, persistence at `DOMContentLoaded`.
-- [ ] The `pixel` variant, the skin rules and Pixelify Sans with `preload: false` — _verified by:_ the
-      `skin` suite: headings compute to the pixel font; the font is not requested in the normal skin.
-- [ ] Sprite portrait and 8-bit thumbnails — _verified by:_ the `skin` suite: `image-rendering`, and no
+- [x] The `pixel` variant, the skin rules and Pixelify Sans with `preload: false` — _verified by:_ the
+      `skin` suite: headings compute to the pixel font; the font stays `unloaded` in the normal skin.
+- [x] Sprite portrait and 8-bit thumbnails — _verified by:_ the `skin` suite: `image-rendering`, and no
       request for them in the normal skin.
-- [ ] Glyph coverage of the pixel font — _verified by:_ a screenshot of `ÁÉÍÓÚÂÊÔÃÕÇ áéíóúâêôãõç` in an
+- [x] Glyph coverage of the pixel font — _verified by:_ a screenshot of `ÁÉÍÓÚÂÊÔÃÕÇ áéíóúâêôãõç` in an
       8-bit heading shows no fallback glyph.
-- [ ] Both routes in the four modes — _verified by:_ the `a11y` and `palette` suites.
+- [x] Both routes in the four modes — _verified by:_ the `a11y` and `palette` suites, and the 320 px
+      reflow test of the `skin` suite.
+- [x] Measurement after the phase — _verified by:_ `findings.md`. The mobile median read 93 again, which
+      led to finding that the raw localhost flips between two results. The audit now adds 40 ms of
+      latency; with it the build scores 100 on mobile and desktop with no contingency step, and
+      `experimental.inlineCss` is reverted.
 
 ### Phase 6 — Inspector mode
 

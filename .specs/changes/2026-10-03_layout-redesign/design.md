@@ -195,10 +195,11 @@ gets `autoRaf`, `anchors` and `allowNestedScroll` — all three exist in the ins
 same animation library once its hero was static.
 
 **Rejected alternative:** CSS-only reveals and native scrolling — offered and declined. If the mobile
-measurement falls short, these steps are applied in order, each with a before and after in `findings.md`:
-`experimental.inlineCss`; `LazyMotion` with `m` components and `domAnimation` loaded asynchronously;
-Lenis loaded by a dynamic import when the browser is idle. If that is not enough, the decision goes back
-to the requester.
+measurement falls short, `LazyMotion` with `m` components and `domAnimation` loaded asynchronously is
+applied, with a before and after in `findings.md`; it was tried and saves 14 KB of script. If that is not
+enough, the decision goes back to the requester. Two other steps were on this list and are off it, on
+the measurements in `findings.md`: `experimental.inlineCss` costs about a second of simulated LCP, and
+loading Lenis when the browser is idle changed nothing.
 
 ### The 8-bit skin is an attribute and CSS
 
@@ -303,16 +304,23 @@ is where sticky positioning and the dynamic toolbar are most likely to differ.
 ### Lighthouse through a script
 
 **Choice:** `scripts/lighthouse.mjs` runs the `lighthouse` 13.5.0 command against `next start`, with
-Playwright's Chromium as `CHROME_PATH`, five runs per preset, and reports the median. It exits non-zero
-below 95, or below the value of `--min`. With `--write` it stores the medians, the date and the commit in
-`audit.json`, formatted with Prettier. The workflow uses `--min=90`.
+Playwright's Chromium as `CHROME_PATH`, five runs per preset, and reports the median. The build is served
+through a proxy that delays every response by 40 ms (`--latency`). It exits non-zero below 95, or below
+the value of `--min`. With `--write` it stores the medians, the date and the commit in `audit.json`,
+formatted with Prettier. The workflow uses `--min=90`.
 
 **Why:** `@lhci/cli` 0.15.1 bundles Lighthouse 12.6.1; the direct package is the current version. The
 same script feeds the Inspector. Shared CI runners vary by a few points, so the workflow guards against
 regressions and the acceptance is the local run plus PageSpeed Insights.
 
+The latency is there because the raw localhost cannot be trusted: with no round trip the scripts arrive
+before the first frame, the first paint lands before or after hydration by chance, and the simulated
+mobile LCP flips between two values 500 ms apart. That already led to one wrong decision, recorded in
+`findings.md`. With 40 ms, five runs agree to within 4 ms.
+
 **Rejected alternative:** the PageSpeed Insights API as the gate — its anonymous quota was exhausted on
-the day this spec was written.
+the day this spec was written. Lighthouse's own applied throttling (`--throttling-method=devtools`) — it
+removes the flip too, but it is not the method PageSpeed Insights scores with.
 
 ### Dependencies taken from `rafael-goncalves`, and the ones left out
 
@@ -334,21 +342,21 @@ Removed: `tw-animate-css`. Every new entry is an exact pin, installed with an ex
 
 ## Known risks
 
-| Risk                                                                                          | How it shows up                                             | Mitigation                                                                                                              |
-| --------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Performance ≥ 95 on mobile is not reached with `framer-motion` and Lenis                      | `npm run audit` reports a mobile median below 95            | measured at the end of every phase; the ordered steps under "`framer-motion` and Lenis stay"; then a requester decision |
-| The stack hides content or focus                                                              | the `stacking` suite fails; a focused element is covered    | measured `top`; no pinning without a height; the focus correction; hit-tests in three engines                           |
-| iOS Safari treats sticky or the toolbar differently from Playwright's WebKit                  | a panel jumps or is cut on a real iPhone                    | `svh` units; the `mobile-safari` project; a check on the requester's device before merge                                |
-| Lenis swallows horizontal gestures over a carousel                                            | the wheel test of the `carousel` suite fails                | `allowNestedScroll`; if it is not enough, embla                                                                         |
-| Lenis `anchors` and the browser's fragment jump both act on a click                           | a visible jump before the smooth scroll                     | the `home` suite and a manual check; otherwise `preventDefault`, `lenis.scrollTo` and `history.pushState`               |
-| The sprite is not a convincing likeness                                                       | the requester rejects the contact sheet                     | approval before it is wired in; art supplied by the requester through the same export                                   |
-| The 8-bit skin doubles the interface surface                                                  | a contrast or layout failure in one mode only               | the same colour tokens; axe and the palette suite in the four modes                                                     |
-| Pixelify Sans lacks a pt-BR glyph                                                             | a fallback glyph in an 8-bit heading                        | a screenshot of `ÁÉÍÓÚÂÊÔÃÕÇ áéíóúâêôãõç` in phase 5; otherwise another pixel font from `next/font/google`              |
-| An engine fetches a lazy image inside `display: none`                                         | the normal skin requests the sprite or the 8-bit thumbnails | the `skin` suite asserts the requests; otherwise the hidden version is rendered after hydration                         |
-| `backdrop-filter` on the navbar repositions a `fixed` descendant (seen in `rafael-goncalves`) | the Inspector panel is placed relative to the navbar        | the panel and the overlays are rendered through a portal to `body`                                                      |
-| `tailwind-merge` drops custom font-size tokens (seen in `rafael-goncalves`)                   | a heading renders at body size                              | no custom `--text-*` token is added; if one is, it is registered in `cn`                                                |
-| Lighthouse varies between runs                                                                | the workflow fails on an unchanged commit                   | median of five runs; a workflow threshold of 90                                                                         |
-| The branch lives long                                                                         | conflicts, or a large review                                | every phase ends with a green gate and a publishable site, so it can be merged phase by phase                           |
+| Risk                                                                                          | How it shows up                                                        | Mitigation                                                                                                              |
+| --------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Performance ≥ 95 on mobile is not reached with `framer-motion` and Lenis                      | `npm run audit` reports a mobile median below 95                       | measured at the end of every phase; the ordered steps under "`framer-motion` and Lenis stay"; then a requester decision |
+| The stack hides content or focus                                                              | the `stacking` suite fails; a focused element is covered               | measured `top`; no pinning without a height; the focus correction; hit-tests in three engines                           |
+| iOS Safari treats sticky or the toolbar differently from Playwright's WebKit                  | a panel jumps or is cut on a real iPhone                               | `svh` units; the `mobile-safari` project; a check on the requester's device before merge                                |
+| Lenis swallows horizontal gestures over a carousel                                            | the wheel test of the `carousel` suite fails                           | `allowNestedScroll`; if it is not enough, embla                                                                         |
+| Lenis `anchors` and the browser's fragment jump both act on a click                           | a visible jump before the smooth scroll                                | the `home` suite and a manual check; otherwise `preventDefault`, `lenis.scrollTo` and `history.pushState`               |
+| The sprite is not a convincing likeness                                                       | the requester rejects the contact sheet                                | approval before it is wired in; art supplied by the requester through the same export                                   |
+| The 8-bit skin doubles the interface surface                                                  | a contrast or layout failure in one mode only                          | the same colour tokens; axe and the palette suite in the four modes                                                     |
+| Pixelify Sans lacks a pt-BR glyph                                                             | a fallback glyph in an 8-bit heading                                   | a screenshot of `ÁÉÍÓÚÂÊÔÃÕÇ áéíóúâêôãõç` in phase 5; otherwise another pixel font from `next/font/google`              |
+| An engine fetches a lazy image inside `display: none`                                         | the normal skin requests the sprite or the 8-bit thumbnails            | the `skin` suite asserts the requests; otherwise the hidden version is rendered after hydration                         |
+| `backdrop-filter` on the navbar repositions a `fixed` descendant (seen in `rafael-goncalves`) | the Inspector panel is placed relative to the navbar                   | the panel and the overlays are rendered through a portal to `body`                                                      |
+| `tailwind-merge` drops custom font-size tokens (seen in `rafael-goncalves`)                   | a heading renders at body size                                         | no custom `--text-*` token is added; if one is, it is registered in `cn`                                                |
+| Lighthouse varies between runs                                                                | the workflow fails on an unchanged commit, or a median hides two modes | 40 ms of latency per response; median of five runs; every run is printed; a workflow threshold of 90                    |
+| The branch lives long                                                                         | conflicts, or a large review                                           | every phase ends with a green gate and a publishable site, so it can be merged phase by phase                           |
 
 ## Failing safely
 

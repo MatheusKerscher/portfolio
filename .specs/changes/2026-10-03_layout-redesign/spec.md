@@ -207,9 +207,10 @@ All commands are run from the repository root. The Playwright projects are `chro
 - [ ] **Sprite:** `public/avatar/avatar.png` is 92×92, has at most 32 colours and weighs at most 4 KB.
       Running `npm run assets:pixel` again leaves `git status` clean. The requester's approval of the
       render is recorded in `tasks.md`.
-- [ ] **Performance, local:** `npm run audit` — Lighthouse 13.5.0 against the production build, mobile
-      and desktop presets, median of 5 runs — reports Performance ≥ 95, and Accessibility, Best Practices
-      and SEO ≥ 95.
+- [ ] **Performance, local:** `npm run audit` — Lighthouse 13.5.0 against the production build served
+      with 40 ms of latency per response, mobile and desktop presets, median of 5 runs — reports
+      Performance ≥ 95, and Accessibility, Best Practices and SEO ≥ 95. The latency was added during the
+      work: without it the mobile result flips between two values (`findings.md`).
 - [ ] **Performance, deployed:** PageSpeed Insights on `https://kerscher.dev.br/` reports Performance
       ≥ 95 on mobile and on desktop, median of 3 runs each.
 - [ ] **Initial JavaScript:** the script bytes transferred on the first load of `/` are recorded in
@@ -254,6 +255,6 @@ Decided by Matheus Kerscher.
 
 Open — to be closed by measurement, not by assumption:
 
-- The Lighthouse and PageSpeed baseline of the current site.
-- Whether Performance ≥ 95 on mobile is reached with `framer-motion` and Lenis in place, or needs the
-  contingency steps listed in `design.md`.
+- The PageSpeed Insights baseline of the current site. The Lighthouse baseline is in `findings.md`.
+- Whether PageSpeed Insights agrees with the local measurement, which is 100 on mobile and on desktop
+  with `framer-motion` and Lenis in place and no contingency step.
