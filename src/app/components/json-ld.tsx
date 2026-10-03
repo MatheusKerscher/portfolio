@@ -1,102 +1,100 @@
+import type { Graph, ItemList, Person, ProfilePage, WebSite } from "schema-dts";
 import { projects } from "../data/projects";
+import { site, socials } from "../data/site";
 
-const BASE_URL = "https://kerscher.dev.br";
+const id = (fragment: string) => `${site.url}/#${fragment}`;
 
-export default function JsonLd() {
-  const person = {
-    "@context": "https://schema.org",
+export function buildJsonLd(): Graph {
+  const website: WebSite = {
+    "@type": "WebSite",
+    "@id": id("website"),
+    url: site.url,
+    name: site.name,
+    description: site.description,
+    inLanguage: site.language,
+    publisher: { "@id": id("person") },
+  };
+
+  const profilePage: ProfilePage = {
+    "@type": "ProfilePage",
+    "@id": id("profilepage"),
+    url: site.url,
+    name: site.title,
+    description: site.description,
+    inLanguage: site.language,
+    dateModified: site.contentUpdatedAt,
+    isPartOf: { "@id": id("website") },
+    about: { "@id": id("person") },
+    mainEntity: { "@id": id("person") },
+  };
+
+  const person: Person = {
     "@type": "Person",
-    "@id": `${BASE_URL}/#person`,
-    name: "Matheus Kerscher",
-    url: BASE_URL,
-    email: "matheus@programasalao.com.br",
-    image: `${BASE_URL}/profile-photo.jpg`,
-    jobTitle: "Desenvolvedor FullStack",
-    description:
-      "Desenvolvedor FullStack especializado em React, Next.js e Node.js, baseado no Paraná, Brasil.",
+    "@id": id("person"),
+    name: site.name,
+    url: site.url,
+    email: site.email,
+    image: `${site.url}${site.portrait.src}`,
+    jobTitle: site.role,
+    description: site.summary,
     address: {
       "@type": "PostalAddress",
-      addressRegion: "Paraná",
-      addressCountry: "BR",
+      addressRegion: site.region,
+      addressCountry: site.country,
     },
-    sameAs: [
-      "https://github.com/MatheusKerscher",
-      "https://www.linkedin.com/in/matheus-kerscher/",
-      "https://www.instagram.com/matheuskerscher/",
-    ],
-    knowsAbout: [
-      "React",
-      "Next.js",
-      "Node.js",
-      "TypeScript",
-      "JavaScript",
-      "PostgreSQL",
-      "Tailwind CSS",
-      "Git",
-    ],
+    sameAs: socials
+      .filter((link) => link.id !== "email")
+      .map((link) => link.href),
+    knowsAbout: site.knowsAbout,
     worksFor: {
       "@type": "Organization",
-      name: "CWB Tecnologia",
+      name: site.employer.name,
       address: {
         "@type": "PostalAddress",
-        addressLocality: "Curitiba",
-        addressRegion: "PR",
-        addressCountry: "BR",
+        addressLocality: site.employer.city,
+        addressRegion: site.employer.region,
+        addressCountry: site.country,
       },
     },
     alumniOf: {
       "@type": "EducationalOrganization",
-      name: "Universidade Federal do Paraná (UFPR)",
+      name: site.almaMater,
     },
   };
 
-  const profilePage = {
-    "@context": "https://schema.org",
-    "@type": "ProfilePage",
-    "@id": `${BASE_URL}/#profilepage`,
-    url: BASE_URL,
-    name: "Matheus Kerscher — Desenvolvedor FullStack",
-    description:
-      "Portfólio profissional de Matheus Kerscher, desenvolvedor FullStack especializado em React, Next.js e Node.js.",
-    inLanguage: "pt-BR",
-    about: { "@id": `${BASE_URL}/#person` },
-    mainEntity: { "@id": `${BASE_URL}/#person` },
-  };
-
-  const portfolio = {
-    "@context": "https://schema.org",
+  const portfolio: ItemList = {
     "@type": "ItemList",
-    "@id": `${BASE_URL}/#projects`,
-    name: "Projetos de Matheus Kerscher",
-    description: "Projetos selecionados desenvolvidos por Matheus Kerscher",
-    itemListElement: projects.map((p, i) => ({
+    "@id": id("projects"),
+    name: `Projetos de ${site.name}`,
+    description: `Projetos selecionados desenvolvidos por ${site.name}`,
+    itemListElement: projects.map((project, index) => ({
       "@type": "ListItem",
-      position: i + 1,
+      position: index + 1,
       item: {
         "@type": "SoftwareApplication",
-        name: p.title,
-        url: p.websiteUrl ?? p.repositoryUrl,
-        description: p.description,
-        author: { "@id": `${BASE_URL}/#person` },
+        name: project.title,
+        url: project.websiteUrl ?? project.repositoryUrl,
+        description: project.description,
+        author: { "@id": id("person") },
         applicationCategory: "WebApplication",
       },
     })),
   };
 
+  return {
+    "@context": "https://schema.org",
+    "@graph": [website, profilePage, person, portfolio],
+  };
+}
+
+/** JSON-LD script, escaped as the bundled Next guide recommends (01-app/02-guides/json-ld.md). */
+export default function JsonLd() {
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(person) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(profilePage) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(portfolio) }}
-      />
-    </>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(buildJsonLd()).replace(/</g, "\\u003c"),
+      }}
+    />
   );
 }

@@ -1,10 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Catamaran, Syne } from "next/font/google";
 import "./globals.css";
 
 import BackToTop from "./components/back-to-top";
 import Footer from "./components/footer";
-import JsonLd from "./components/json-ld";
 import { MotionProvider } from "./components/motion-provider";
 import Navbar from "./components/navbar";
 import SmoothScrollProvider from "./components/smooth-scroll-provider";
@@ -26,6 +25,7 @@ const syne = Syne({
 const noScriptCss =
   "[data-reveal]{opacity:1!important;transform:none!important}";
 
+// Canonical, Open Graph and Twitter tags are set per page, through `pageMetadata`.
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
@@ -36,23 +36,6 @@ export const metadata: Metadata = {
   keywords: site.keywords,
   authors: [{ name: site.name, url: site.url }],
   creator: site.name,
-  alternates: {
-    canonical: site.url,
-    languages: { "pt-BR": site.url },
-  },
-  openGraph: {
-    type: "website",
-    locale: "pt_BR",
-    url: site.url,
-    siteName: site.name,
-    title: site.title,
-    description: site.description,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: site.title,
-    description: site.description,
-  },
   robots: {
     index: true,
     follow: true,
@@ -67,6 +50,13 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: site.themeColor.light },
+    { media: "(prefers-color-scheme: dark)", color: site.themeColor.dark },
+  ],
 };
 
 export default function RootLayout({
@@ -91,7 +81,6 @@ export default function RootLayout({
           </a>
           <MotionProvider>
             <SmoothScrollProvider>
-              <JsonLd />
               <Navbar />
               <main id="main-content">{children}</main>
               <Footer />

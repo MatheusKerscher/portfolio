@@ -1,7 +1,5 @@
 import type { Page } from "@playwright/test";
 
-export const SITE_URL = "https://kerscher.dev.br";
-
 export const SECTION_IDS = [
   "hero",
   "sobre",
@@ -24,4 +22,14 @@ export async function revealAll(page: Page) {
     window.scrollTo(0, 0);
   });
   await page.waitForTimeout(800);
+}
+
+export async function readJsonLd(page: Page) {
+  const raw = await page
+    .locator('script[type="application/ld+json"]')
+    .first()
+    .textContent();
+  return JSON.parse(raw ?? "{}") as {
+    "@graph": Array<Record<string, unknown>>;
+  };
 }

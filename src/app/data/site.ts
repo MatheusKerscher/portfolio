@@ -16,6 +16,7 @@ export const site = {
   availability: "Disponível para trabalho, freelas e colaborações.",
   email: "matheuskerscher@outlook.com",
   language: "pt-BR",
+  locale: "pt_BR",
   region: "Paraná",
   country: "BR",
   repository: "https://github.com/MatheusKerscher/portfolio",
@@ -45,6 +46,17 @@ export const site = {
   ],
   employer: { name: "CWB Tecnologia", city: "Curitiba", region: "PR" },
   almaMater: "Universidade Federal do Paraná (UFPR)",
+  portrait: { src: "/profile-photo.jpg", width: 636, height: 636 },
+  /** The `--paper` token of each theme, for the browser chrome. Checked by e2e/seo.spec.ts. */
+  themeColor: { light: "#f8f7f3", dark: "#111111" },
+};
+
+/** The email signature tool: its route, and how metadata, the sitemap and llms.txt describe it. */
+export const signaturePage = {
+  path: "/email-signature",
+  title: "Gerador de assinatura de email",
+  description:
+    "Preencha seus dados, veja o preview em tempo real e copie uma assinatura de email pronta para colar no Gmail, no Outlook ou em outro cliente de email.",
 };
 
 export type SocialId = "email" | "linkedin" | "github" | "instagram";

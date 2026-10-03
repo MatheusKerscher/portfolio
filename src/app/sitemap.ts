@@ -1,15 +1,19 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
+import { signaturePage, site } from "./data/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
-      url: "https://kerscher.dev.br",
-      lastModified: new Date(),
+      url: site.url,
+      lastModified: site.contentUpdatedAt,
       changeFrequency: "monthly",
       priority: 1,
-      alternates: {
-        languages: { "pt-BR": "https://kerscher.dev.br" },
-      },
+    },
+    {
+      url: `${site.url}${signaturePage.path}`,
+      lastModified: site.contentUpdatedAt,
+      changeFrequency: "yearly",
+      priority: 0.5,
     },
   ];
 }

@@ -1,5 +1,9 @@
+import { pageMetadata } from "@/lib/metadata";
 import MotionSection from "../components/motion-section";
+import { signaturePage } from "../data/site";
 import SignatureForm from "./signature-form";
+
+export const metadata = pageMetadata(signaturePage);
 
 export default function EmailSignaturePage() {
   return (
@@ -19,7 +23,7 @@ export default function EmailSignaturePage() {
             letterSpacing: "-0.02em",
           }}
         >
-          Gerador de assinatura de email
+          {signaturePage.title}
         </h1>
 
         <MotionSection delay={0.1}>
