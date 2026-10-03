@@ -58,11 +58,13 @@ and with a site that can be published.
 
 ### Phase 2 — SEO and GEO
 
-- [ ] `schema-dts@2.1.0`; one typed JSON-LD `@graph` — _verified by:_ the `seo` suite.
-- [ ] `/llms.txt` as a generated route; `public/llms.txt` deleted — _verified by:_ the `seo` suite.
-- [ ] `robots.ts` with the AI crawlers, a sitemap with both routes, `manifest.ts`, a canonical per page —
-      _verified by:_ the `seo` suite.
-- [ ] `/email-signature` as a server page with its own metadata, the form in a client file, and the
+- [x] `schema-dts@2.1.0`; one typed JSON-LD `@graph` — _verified by:_ the `seo` suite. The script moved
+      from the root layout to the home page, since the graph describes that page.
+- [x] `/llms.txt` as a generated route; `public/llms.txt` deleted — _verified by:_ the `seo` suite.
+- [x] `robots.ts` with the AI crawlers, a sitemap with both routes, `manifest.ts`, a canonical per page —
+      _verified by:_ the `seo` suite. The manifest lists the current favicon until phase 4 adds the
+      sprite icons.
+- [x] `/email-signature` as a server page with its own metadata, the form in a client file, and the
       accessible colours in the generated signature — _verified by:_ the `seo` suite; a Chromium test
       that the copy button puts the signature on the clipboard.
 
