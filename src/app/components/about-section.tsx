@@ -101,13 +101,13 @@ function AnimatedStat({ value, label, suffix = "+" }: StatProps) {
   return (
     <div
       ref={ref}
-      className="text-center lg:text-left flex flex-col-reverse gap-1"
+      className="flex flex-col-reverse gap-1 text-center lg:text-left"
     >
-      <dt className="text-xs text-gray dark:text-neutral-400 uppercase tracking-widest">
+      <dt className="text-xs tracking-widest text-gray uppercase dark:text-neutral-400">
         {label}
       </dt>
       <dd
-        className="font-bold text-black dark:text-white leading-none"
+        className="leading-none font-bold text-black dark:text-white"
         style={{
           fontFamily: "var(--font-syne), sans-serif",
           fontSize: "clamp(2rem, 4vw, 3rem)",
@@ -124,8 +124,8 @@ export default function AboutSection() {
   const [hoveredStack, setHoveredStack] = useState<string | null>(null);
 
   return (
-    <section id="sobre" className="py-24 px-6 lg:px-8 border-t border-border">
-      <div className="max-w-6xl mx-auto">
+    <section id="sobre" className="border-t border-border px-6 py-24 lg:px-8">
+      <div className="mx-auto max-w-6xl">
         <MotionSection>
           <p className="section-label">01 — Sobre</p>
         </MotionSection>
@@ -141,14 +141,14 @@ export default function AboutSection() {
           </AnimatedText>
 
           <MotionSection delay={0.2}>
-            <dl className="flex gap-10 py-6 border-y border-border">
+            <dl className="flex gap-10 border-y border-border py-6">
               <AnimatedStat value={3} label="anos de exp." />
               <AnimatedStat value={8} label="clientes" />
             </dl>
           </MotionSection>
 
           <MotionSection delay={0.3}>
-            <p className="text-gray dark:text-neutral-400 text-lg leading-relaxed">
+            <p className="text-lg leading-relaxed text-gray dark:text-neutral-400">
               Sou desenvolvedor FullStack com foco em React e Node.js, baseado
               no Paraná, Brasil. Gosto de transformar ideias complexas em
               interfaces simples e funcionais, sempre com atenção aos detalhes e
@@ -164,7 +164,7 @@ export default function AboutSection() {
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 text-gray dark:text-neutral-400 hover:text-[#16a34a] w-fit"
+                    className="flex w-fit items-center gap-3 text-gray hover:text-[#16a34a] dark:text-neutral-400"
                     style={{
                       transition:
                         "color 0.3s var(--ease-cubic), opacity 0.3s var(--ease-cubic)",
@@ -180,7 +180,7 @@ export default function AboutSection() {
 
           <MotionSection delay={0.5}>
             <div>
-              <p className="text-xs font-semibold tracking-widest uppercase text-gray dark:text-neutral-400 mb-4">
+              <p className="mb-4 text-xs font-semibold tracking-widest text-gray uppercase dark:text-neutral-400">
                 Principais Stacks
               </p>
               <div className="flex flex-wrap gap-3">
@@ -217,7 +217,7 @@ export default function AboutSection() {
                       {hoveredStack === stack.label && (
                         <motion.div
                           role="tooltip"
-                          className="hidden md:flex absolute bottom-[calc(100%+10px)] left-1/2 -translate-x-1/2 z-10 w-44 p-3 rounded-xl bg-white dark:bg-[#1a1a1a] border border-border shadow-lg flex-col items-center gap-2 pointer-events-none"
+                          className="pointer-events-none absolute bottom-[calc(100%+10px)] left-1/2 z-10 hidden w-44 -translate-x-1/2 flex-col items-center gap-2 rounded-xl border border-border bg-white p-3 shadow-lg md:flex dark:bg-[#1a1a1a]"
                           initial={{ opacity: 0, y: 6, scale: 0.95 }}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
                           exit={{ opacity: 0, y: 6, scale: 0.95 }}
@@ -233,14 +233,14 @@ export default function AboutSection() {
                             height={32}
                           />
                           <p
-                            className="font-semibold text-sm text-black dark:text-white"
+                            className="text-sm font-semibold text-black dark:text-white"
                             style={{
                               fontFamily: "var(--font-syne), sans-serif",
                             }}
                           >
                             {stack.label}
                           </p>
-                          <p className="text-xs text-gray dark:text-neutral-400 text-center leading-relaxed">
+                          <p className="text-center text-xs leading-relaxed text-gray dark:text-neutral-400">
                             {stack.description}
                           </p>
                         </motion.div>

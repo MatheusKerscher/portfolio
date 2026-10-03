@@ -37,7 +37,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-50"
+      className="fixed top-0 right-0 left-0 z-50"
       style={{
         background: scrolled ? "var(--nav-scrolled-bg)" : "transparent",
         backdropFilter: scrolled ? "blur(12px)" : "none",
@@ -46,26 +46,26 @@ export default function Navbar() {
           "background 0.4s var(--ease-in-out), border-color 0.4s var(--ease-in-out)",
       }}
     >
-      <div className="max-w-6xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6 lg:px-8">
         <a
           href="#hero"
-          className="font-bold text-xl tracking-tight text-black dark:text-white"
+          className="text-xl font-bold tracking-tight text-black dark:text-white"
           style={{ fontFamily: "var(--font-syne), sans-serif" }}
         >
           MK
         </a>
 
-        <ul className="nav-links-group hidden md:flex items-center gap-8">
+        <ul className="nav-links-group hidden items-center gap-8 md:flex">
           {links.map((link) => (
             <li key={link.href}>
               <a
                 href={link.href}
-                className="text-sm font-medium text-black dark:text-white relative group"
+                className="group relative text-sm font-medium text-black dark:text-white"
                 style={{ transition: "opacity 0.3s var(--ease-cubic)" }}
               >
                 {link.label}
                 <span
-                  className="absolute -bottom-0.5 left-0 w-0 h-px bg-[#16a34a] group-hover:w-full"
+                  className="absolute -bottom-0.5 left-0 h-px w-0 bg-[#16a34a] group-hover:w-full"
                   style={{ transition: "width 0.4s var(--ease-expo)" }}
                 />
               </a>
@@ -77,7 +77,7 @@ export default function Navbar() {
           <ThemeToggle />
 
           <button
-            className="md:hidden flex flex-col gap-1.5 p-1"
+            className="flex flex-col gap-1.5 p-1 md:hidden"
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
             aria-expanded={menuOpen}
@@ -86,19 +86,19 @@ export default function Navbar() {
             <motion.span
               animate={menuOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
               transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
-              className="block w-6 h-0.5 bg-black dark:bg-white"
+              className="block h-0.5 w-6 bg-black dark:bg-white"
             />
             <motion.span
               animate={
                 menuOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }
               }
               transition={{ duration: 0.2 }}
-              className="block w-6 h-0.5 bg-black dark:bg-white"
+              className="block h-0.5 w-6 bg-black dark:bg-white"
             />
             <motion.span
               animate={menuOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
               transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
-              className="block w-6 h-0.5 bg-black dark:bg-white"
+              className="block h-0.5 w-6 bg-black dark:bg-white"
             />
           </button>
         </div>
@@ -112,9 +112,9 @@ export default function Navbar() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.45, ease: [0.19, 1, 0.22, 1] }}
-            className="md:hidden overflow-hidden bg-[var(--page-bg)] border-t border-border"
+            className="overflow-hidden border-t border-border bg-[var(--page-bg)] md:hidden"
           >
-            <ul className="flex flex-col px-6 py-4 gap-4">
+            <ul className="flex flex-col gap-4 px-6 py-4">
               {links.map((link, i) => (
                 <motion.li
                   key={link.href}

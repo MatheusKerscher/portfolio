@@ -26,8 +26,8 @@ const socialLinks = [
 
 export default function ContactSection() {
   return (
-    <section id="contato" className="py-24 px-6 lg:px-8 border-t border-border">
-      <div className="max-w-6xl mx-auto">
+    <section id="contato" className="border-t border-border px-6 py-24 lg:px-8">
+      <div className="mx-auto max-w-6xl">
         <motion.p
           className="section-label"
           initial={{ opacity: 0, y: 20 }}
@@ -43,7 +43,7 @@ export default function ContactSection() {
 
         <div className="max-w-2xl">
           <motion.h2
-            className="font-bold text-black dark:text-white leading-tight mb-8"
+            className="mb-8 leading-tight font-bold text-black dark:text-white"
             style={{
               fontFamily: "var(--font-syne), sans-serif",
               fontSize: "clamp(2rem, 5vw, 4rem)",
@@ -62,7 +62,7 @@ export default function ContactSection() {
           </motion.h2>
 
           <motion.p
-            className="text-gray dark:text-neutral-400 text-lg leading-relaxed mb-10"
+            className="mb-10 text-lg leading-relaxed text-gray dark:text-neutral-400"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{
@@ -88,10 +88,10 @@ export default function ContactSection() {
           >
             <a
               href="mailto:matheuskerscher@outlook.com"
-              className="group flex items-center gap-3 w-fit mb-12"
+              className="group mb-12 flex w-fit items-center gap-3"
             >
               <span
-                className="font-bold text-black dark:text-white group-hover:text-[#16a34a]"
+                className="font-bold text-black group-hover:text-[#16a34a] dark:text-white"
                 style={{
                   fontFamily: "var(--font-syne), sans-serif",
                   fontSize: "clamp(1rem, 2.5vw, 1.4rem)",
@@ -103,7 +103,7 @@ export default function ContactSection() {
               </span>
               <ArrowRight
                 size={20}
-                className="text-[#16a34a] opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0"
+                className="-translate-x-2 text-[#16a34a] opacity-0 group-hover:translate-x-0 group-hover:opacity-100"
                 style={{
                   transition:
                     "opacity 0.3s var(--ease-cubic), transform 0.4s var(--ease-expo)",
@@ -124,7 +124,7 @@ export default function ContactSection() {
             viewport={vp}
           >
             <motion.div
-              className="absolute top-0 left-0 h-px bg-border w-full"
+              className="absolute top-0 left-0 h-px w-full bg-border"
               initial={{ scaleX: 0 }}
               whileInView={{ scaleX: 1 }}
               transition={{
@@ -142,7 +142,7 @@ export default function ContactSection() {
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-gray dark:text-neutral-400 hover:text-[#16a34a]"
+                  className="flex items-center gap-2 text-gray hover:text-[#16a34a] dark:text-neutral-400"
                   style={{ transition: "color 0.3s var(--ease-cubic)" }}
                   aria-label={`${link.label} de Matheus Kerscher`}
                 >

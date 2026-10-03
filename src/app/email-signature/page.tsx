@@ -99,8 +99,8 @@ export default function EmailSignaturePage() {
   }
 
   return (
-    <section className="py-32 px-6 lg:px-8 border-t border-border">
-      <div className="max-w-5xl mx-auto">
+    <section className="border-t border-border px-6 py-32 lg:px-8">
+      <div className="mx-auto max-w-5xl">
         <motion.p
           className="section-label"
           initial={{ opacity: 0, y: 20 }}
@@ -112,7 +112,7 @@ export default function EmailSignaturePage() {
         </motion.p>
 
         <motion.h1
-          className="font-bold text-black dark:text-white leading-tight mb-4"
+          className="mb-4 leading-tight font-bold text-black dark:text-white"
           style={{
             fontFamily: "var(--font-syne), sans-serif",
             fontSize: "clamp(2rem, 5vw, 3.5rem)",
@@ -127,7 +127,7 @@ export default function EmailSignaturePage() {
         </motion.h1>
 
         <motion.p
-          className="text-gray dark:text-neutral-400 text-lg leading-relaxed mb-16 max-w-2xl"
+          className="mb-16 max-w-2xl text-lg leading-relaxed text-gray dark:text-neutral-400"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2, ease }}
@@ -137,7 +137,7 @@ export default function EmailSignaturePage() {
           pronta para colar no Gmail, Outlook ou outro cliente de email.
         </motion.p>
 
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid gap-8 lg:grid-cols-2">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -163,7 +163,7 @@ export default function EmailSignaturePage() {
 
                     return (
                       <label key={field.key} className="flex flex-col gap-2">
-                        <span className="text-xs font-semibold tracking-widest uppercase text-gray dark:text-neutral-400">
+                        <span className="text-xs font-semibold tracking-widest text-gray uppercase dark:text-neutral-400">
                           {field.label}
                         </span>
                         <input
@@ -210,7 +210,7 @@ export default function EmailSignaturePage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="rounded-lg border border-border bg-white dark:bg-[#1a1a1a] p-6 mb-6 overflow-x-auto">
+                <div className="mb-6 overflow-x-auto rounded-lg border border-border bg-white p-6 dark:bg-[#1a1a1a]">
                   <SignaturePreview data={sanitized} />
                 </div>
 
@@ -218,7 +218,7 @@ export default function EmailSignaturePage() {
                   type="button"
                   onClick={handleCopy}
                   disabled={!isValid}
-                  className="btn-accent rounded-lg w-full justify-center disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:gap-2"
+                  className="btn-accent w-full justify-center rounded-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:gap-2"
                 >
                   {copied ? <Check size={18} /> : <Copy size={18} />}
                   {copied
@@ -240,14 +240,14 @@ export default function EmailSignaturePage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <ul className="flex flex-col gap-4 text-sm text-gray dark:text-neutral-400 leading-relaxed">
+                <ul className="flex flex-col gap-4 text-sm leading-relaxed text-gray dark:text-neutral-400">
                   <li>
                     <span className="font-semibold text-black dark:text-white">
                       Gmail:
                     </span>{" "}
                     Configurações → Ver todas as configurações → Geral →
                     Assinatura → cole o conteúdo com{" "}
-                    <kbd className="px-1.5 py-0.5 rounded border border-border text-xs">
+                    <kbd className="rounded border border-border px-1.5 py-0.5 text-xs">
                       Ctrl+V
                     </kbd>{" "}
                     dentro do editor de assinatura.
@@ -258,7 +258,7 @@ export default function EmailSignaturePage() {
                     </span>{" "}
                     Arquivo → Opções → Email → Assinaturas → crie uma nova
                     assinatura e cole com{" "}
-                    <kbd className="px-1.5 py-0.5 rounded border border-border text-xs">
+                    <kbd className="rounded border border-border px-1.5 py-0.5 text-xs">
                       Ctrl+V
                     </kbd>{" "}
                     no campo de edição.

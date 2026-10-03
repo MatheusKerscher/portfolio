@@ -9,14 +9,14 @@ export default function ProjectsSection() {
   return (
     <section
       id="projetos"
-      className="py-24 px-6 lg:px-8 border-t border-border"
+      className="border-t border-border px-6 py-24 lg:px-8"
     >
-      <div className="max-w-6xl mx-auto">
+      <div className="mx-auto max-w-6xl">
         <MotionSection>
           <p className="section-label">02 — Projetos</p>
         </MotionSection>
 
-        <div className="flex items-end justify-between mb-12 gap-8">
+        <div className="mb-12 flex items-end justify-between gap-8">
           <motion.h2
             className="section-heading"
             initial={{ opacity: 0, y: 40 }}
@@ -32,7 +32,7 @@ export default function ProjectsSection() {
           </motion.h2>
 
           <motion.span
-            className="text-sm text-gray shrink-0 mb-1"
+            className="mb-1 shrink-0 text-sm text-gray"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.3 }}

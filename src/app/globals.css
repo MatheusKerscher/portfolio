@@ -133,7 +133,7 @@
   }
 
   body {
-    @apply bg-[var(--page-bg)] text-black dark:text-white antialiased;
+    @apply bg-[var(--page-bg)] text-black antialiased dark:text-white;
     font-feature-settings: "kern" 1;
   }
 
@@ -144,7 +144,7 @@
 
 @layer components {
   .section-label {
-    @apply text-xs font-semibold tracking-widest uppercase text-gray dark:text-neutral-400 mb-6;
+    @apply mb-6 text-xs font-semibold tracking-widest text-gray uppercase dark:text-neutral-400;
     font-family: var(--font-catamaran), sans-serif;
   }
 
@@ -158,12 +158,12 @@
   }
 
   .accent-link {
-    @apply relative inline-block text-[#16a34a] font-semibold;
+    @apply relative inline-block font-semibold text-[#16a34a];
   }
 
   .accent-link::after {
     content: "";
-    @apply absolute bottom-0 left-0 w-0 h-px bg-[#16a34a] transition-all duration-300;
+    @apply absolute bottom-0 left-0 h-px w-0 bg-[#16a34a] transition-all duration-300;
   }
 
   .accent-link:hover::after {
@@ -171,14 +171,14 @@
   }
 
   .btn-accent {
-    @apply inline-flex items-center gap-2 bg-[#16a34a] text-white px-6 py-3 font-semibold hover:bg-accent-dark hover:gap-4;
+    @apply inline-flex items-center gap-2 bg-[#16a34a] px-6 py-3 font-semibold text-white hover:gap-4 hover:bg-accent-dark;
     transition:
       background-color 0.3s var(--ease-expo),
       gap 0.3s var(--ease-expo);
   }
 
   .btn-outline {
-    @apply inline-flex items-center gap-2 border border-black dark:border-white text-black dark:text-white px-6 py-3 font-semibold hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black hover:gap-4;
+    @apply inline-flex items-center gap-2 border border-black px-6 py-3 font-semibold text-black hover:gap-4 hover:bg-black hover:text-white dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-black;
     transition:
       background-color 0.3s var(--ease-expo),
       color 0.3s var(--ease-expo),
@@ -186,7 +186,7 @@
   }
 
   .stack-icon-container {
-    @apply p-2 rounded-full w-10 h-10 bg-white dark:bg-[#1a1a1a] border border-border flex justify-center items-center;
+    @apply flex h-10 w-10 items-center justify-center rounded-full border border-border bg-white p-2 dark:bg-[#1a1a1a];
     transition:
       transform 0.4s var(--ease-expo),
       border-color 0.3s var(--ease-cubic);

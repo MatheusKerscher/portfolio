@@ -19,7 +19,7 @@ export default function HeroSection() {
     <section
       id="hero"
       ref={ref}
-      className="relative min-h-screen flex flex-col justify-center px-6 lg:px-8 max-w-6xl mx-auto pt-16 overflow-hidden"
+      className="relative mx-auto flex min-h-screen max-w-6xl flex-col justify-center overflow-hidden px-6 pt-16 lg:px-8"
     >
       <motion.div style={{ y, opacity }} className="max-w-4xl">
         <motion.div
@@ -27,14 +27,14 @@ export default function HeroSection() {
           animate={{ scaleX: 1 }}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.19, 1, 0.22, 1] }}
           style={{ transformOrigin: "left" }}
-          className="w-16 h-0.5 bg-[#16a34a] mb-8"
+          className="mb-8 h-0.5 w-16 bg-[#16a34a]"
         />
 
         <motion.p
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3, ease: [0.19, 1, 0.22, 1] }}
-          className="text-sm font-semibold tracking-widest uppercase text-[#16a34a] mb-6"
+          className="mb-6 text-sm font-semibold tracking-widest text-[#16a34a] uppercase"
         >
           Desenvolvedor FullStack · PR, Brasil
         </motion.p>
@@ -44,7 +44,7 @@ export default function HeroSection() {
           trigger="mount"
           delay={0.4}
           stagger={0.05}
-          className="font-bold text-black dark:text-white leading-none mb-6"
+          className="mb-6 leading-none font-bold text-black dark:text-white"
           style={{
             fontFamily: "var(--font-syne), sans-serif",
             fontSize: "clamp(3rem, 9vw, 7.5rem)",
@@ -59,7 +59,7 @@ export default function HeroSection() {
           trigger="mount"
           delay={0.6}
           stagger={0.03}
-          className="text-lg md:text-xl text-gray dark:text-neutral-400 max-w-xl mb-10 leading-relaxed"
+          className="mb-10 max-w-xl text-lg leading-relaxed text-gray md:text-xl dark:text-neutral-400"
         >
           Construo aplicações web com foco em experiência de usuário,
           performance e código limpo.
@@ -85,16 +85,16 @@ export default function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.4, duration: 0.8 }}
-        className="absolute bottom-10 right-6 lg:left-8 flex flex-col items-center gap-2 text-gray dark:text-neutral-400"
+        className="absolute right-6 bottom-10 flex flex-col items-center gap-2 text-gray lg:left-8 dark:text-neutral-400"
       >
-        <span className="text-xs tracking-widest uppercase rotate-90 origin-left translate-x-6 mb-2">
+        <span className="mb-2 origin-left translate-x-6 rotate-90 text-xs tracking-widest uppercase">
           Scroll
         </span>
         <motion.div
           animate={{ scaleY: [1, 0.4, 1] }}
           transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
           style={{ transformOrigin: "top" }}
-          className="w-px h-10 bg-gray mt-8"
+          className="mt-8 h-10 w-px bg-gray"
         />
       </motion.div>
     </section>
