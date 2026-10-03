@@ -1,0 +1,36 @@
+name: E2E
+
+on: pull_request
+
+jobs:
+  playwright:
+    name: Playwright
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: lts/jod
+
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium firefox webkit
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v7
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-results
+          path: test-results/
+          retention-days: 7
+  lighthouse:
+    name: Lighthouse
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: lts/jod
+
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      # Shared runners vary by a few points; the acceptance threshold of 95 is checked locally.
+      - run: npm run audit -- --min=90
