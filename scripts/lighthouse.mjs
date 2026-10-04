@@ -2,11 +2,14 @@
  * Measures the production build with Lighthouse, mobile and desktop.
  *
  *   node scripts/lighthouse.mjs [--runs=5] [--min=95] [--latency=40] [--presets=mobile,desktop]
- *                               [--write] [--external] [--url=<url>]
+ *                               [--path=/en] [--write] [--external] [--url=<url>]
  *
  * Without --url it builds the site and serves it with `next start`. Each preset runs --runs
  * times and the median is reported. It exits 1 when the median Performance is below --min or
  * any other category is below 95. --write stores the medians in src/app/data/audit.json.
+ *
+ * --path measures another page of the build, e.g. the English home page at /en. The stored
+ * medians are the ones of the home page in the default language, so --write refuses a path.
  *
  * --latency delays every response by that many milliseconds. On localhost every script arrives
  * before the first frame, so the first paint lands before or after hydration by chance, and
@@ -42,9 +45,15 @@ const PRESETS = options.presets ? options.presets.split(",") : ALL_PRESETS;
 const runs = Number(options.runs ?? 5);
 const min = Number(options.min ?? 95);
 const latency = Number(options.latency ?? 40);
+const path = (options.path ?? "/").replace(/^\/?/, "/");
 const origin = `http://localhost:${PORT}/`;
 const url =
-  options.url ?? (latency > 0 ? `http://localhost:${PROXY_PORT}/` : origin);
+  options.url ?? `http://localhost:${latency > 0 ? PROXY_PORT : PORT}${path}`;
+
+if (options.write && path !== "/") {
+  console.error("--write stores the medians of /; run it without --path.");
+  process.exit(1);
+}
 
 const median = (values) => {
   const sorted = [...values].sort((a, b) => a - b);
