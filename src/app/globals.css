@@ -54,9 +54,27 @@
   --radius: 0.625rem;
   /* Height of the fixed navbar. The stacked sections are laid out below it. */
   --nav-h: 4rem;
+  /*
+   * Vertical rhythm of a stacked panel. `--squeeze` is how far a wide viewport falls short of
+   * 960 px in height, and each size gives up a share of it. That keeps a panel inside the space
+   * below the navbar on a laptop screen, where it pins with its top at the navbar. It is zero on
+   * a narrow screen, where a panel is taller than the viewport whatever its spacing.
+   */
+  --squeeze: 0px;
+  --panel-pad: calc(4rem - var(--squeeze) * 0.14);
+  --panel-gap: calc(2.5rem - var(--squeeze) * 0.08);
+  --panel-gap-md: calc(var(--panel-gap) * 0.8);
+  --panel-gap-sm: calc(var(--panel-gap) * 0.6);
+  --thumbnail-h: calc(15.6rem - var(--squeeze) * 0.3);
   --ease-expo: cubic-bezier(0.19, 1, 0.22, 1);
   --ease-cubic: cubic-bezier(0.215, 0.61, 0.355, 1);
   --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --squeeze: clamp(0px, 960px - 100svh, 320px);
+  }
 }
 
 .dark {
@@ -101,7 +119,8 @@
   }
 
   .section-label {
-    @apply mb-6 flex items-center gap-3 text-xs font-semibold tracking-widest text-ink-muted uppercase;
+    @apply flex items-center gap-3 text-xs font-semibold tracking-widest text-ink-muted uppercase;
+    margin-bottom: var(--panel-gap-sm);
     font-family: var(--font-catamaran), sans-serif;
   }
 
@@ -120,7 +139,11 @@
   .section-heading {
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-size: clamp(
+      2rem,
+      min(4vw, calc(3.5rem - var(--squeeze) * 0.06)),
+      3.5rem
+    );
     line-height: 1.1;
     letter-spacing: -0.02em;
     color: var(--ink);

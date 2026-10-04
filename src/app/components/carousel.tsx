@@ -28,7 +28,7 @@ export function Carousel({
 }: CarouselProps) {
   return (
     <div className={className}>
-      <div className="mb-6 flex items-end justify-between gap-6">
+      <div className="mb-(--panel-gap-sm) flex items-end justify-between gap-6">
         <div className="min-w-0">{header}</div>
         <CarouselControls
           viewportId={id}

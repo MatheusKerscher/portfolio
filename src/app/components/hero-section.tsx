@@ -26,7 +26,9 @@ export default function HeroSection() {
             style={{
               fontFamily: "var(--font-display)",
               // The longest word has to fit a 320 px wide screen and the column next to the portrait.
-              fontSize: "clamp(2.5rem, 7.5vw + 1rem, 6.5rem)",
+              // It also gives way on a short, wide viewport: see `--squeeze` in globals.css.
+              fontSize:
+                "clamp(2.5rem, min(7.5vw + 1rem, 6.5rem - var(--squeeze) * 0.07), 6.5rem)",
               letterSpacing: "-0.03em",
             }}
           >

@@ -8,6 +8,7 @@ import {
   scrollToNatural,
   scrollToY,
   SECTION_IDS,
+  storeSkin,
   waitForStack,
 } from "./helpers";
 
@@ -123,6 +124,46 @@ test.describe("stacked sections", () => {
           Math.abs((await panelBox(page, id)).top - navbar),
           `#${id} pins under the navbar, not behind it`,
         ).toBeLessThanOrEqual(1);
+      }
+    }
+  });
+
+  test.describe("on a laptop screen", () => {
+    // Where the space below the navbar is shortest on a wide screen: a 14-inch MacBook with the
+    // Dock showing, and a 1366×768 laptop.
+    const VIEWPORTS = [
+      { width: 1512, height: 749 },
+      { width: 1366, height: 641 },
+    ];
+
+    for (const viewport of VIEWPORTS) {
+      for (const skin of ["normal", "8-bit"] as const) {
+        test(`every panel fits below the navbar at ${viewport.width}×${viewport.height}, ${skin} skin`, async ({
+          page,
+          isMobile,
+        }) => {
+          test.skip(isMobile, "a laptop screen is not a phone");
+          await page.setViewportSize(viewport);
+          if (skin === "8-bit") await storeSkin(page);
+          await page.goto("/");
+          await waitForStack(page);
+          await page.evaluate(() => document.fonts.ready);
+          const navbar = await navbarHeight(page);
+          const space = viewport.height - navbar;
+
+          for (const [index, id] of SECTION_IDS.entries()) {
+            const { naturalTop, height } = await panelBox(page, id);
+            expect(height, `#${id} fits`).toBeLessThanOrEqual(space + 1);
+
+            // The last panel never pins. The others stay put while the next one covers them.
+            if (index === SECTION_IDS.length - 1) continue;
+            await scrollToY(page, naturalTop - navbar + space / 2);
+            expect(
+              Math.abs((await panelBox(page, id)).top - navbar),
+              `#${id} stays below the navbar while it is covered`,
+            ).toBeLessThanOrEqual(1);
+          }
+        });
       }
     }
   });

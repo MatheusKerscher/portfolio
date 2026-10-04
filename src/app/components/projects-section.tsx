@@ -9,7 +9,7 @@ export default function ProjectsSection() {
     <section
       data-stack-panel
       aria-labelledby="projetos-heading"
-      className="stack-panel flex flex-col justify-center px-6 py-16 lg:px-8"
+      className="stack-panel flex flex-col justify-center px-6 py-(--panel-pad) lg:px-8"
     >
       <div className="mx-auto w-full max-w-6xl">
         <MotionSection>

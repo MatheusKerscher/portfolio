@@ -11,14 +11,14 @@ export default function AboutSection() {
     <section
       data-stack-panel
       aria-labelledby="sobre-heading"
-      className="stack-panel flex flex-col justify-center px-6 py-16 lg:px-8"
+      className="stack-panel flex flex-col justify-center px-6 py-(--panel-pad) lg:px-8"
     >
       <div className="mx-auto w-full max-w-6xl">
         <MotionSection>
           <p className="section-label">{aboutCopy.label}</p>
         </MotionSection>
 
-        <div className="mt-2 space-y-10">
+        <div className="mt-2 space-y-(--panel-gap)">
           <AnimatedText
             as="h2"
             id="sobre-heading"
@@ -31,7 +31,7 @@ export default function AboutSection() {
 
           <MotionSection
             delay={0.2}
-            className="grid gap-8 border-y border-line py-8 lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-16"
+            className="grid gap-8 border-y border-line py-(--panel-gap-md) lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-16"
           >
             <dl className="flex gap-10">
               {stats.map((stat) => (
@@ -52,7 +52,7 @@ export default function AboutSection() {
               ))}
             </dl>
 
-            <div className="space-y-6">
+            <div className="space-y-(--panel-gap-sm)">
               <p className="text-lg leading-relaxed text-ink-muted">
                 {aboutCopy.bio}
               </p>

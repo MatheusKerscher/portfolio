@@ -18,7 +18,7 @@ export default function ProjectCard({
 
   return (
     <article className="slide-card group">
-      <div className="aspect-5/3 overflow-hidden border-b border-line bg-paper">
+      <div className="aspect-5/3 max-h-(--thumbnail-h) overflow-hidden border-b border-line bg-paper">
         <Image
           src={thumbnail.src}
           alt={projectsCopy.thumbnailAlt(title)}
