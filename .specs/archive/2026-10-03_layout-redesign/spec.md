@@ -222,24 +222,27 @@ All commands are run from the repository root. The Playwright projects are `chro
       JSON-LD and `/llms.txt`. `/llms.txt` contains every project title and URL. `robots.txt` names
       `GPTBot`, `ClaudeBot` and the sitemap. The sitemap lists both routes. `/manifest.webmanifest`,
       `/icon.png`, `/apple-icon.png`, `/favicon.ico` and `/opengraph-image` return 200.
-- [ ] **Sprite:** `public/avatar/avatar.png` is 92×92, has at most 32 colours and weighs at most 4 KB.
+- [x] **Sprite:** `public/avatar/avatar.png` is 92×92, has at most 32 colours and weighs at most 4 KB.
       Running `npm run assets:pixel` again leaves `git status` clean. The requester's approval of the
-      render is recorded in `tasks.md`.
+      render is recorded in `tasks.md`. Measured on 2026-10-04: 30 colours, 1,250 bytes.
 - [x] **Performance, local:** `npm run audit` — Lighthouse 13.5.0 against the production build served
       with 40 ms of latency per response, mobile and desktop presets, median of 5 runs — reports
       Performance ≥ 95, and Accessibility, Best Practices and SEO ≥ 95. The latency was added during the
       work: without it the mobile result flips between two values (`findings.md`).
-- [ ] **Performance, deployed:** PageSpeed Insights on `https://kerscher.dev.br/` reports Performance
-      ≥ 95 on mobile and on desktop, median of 3 runs each.
+- [x] **Performance, deployed:** PageSpeed Insights on `https://kerscher.dev.br/` reports Performance
+      ≥ 95 on mobile and on desktop, median of 3 runs each. Reported by the requester on 2026-10-04: 100
+      on both devices; the number of runs was not recorded.
 - [x] **Initial JavaScript:** the script bytes transferred on the first load of `/` are recorded in
       `findings.md` for the baseline and for the final build, and the final value is at most the baseline
       plus 15 KB.
 - [x] **Documentation:** every command named in `README.md` and `CLAUDE.md` exists in `package.json`
       `scripts`, every path they name exists, and the README thumbnail shows the new home page.
-- [ ] Manual check on `npm run dev`: `/` and `/email-signature` in light and dark, normal and 8-bit. The
+- [x] Manual check on `npm run dev`: `/` and `/email-signature` in light and dark, normal and 8-bit. The
       theme toggle, smooth scroll, carousels, the Easter egg, the Inspector and the signature copy
       button work, and
-      the browser console shows no errors.
+      the browser console shows no errors. The requester reviewed the site through the four
+      rounds of adjustments and on real devices after the merge; the signature page was removed by
+      `2026-10-04_i18n-and-experience`.
 
 ## Requester decisions
 

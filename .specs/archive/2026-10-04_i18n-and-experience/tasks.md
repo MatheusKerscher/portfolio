@@ -101,11 +101,13 @@ exiting 0. Every phase ends with the gate and with a site that can be published.
 
 - [x] Requester reviewed the copy in both languages and the timeline — _verified by:_ their answer in
       the conversation on 2026-10-04: "textos estão certo".
-- [ ] The rollout of `2026-10-03_layout-redesign` covers the push, the pull request and the deploy: this
-      work is on the same branch.
-- [ ] After the deploy: `hreflang` and both `llms.txt` answer on the production host — _verified by:_
-      `curl` against `https://kerscher.dev.br`.
-- [ ] Folder moved to `.specs/archive/2026-10-04_i18n-and-experience/`.
+- [x] The rollout of `2026-10-03_layout-redesign` covers the push, the pull request and the deploy: this
+      work is on the same branch. Merged as pull request #44 on 2026-10-04.
+- [x] After the deploy: `hreflang` and both `llms.txt` answer on the production host — _verified by:_
+      `curl` against `https://kerscher.dev.br` on 2026-10-04: `/` is `pt-BR` and `/en` is `en`, each with
+      its canonical and the three alternates; `/llms.txt` and `/en/llms.txt` answer 200, the second with
+      `Content-Language: en`; `/pt` and `/email-signature` answer 308 to `/`.
+- [x] Folder moved to `.specs/archive/2026-10-04_i18n-and-experience/`.
 
 ## Blocked
 

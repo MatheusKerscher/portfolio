@@ -21,7 +21,8 @@ States: `[ ]` open · `[~]` in progress · `[x]` done and verified · `[!]` bloc
 
 ## Rollout
 
-- [ ] Pull request opened and the `E2E` workflow green — _verified by:_ its run on the pull request.
+- [x] Pull request opened and the `E2E` workflow green — _verified by:_ run 37216724364 on pull request
+      #45: 462 passed, 258 skipped, none failed or flaky. Merged on 2026-10-04.
 
 ## Blocked
 

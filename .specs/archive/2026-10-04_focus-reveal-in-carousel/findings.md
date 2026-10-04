@@ -49,7 +49,7 @@ more.
 `npm run audit -- --runs=3`, not stored: 100 in every category, mobile and desktop, and 197.3 KB of
 script against 197.2 KB. The stored scores of `audit.json` are those of `47ea17b` and still hold.
 
-## Not verified here
+## On Linux
 
-The Linux build of WebKit, where CI failed, was not run locally. The run of the `E2E` workflow on the
-pull request of this branch is what proves the fix there.
+The Linux build of WebKit, where CI had failed, was not run locally. The `E2E` workflow of pull request
+#45 ran it: 462 passed, 258 skipped, none failed and none flaky, in 7 minutes.
