@@ -17,7 +17,7 @@ export default async function ProfileLinks({ ids }: ProfileLinksProps) {
       href={link.href}
       target="_blank"
       rel="noopener noreferrer"
-      className="text-ink-muted transition-colors duration-200 hover:text-ink max-lg:flex max-lg:h-11 max-lg:w-11 max-lg:items-center max-lg:justify-center"
+      className="text-ink-muted transition-[color,opacity] duration-200 hover:text-ink max-lg:flex max-lg:h-11 max-lg:w-11 max-lg:items-center max-lg:justify-center"
       aria-label={layout.profileOf(link.name)}
       title={link.name}
     >

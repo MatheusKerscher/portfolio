@@ -49,7 +49,7 @@ export default function LanguageSwitch({
             title={option.name}
             aria-current={option.current ? "true" : undefined}
             onClick={rememberScrollPosition}
-            className="flex min-h-8 min-w-8 items-center justify-center text-ink-muted transition-colors duration-200 hover:text-brand aria-[current]:text-ink aria-[current]:underline aria-[current]:decoration-brand aria-[current]:decoration-2 aria-[current]:underline-offset-4 max-lg:min-h-11 max-lg:min-w-11"
+            className="flex min-h-8 min-w-8 items-center justify-center text-ink-muted transition-[color,opacity] duration-200 hover:text-brand aria-[current]:text-ink aria-[current]:underline aria-[current]:decoration-brand aria-[current]:decoration-2 aria-[current]:underline-offset-4 max-lg:min-h-11 max-lg:min-w-11"
           >
             {option.label}
             <span className="sr-only"> — {option.name}</span>

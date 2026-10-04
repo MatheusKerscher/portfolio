@@ -83,7 +83,7 @@ export default async function ContactSection() {
 
           <MotionSection delay={0.4} className="border-t border-line pt-8">
             {/* The narrower gap keeps the three of them on one row at 320 px. */}
-            <ul className="flex flex-wrap items-center gap-x-6 gap-y-3 max-lg:justify-center max-sm:gap-x-4">
+            <ul className="nav-links-group flex flex-wrap items-center gap-x-6 gap-y-3 max-lg:justify-center max-sm:gap-x-4">
               {socials
                 .filter((link) => link.id !== "email")
                 .map((link) => (
@@ -93,7 +93,10 @@ export default async function ContactSection() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex min-h-6 items-center gap-2 text-ink-muted hover:text-brand max-lg:min-h-11"
-                      style={{ transition: "color 0.3s var(--ease-cubic)" }}
+                      style={{
+                        transition:
+                          "color 0.3s var(--ease-cubic), opacity 0.3s var(--ease-cubic)",
+                      }}
                       aria-label={dict.layout.profileOf(link.name)}
                     >
                       <SocialIcon id={link.id} size={20} />
