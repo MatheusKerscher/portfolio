@@ -5,7 +5,12 @@ import { useTheme } from "next-themes";
 import { AnimatePresence, motion } from "framer-motion";
 import { Moon, Sun } from "lucide-react";
 
-export default function ThemeToggle() {
+type ThemeToggleProps = { lightLabel: string; darkLabel: string };
+
+export default function ThemeToggle({
+  lightLabel,
+  darkLabel,
+}: ThemeToggleProps) {
   const { resolvedTheme, setTheme } = useTheme();
   const mounted = useSyncExternalStore(
     () => () => {},
@@ -13,15 +18,15 @@ export default function ThemeToggle() {
     () => false,
   );
 
-  if (!mounted) return <div className="w-8 h-8" />;
+  if (!mounted) return <div className="h-8 w-8 max-lg:h-11 max-lg:w-11" />;
 
   const isDark = resolvedTheme === "dark";
 
   return (
     <button
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      aria-label={isDark ? "Ativar tema claro" : "Ativar tema escuro"}
-      className="relative w-8 h-8 flex items-center justify-center text-black dark:text-white hover:text-[#16a34a] dark:hover:text-[#16a34a] transition-colors duration-200"
+      aria-label={isDark ? lightLabel : darkLabel}
+      className="relative flex h-8 w-8 items-center justify-center text-ink transition-colors duration-200 hover:text-brand max-lg:h-11 max-lg:w-11"
     >
       <AnimatePresence mode="wait" initial={false}>
         <motion.span

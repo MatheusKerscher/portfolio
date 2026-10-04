@@ -17,6 +17,10 @@ const directionMap = {
   right: { y: 0, x: 50 },
 };
 
+/**
+ * Scroll reveal. `data-reveal` lets the <noscript> rule in the root layout show the content when
+ * JavaScript is off.
+ */
 export default function MotionSection({
   children,
   className,
@@ -28,6 +32,7 @@ export default function MotionSection({
 
   return (
     <motion.div
+      data-reveal
       initial={{ opacity: 0, y, x }}
       whileInView={{ opacity: 1, y: 0, x: 0 }}
       transition={{ duration: 0.75, delay, ease: [0.19, 1, 0.22, 1] }}

@@ -1,71 +1,124 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import type Lenis from "lenis";
 import { useLenis } from "./lenis-context";
 import ThemeToggle from "./theme-toggle";
 
-const links = [
-  { label: "Projetos", href: "#projetos" },
-  { label: "Currículo", href: "#curriculo" },
-  { label: "Contato", href: "#contato" },
-];
+type NavbarProps = {
+  /** Resolved by the layout: a Client Component does not import a dictionary. */
+  copy: {
+    label: string;
+    brand: string;
+    brandLabel: string;
+    homeHref: string;
+    links: { label: string; href: string }[];
+    openMenu: string;
+    closeMenu: string;
+    lightTheme: string;
+    darkTheme: string;
+  };
+  /** In the bar from `md` up, and inside the menu below it, where the bar has no room. */
+  languageSwitch: ReactNode;
+  /** Shown at the bottom of the menu: the links to the profiles. */
+  menuFooter: ReactNode;
+  /**
+   * The toggles of the 8-bit skin. The theme toggle is imported here instead: rendered by the
+   * layout as a Client Component of its own, it made the bundler ship the gesture and layout
+   * features of framer-motion, 14 KB that nothing uses.
+   */
+  actions: ReactNode;
+};
 
-export default function Navbar() {
+/**
+ * What the open menu changes outside itself: it fills the screen, so the page behind it does not
+ * scroll and cannot be reached by the keyboard or by assistive technology.
+ */
+function setPageLocked(locked: boolean, lenis: Lenis | null) {
+  if (locked) lenis?.stop();
+  else lenis?.start();
+  document.documentElement.style.overflow = locked ? "hidden" : "";
+  document
+    .querySelectorAll<HTMLElement>("main, footer")
+    .forEach((element) => (element.inert = locked));
+}
+
+export default function Navbar({
+  copy,
+  languageSwitch,
+  menuFooter,
+  actions,
+}: NavbarProps) {
   const lenis = useLenis();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [pendingHref, setPendingHref] = useState<string | null>(null);
+  const menuButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 80);
+    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  function handleMobileLinkClick(href: string) {
-    setPendingHref(href);
-    setMenuOpen(false);
-  }
+  useEffect(() => {
+    if (!menuOpen) return;
+    const instance = lenis.current;
+    setPageLocked(true, instance);
 
-  function handleExitComplete() {
-    if (pendingHref && lenis.current) {
-      lenis.current.scrollTo(pendingHref, { offset: -80 });
-      setPendingHref(null);
-    }
-  }
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setMenuOpen(false);
+      menuButton.current?.focus();
+    };
+    // The menu exists below `md` only: a viewport that grows past it closes the menu.
+    const wide = window.matchMedia("(min-width: 48rem)");
+    const onWide = () => wide.matches && setMenuOpen(false);
+    document.addEventListener("keydown", onKeyDown);
+    wide.addEventListener("change", onWide);
+
+    return () => {
+      setPageLocked(false, instance);
+      document.removeEventListener("keydown", onKeyDown);
+      wide.removeEventListener("change", onWide);
+    };
+  }, [menuOpen, lenis]);
 
   return (
+    // Opaque: the stacked sections pin at its bottom edge, and what scrolls past must not show
+    // through it.
     <nav
-      className="fixed top-0 left-0 right-0 z-50"
-      style={{
-        background: scrolled ? "var(--nav-scrolled-bg)" : "transparent",
-        backdropFilter: scrolled ? "blur(12px)" : "none",
-        borderBottom: scrolled ? "1px solid #e5e5e5" : "1px solid transparent",
-        transition:
-          "background 0.4s var(--ease-in-out), border-color 0.4s var(--ease-in-out)",
-      }}
+      aria-label={copy.label}
+      data-scrolled={scrolled}
+      className="fixed top-0 right-0 left-0 z-50 border-b border-transparent bg-paper data-[scrolled=true]:border-line"
+      style={{ transition: "border-color 0.4s var(--ease-in-out)" }}
     >
-      <div className="max-w-6xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div
+        data-nav-bar
+        className="mx-auto flex h-(--nav-h) max-w-6xl items-center justify-between px-6 lg:px-8"
+      >
         <a
-          href="#hero"
-          className="font-bold text-xl tracking-tight text-black dark:text-white"
-          style={{ fontFamily: "var(--font-syne), sans-serif" }}
+          href={copy.homeHref}
+          aria-label={copy.brandLabel}
+          className="text-xl font-bold tracking-tight text-ink max-lg:flex max-lg:h-11 max-lg:min-w-11 max-lg:items-center"
+          style={{ fontFamily: "var(--font-display)" }}
         >
-          MK
+          {copy.brand}
         </a>
 
-        <ul className="nav-links-group hidden md:flex items-center gap-8">
-          {links.map((link) => (
+        <ul className="nav-links-group hidden items-center gap-8 md:flex">
+          {copy.links.map((link) => (
             <li key={link.href}>
               <a
                 href={link.href}
-                className="text-sm font-medium text-black dark:text-white relative group"
+                className="group relative text-sm font-medium text-ink"
                 style={{ transition: "opacity 0.3s var(--ease-cubic)" }}
               >
                 {link.label}
                 <span
-                  className="absolute -bottom-0.5 left-0 w-0 h-px bg-[#16a34a] group-hover:w-full"
+                  aria-hidden="true"
+                  className="absolute -bottom-0.5 left-0 h-px w-0 bg-brand group-hover:w-full"
                   style={{ transition: "width 0.4s var(--ease-expo)" }}
                 />
               </a>
@@ -73,72 +126,90 @@ export default function Navbar() {
           ))}
         </ul>
 
-        <div className="flex items-center gap-2">
-          <ThemeToggle />
+        {/* Below `lg` the controls are 44 px targets: the margin puts the glyph of the last one,
+            not its box, at the edge of the content. */}
+        <div className="flex items-center gap-2 max-lg:-mr-2.5">
+          <div className="hidden md:block">{languageSwitch}</div>
+          {actions}
+          <ThemeToggle
+            lightLabel={copy.lightTheme}
+            darkLabel={copy.darkTheme}
+          />
 
           <button
-            className="md:hidden flex flex-col gap-1.5 p-1"
+            ref={menuButton}
+            className="flex h-11 w-11 flex-col items-center justify-center gap-1.5 md:hidden"
             onClick={() => setMenuOpen(!menuOpen)}
-            aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
+            aria-label={menuOpen ? copy.closeMenu : copy.openMenu}
             aria-expanded={menuOpen}
             aria-controls="mobile-nav"
           >
             <motion.span
               animate={menuOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
               transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
-              className="block w-6 h-0.5 bg-black dark:bg-white"
+              className="block h-0.5 w-6 bg-ink"
             />
             <motion.span
               animate={
                 menuOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }
               }
               transition={{ duration: 0.2 }}
-              className="block w-6 h-0.5 bg-black dark:bg-white"
+              className="block h-0.5 w-6 bg-ink"
             />
             <motion.span
               animate={menuOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
               transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
-              className="block w-6 h-0.5 bg-black dark:bg-white"
+              className="block h-0.5 w-6 bg-ink"
             />
           </button>
         </div>
       </div>
 
-      <AnimatePresence onExitComplete={handleExitComplete}>
+      <AnimatePresence>
         {menuOpen && (
+          // From the bar to the bottom of the screen. It scrolls on its own if it has to, on a
+          // short screen, without passing the gesture on to the page.
           <motion.div
             id="mobile-nav"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.45, ease: [0.19, 1, 0.22, 1] }}
-            className="md:hidden overflow-hidden bg-[var(--page-bg)] border-t border-border"
+            data-lenis-prevent
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
+            className="fixed inset-x-0 top-(--nav-h) bottom-0 flex flex-col overflow-y-auto overscroll-contain border-t border-line bg-paper md:hidden"
           >
-            <ul className="flex flex-col px-6 py-4 gap-4">
-              {links.map((link, i) => (
+            <ul className="flex flex-1 flex-col items-center justify-center gap-2 px-6 py-8">
+              {copy.links.map((link, i) => (
                 <motion.li
                   key={link.href}
-                  initial={{ opacity: 0, x: -12 }}
-                  animate={{ opacity: 1, x: 0 }}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{
-                    delay: i * 0.06,
-                    duration: 0.4,
+                    delay: 0.05 + i * 0.06,
+                    duration: 0.45,
                     ease: [0.19, 1, 0.22, 1],
                   }}
                 >
+                  {/*
+                    Lenis scrolls to the anchor; the menu only has to close. The page is free by
+                    then: React runs the cleanup of the effect above inside the click, before the
+                    event reaches the listener of Lenis on `window`.
+                  */}
                   <a
                     href={link.href}
-                    className="text-base font-medium text-black dark:text-white"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleMobileLinkClick(link.href);
-                    }}
+                    className="flex min-h-14 items-center px-6 text-3xl font-bold text-ink"
+                    style={{ fontFamily: "var(--font-display)" }}
+                    onClick={() => setMenuOpen(false)}
                   >
                     {link.label}
                   </a>
                 </motion.li>
               ))}
             </ul>
+            <div className="flex flex-col items-center gap-2 border-t border-line px-6 py-6">
+              {languageSwitch}
+              {menuFooter}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

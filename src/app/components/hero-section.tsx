@@ -1,102 +1,72 @@
-"use client";
+import { getDictionary } from "../data/dictionaries/server";
+import { headingId, sections, site } from "../data/site";
+import Portrait from "./portrait";
 
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
-import AnimatedText from "./animated-text";
-
-export default function HeroSection() {
-  const ref = useRef<HTMLElement>(null);
-
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end start"],
-  });
-
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+/**
+ * Static on purpose: the `h1` and the portrait are the candidates for Largest Contentful Paint,
+ * and an entrance animation that starts hidden would delay them until the client bundle has run.
+ */
+export default async function HeroSection() {
+  const { hero } = await getDictionary();
 
   return (
     <section
-      id="hero"
-      ref={ref}
-      className="relative min-h-screen flex flex-col justify-center px-6 lg:px-8 max-w-6xl mx-auto pt-16 overflow-hidden"
+      data-stack-panel
+      aria-labelledby={headingId("hero")}
+      // The bottom padding is the room of the scroll cue, which is shown from `md` up.
+      className="stack-panel flex flex-col justify-center overflow-hidden px-6 pt-8 pb-28 max-md:pb-8 lg:px-8"
     >
-      <motion.div style={{ y, opacity }} className="max-w-4xl">
-        <motion.div
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ duration: 0.8, delay: 0.2, ease: [0.19, 1, 0.22, 1] }}
-          style={{ transformOrigin: "left" }}
-          className="w-16 h-0.5 bg-[#16a34a] mb-8"
-        />
+      {/* Below `lg` it is one centred column, the portrait first. */}
+      <div className="mx-auto grid w-full max-w-6xl items-center gap-10 max-lg:justify-items-center max-lg:text-center lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-16">
+        <div className="order-2 lg:order-1">
+          <div aria-hidden="true" className="pixel-dots mb-8 max-lg:mx-auto" />
 
-        <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3, ease: [0.19, 1, 0.22, 1] }}
-          className="text-sm font-semibold tracking-widest uppercase text-[#16a34a] mb-6"
-        >
-          Desenvolvedor FullStack · PR, Brasil
-        </motion.p>
+          <p className="mb-6 text-sm font-semibold tracking-widest text-brand uppercase max-lg:text-balance max-sm:text-xs">
+            {hero.eyebrow}
+          </p>
 
-        <AnimatedText
-          as="h1"
-          trigger="mount"
-          delay={0.4}
-          stagger={0.05}
-          className="font-bold text-black dark:text-white leading-none mb-6"
-          style={{
-            fontFamily: "var(--font-syne), sans-serif",
-            fontSize: "clamp(3rem, 9vw, 7.5rem)",
-            letterSpacing: "-0.03em",
-          }}
-        >
-          MATHEUS KERSCHER
-        </AnimatedText>
+          <h1
+            id={headingId("hero")}
+            className="hero-title mb-6 leading-none font-bold text-ink"
+          >
+            {site.heading}
+          </h1>
 
-        <AnimatedText
-          as="p"
-          trigger="mount"
-          delay={0.6}
-          stagger={0.03}
-          className="text-lg md:text-xl text-gray dark:text-neutral-400 max-w-xl mb-10 leading-relaxed"
-        >
-          Construo aplicações web com foco em experiência de usuário,
-          performance e código limpo.
-        </AnimatedText>
+          <p className="mb-10 max-w-xl text-lg leading-relaxed text-ink-muted max-lg:mx-auto max-lg:text-balance max-sm:text-phone-copy md:text-xl">
+            {hero.tagline}
+          </p>
 
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 1.1, ease: [0.19, 1, 0.22, 1] }}
-          className="flex flex-wrap gap-4"
-        >
-          <a href="#projetos" className="btn-accent">
-            Ver Projetos →
-          </a>
-          <a href="#contato" className="btn-outline">
-            Entre em Contato
-          </a>
-        </motion.div>
-      </motion.div>
+          {/* On a phone the two buttons are stacked and share one width. */}
+          <div className="flex flex-wrap gap-4 max-lg:justify-center max-sm:mx-auto max-sm:max-w-xs max-sm:flex-col">
+            <a
+              href={`#${sections.projects}`}
+              className="btn-accent max-sm:justify-center"
+            >
+              {hero.primaryCta} <span aria-hidden="true">→</span>
+            </a>
+            <a
+              href={`#${sections.contact}`}
+              className="btn-outline max-sm:justify-center"
+            >
+              {hero.secondaryCta}
+            </a>
+          </div>
+        </div>
 
-      <motion.div
+        <Portrait className="order-1 lg:order-2" />
+      </div>
+
+      <div
         aria-hidden="true"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.4, duration: 0.8 }}
-        className="absolute bottom-10 right-6 lg:left-8 flex flex-col items-center gap-2 text-gray dark:text-neutral-400"
+        className="absolute inset-x-0 bottom-6 hidden flex-col items-center gap-3 text-ink-muted md:flex"
       >
-        <span className="text-xs tracking-widest uppercase rotate-90 origin-left translate-x-6 mb-2">
-          Scroll
+        <span className="text-xs tracking-widest uppercase">
+          {hero.scrollCue}
         </span>
-        <motion.div
-          animate={{ scaleY: [1, 0.4, 1] }}
-          transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-          style={{ transformOrigin: "top" }}
-          className="w-px h-10 bg-gray mt-8"
-        />
-      </motion.div>
+        <div className="h-8">
+          <div className="scroll-cue" />
+        </div>
+      </div>
     </section>
   );
 }

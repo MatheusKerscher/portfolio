@@ -1,103 +1,69 @@
-import { experience, education, TimelineItem } from "../data/curriculum";
+import { formatPeriod, timeline } from "../data/curriculum";
+import { getDictionary } from "../data/dictionaries/server";
+import { headingId } from "../data/site";
+import { Carousel, CarouselItem } from "./carousel";
 import MotionSection from "./motion-section";
 
-function TimelineEntry({ item, index }: { item: TimelineItem; index: number }) {
-  return (
-    <MotionSection delay={index * 0.1}>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-8 py-8 border-b border-border last:border-0">
-        <div className="md:col-span-1">
-          <time
-            dateTime={
-              item.endDate
-                ? `${item.startDate}/${item.endDate}`
-                : item.startDate
-            }
-            className="text-sm text-gray dark:text-neutral-400 font-medium"
-          >
-            {item.period}
-          </time>
-        </div>
-        <div className="md:col-span-3 space-y-1">
-          <h3
-            className="font-bold text-lg text-black dark:text-white leading-tight"
-            style={{ fontFamily: "var(--font-syne), sans-serif" }}
-          >
-            {item.title}
-          </h3>
-          <p className="text-[#16a34a] text-sm font-semibold">
-            {item.organization}
-          </p>
-          <p className="text-gray dark:text-neutral-400 text-sm leading-relaxed mt-2">
-            {item.description}
-          </p>
-        </div>
-      </div>
-    </MotionSection>
-  );
-}
+export default async function CurriculumSection() {
+  const copy = (await getDictionary()).curriculum;
 
-export default function CurriculumSection() {
   return (
     <section
-      id="curriculo"
-      className="py-24 px-6 lg:px-8 border-t border-border"
+      data-stack-panel
+      aria-labelledby={headingId("experience")}
+      className="stack-panel flex flex-col justify-center px-6 py-(--panel-pad) lg:px-8"
     >
-      <div className="max-w-6xl mx-auto">
+      <div className="mx-auto w-full max-w-6xl">
         <MotionSection>
-          <p className="section-label">03 — Currículo</p>
+          <p className="section-label">{copy.label}</p>
         </MotionSection>
 
         <MotionSection delay={0.1}>
-          <h2 className="section-heading mb-16">Experiência & Formação.</h2>
+          <Carousel
+            id="carousel-experience"
+            label={copy.carousel}
+            itemWidth="min(80vw, 24rem)"
+            header={
+              <h2 id={headingId("experience")} className="section-heading">
+                {copy.heading}
+              </h2>
+            }
+          >
+            {timeline.map((item) => (
+              <CarouselItem key={item.id}>
+                <article className="slide-card gap-3 p-6 max-lg:items-center max-lg:text-center">
+                  <p className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-xs max-lg:justify-center">
+                    <span className="bg-ink px-2 py-0.5 font-semibold tracking-widest text-paper uppercase">
+                      {copy.kinds[item.kind]}
+                    </span>
+                    <time
+                      dateTime={
+                        item.endDate
+                          ? `${item.startDate}/${item.endDate}`
+                          : item.startDate
+                      }
+                      className="font-medium text-ink-muted"
+                    >
+                      {formatPeriod(item, copy)}
+                    </time>
+                  </p>
+                  <h3
+                    className="text-lg leading-tight font-bold text-ink"
+                    style={{ fontFamily: "var(--font-display)" }}
+                  >
+                    {copy.items[item.id].title}
+                  </h3>
+                  <p className="text-sm font-semibold text-brand">
+                    {item.organization}
+                  </p>
+                  <p className="text-sm leading-relaxed text-ink-muted max-lg:text-phone-card max-lg:text-pretty">
+                    {copy.items[item.id].description}
+                  </p>
+                </article>
+              </CarouselItem>
+            ))}
+          </Carousel>
         </MotionSection>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-          <div>
-            <MotionSection delay={0.15}>
-              <h3 className="text-xs font-semibold tracking-widest uppercase text-gray dark:text-neutral-400 mb-2">
-                Experiência
-              </h3>
-              <div className="w-8 h-0.5 bg-[#16a34a] mb-6" />
-            </MotionSection>
-
-            <div>
-              {experience.length > 0 ? (
-                experience.map((item, i) => (
-                  <TimelineEntry key={i} item={item} index={i} />
-                ))
-              ) : (
-                <MotionSection delay={0.2}>
-                  <p className="text-gray dark:text-neutral-400 text-sm py-8 border-b border-border">
-                    Em breve...
-                  </p>
-                </MotionSection>
-              )}
-            </div>
-          </div>
-
-          <div>
-            <MotionSection delay={0.15}>
-              <h3 className="text-xs font-semibold tracking-widest uppercase text-gray dark:text-neutral-400 mb-2">
-                Formação
-              </h3>
-              <div className="w-8 h-0.5 bg-[#16a34a] mb-6" />
-            </MotionSection>
-
-            <div>
-              {education.length > 0 ? (
-                education.map((item, i) => (
-                  <TimelineEntry key={i} item={item} index={i} />
-                ))
-              ) : (
-                <MotionSection delay={0.2}>
-                  <p className="text-gray dark:text-neutral-400 text-sm py-8 border-b border-border">
-                    Em breve...
-                  </p>
-                </MotionSection>
-              )}
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );

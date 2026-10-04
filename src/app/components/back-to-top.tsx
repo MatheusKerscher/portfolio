@@ -2,15 +2,45 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useLenis } from "./lenis-context";
 
-export default function BackToTop() {
+/** How far the page has to move against the current direction before the button reacts. */
+const TURN = 8;
+
+/**
+ * From `lg` up it shows once the page has left the top. Below it, where it floats over a single
+ * column of content, it shows only while the visitor scrolls back up.
+ */
+export default function BackToTop({ label }: { label: string }) {
+  const lenis = useLenis();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setVisible(window.scrollY > 300);
+    const wide = window.matchMedia("(min-width: 64rem)");
+    // Where the page last changed direction, and whether it has been going up since.
+    let anchor = window.scrollY;
+    let goingUp = false;
+
+    const handleScroll = () => {
+      const y = window.scrollY;
+      if (Math.abs(y - anchor) >= TURN) {
+        goingUp = y < anchor;
+        anchor = y;
+      }
+      setVisible(y > 300 && (wide.matches || goingUp));
+    };
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    wide.addEventListener("change", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      wide.removeEventListener("change", handleScroll);
+    };
   }, []);
+
+  function scrollToTop() {
+    if (lenis.current) lenis.current.scrollTo(0);
+    else window.scrollTo({ top: 0 });
+  }
 
   return (
     <AnimatePresence>
@@ -20,9 +50,9 @@ export default function BackToTop() {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
           transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          aria-label="Voltar ao topo"
-          className="cursor-pointer fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-md border border-border bg-[var(--page-bg)] text-gray dark:text-neutral-400 shadow-sm transition-colors duration-200 hover:border-[#16a34a] hover:text-[#16a34a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#16a34a] focus-visible:ring-offset-2"
+          onClick={scrollToTop}
+          aria-label={label}
+          className="fixed right-6 bottom-6 z-40 flex h-12 w-12 cursor-pointer items-center justify-center rounded-md border border-line-strong bg-paper text-ink-muted shadow-sm transition-colors duration-200 hover:border-brand hover:text-brand max-lg:right-4 max-lg:bottom-4"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

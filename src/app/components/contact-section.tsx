@@ -1,157 +1,97 @@
-"use client";
-
 import { ArrowRight } from "lucide-react";
-import { GithubIcon, LinkedinIcon, InstagramIcon } from "./social-icons";
-import { motion } from "framer-motion";
+import { getDictionary } from "../data/dictionaries/server";
+import { headingId, site, socials } from "../data/site";
+import MotionSection from "./motion-section";
+import { SocialIcon } from "./social-icons";
 
-const vp = { once: true, amount: 0 } as const;
+export default async function ContactSection() {
+  const dict = await getDictionary();
+  const { contact } = dict;
 
-const socialLinks = [
-  {
-    icon: <GithubIcon size={20} />,
-    label: "GitHub",
-    href: "https://github.com/MatheusKerscher",
-  },
-  {
-    icon: <LinkedinIcon size={20} />,
-    label: "LinkedIn",
-    href: "https://www.linkedin.com/in/matheus-kerscher/",
-  },
-  {
-    icon: <InstagramIcon size={20} />,
-    label: "Instagram",
-    href: "https://www.instagram.com/matheuskerscher/",
-  },
-];
-
-export default function ContactSection() {
   return (
-    <section id="contato" className="py-24 px-6 lg:px-8 border-t border-border">
-      <div className="max-w-6xl mx-auto">
-        <motion.p
-          className="section-label"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: 0.6,
-            ease: [0.19, 1, 0.22, 1] as [number, number, number, number],
-          }}
-          viewport={vp}
-        >
-          04 — Contato
-        </motion.p>
+    <section
+      data-stack-panel
+      aria-labelledby={headingId("contact")}
+      className="stack-panel flex flex-col justify-center px-6 py-(--panel-pad) lg:px-8"
+    >
+      <div className="mx-auto w-full max-w-6xl">
+        <MotionSection>
+          <p className="section-label">{contact.label}</p>
+        </MotionSection>
 
-        <div className="max-w-2xl">
-          <motion.h2
-            className="font-bold text-black dark:text-white leading-tight mb-8"
-            style={{
-              fontFamily: "var(--font-syne), sans-serif",
-              fontSize: "clamp(2rem, 5vw, 4rem)",
-              letterSpacing: "-0.02em",
-            }}
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.75,
-              delay: 0.1,
-              ease: [0.19, 1, 0.22, 1] as [number, number, number, number],
-            }}
-            viewport={vp}
-          >
-            Vamos construir algo juntos?
-          </motion.h2>
-
-          <motion.p
-            className="text-gray dark:text-neutral-400 text-lg leading-relaxed mb-10"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.7,
-              delay: 0.2,
-              ease: [0.19, 1, 0.22, 1] as [number, number, number, number],
-            }}
-            viewport={vp}
-          >
-            Estou aberto a oportunidades de trabalho, freelas e colaborações. Se
-            tiver um projeto em mente, adoraria conversar.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.7,
-              delay: 0.3,
-              ease: [0.19, 1, 0.22, 1] as [number, number, number, number],
-            }}
-            viewport={vp}
-          >
-            <a
-              href="mailto:matheuskerscher@outlook.com"
-              className="group flex items-center gap-3 w-fit mb-12"
+        <div className="max-w-2xl max-lg:mx-auto max-lg:text-center">
+          <MotionSection delay={0.1}>
+            <h2
+              id={headingId("contact")}
+              className="mb-8 leading-tight font-bold text-ink max-lg:text-balance"
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "clamp(2rem, 5vw, 4rem)",
+                letterSpacing: "-0.02em",
+              }}
             >
+              {contact.heading}
+            </h2>
+          </MotionSection>
+
+          <MotionSection delay={0.2}>
+            <p className="mb-10 text-lg leading-relaxed text-ink-muted max-lg:text-pretty max-sm:text-phone-copy">
+              {contact.text}
+            </p>
+          </MotionSection>
+
+          <MotionSection delay={0.3}>
+            <a
+              href={`mailto:${site.email}`}
+              className="group mb-12 flex w-fit items-center gap-3 max-lg:mx-auto max-lg:min-h-11"
+            >
+              {/* Underlined below `lg`: a touch screen has no hover to reveal the arrow. */}
               <span
-                className="font-bold text-black dark:text-white group-hover:text-[#16a34a]"
+                className="font-bold break-all text-ink group-hover:text-brand max-lg:underline max-lg:decoration-brand max-lg:decoration-2 max-lg:underline-offset-4"
                 style={{
-                  fontFamily: "var(--font-syne), sans-serif",
-                  fontSize: "clamp(1rem, 2.5vw, 1.4rem)",
+                  fontFamily: "var(--font-display)",
+                  // One line down to a 320 px wide screen; from `lg` up it is 2.5vw, capped.
+                  fontSize:
+                    "clamp(0.875rem, max(2.5vw, min(4.6vw, 1.125rem)), 1.4rem)",
                   transition: "color 0.3s var(--ease-cubic)",
-                  display: "inline-block",
                 }}
               >
-                matheuskerscher@outlook.com
+                {site.email}
               </span>
               <ArrowRight
                 size={20}
-                className="text-[#16a34a] opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0"
+                aria-hidden="true"
+                className="-translate-x-2 text-brand opacity-0 group-hover:translate-x-0 group-hover:opacity-100 max-lg:hidden"
                 style={{
                   transition:
                     "opacity 0.3s var(--ease-cubic), transform 0.4s var(--ease-expo)",
                 }}
               />
             </a>
-          </motion.div>
+          </MotionSection>
 
-          <motion.div
-            className="relative pt-8"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.7,
-              delay: 0.4,
-              ease: [0.19, 1, 0.22, 1] as [number, number, number, number],
-            }}
-            viewport={vp}
-          >
-            <motion.div
-              className="absolute top-0 left-0 h-px bg-border w-full"
-              initial={{ scaleX: 0 }}
-              whileInView={{ scaleX: 1 }}
-              transition={{
-                duration: 0.8,
-                delay: 0.4,
-                ease: [0.19, 1, 0.22, 1] as [number, number, number, number],
-              }}
-              viewport={vp}
-              style={{ transformOrigin: "left" }}
-            />
-            <div className="flex items-center gap-6">
-              {socialLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-gray dark:text-neutral-400 hover:text-[#16a34a]"
-                  style={{ transition: "color 0.3s var(--ease-cubic)" }}
-                  aria-label={`${link.label} de Matheus Kerscher`}
-                >
-                  <span aria-hidden="true">{link.icon}</span>
-                  <span className="text-sm font-medium">{link.label}</span>
-                </a>
-              ))}
-            </div>
-          </motion.div>
+          <MotionSection delay={0.4} className="border-t border-line pt-8">
+            {/* The narrower gap keeps the three of them on one row at 320 px. */}
+            <ul className="flex flex-wrap items-center gap-x-6 gap-y-3 max-lg:justify-center max-sm:gap-x-4">
+              {socials
+                .filter((link) => link.id !== "email")
+                .map((link) => (
+                  <li key={link.id}>
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex min-h-6 items-center gap-2 text-ink-muted hover:text-brand max-lg:min-h-11"
+                      style={{ transition: "color 0.3s var(--ease-cubic)" }}
+                      aria-label={dict.layout.profileOf(link.name)}
+                    >
+                      <SocialIcon id={link.id} size={20} />
+                      <span className="text-sm font-medium">{link.name}</span>
+                    </a>
+                  </li>
+                ))}
+            </ul>
+          </MotionSection>
         </div>
       </div>
     </section>

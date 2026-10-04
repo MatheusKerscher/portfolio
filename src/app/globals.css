@@ -1,208 +1,470 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant pixel (&:is([data-skin="8bit"] *));
 
 @theme inline {
-  --color-white: #ffffff;
-  --color-black: #111111;
-  --color-gray: #737373;
-  --color-border: #e5e5e5;
-  --color-accent: #16a34a;
-  --color-accent-dark: #15803d;
-  --color-accent-foreground: #ffffff;
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --color-foreground: var(--foreground);
-  --color-background: var(--background);
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-on-brand: var(--on-brand);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-danger: var(--danger);
+
+  /* shadcn/ui names, mapped onto the tokens above. */
+  --color-background: var(--paper);
+  --color-foreground: var(--ink);
+  --color-card: var(--surface);
+  --color-card-foreground: var(--ink);
+  --color-muted: var(--line);
+  --color-muted-foreground: var(--ink-muted);
+  --color-destructive: var(--danger);
+  --color-border: var(--line);
+  --color-input: var(--line-strong);
+  --color-ring: var(--brand);
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --font-syne: var(--font-syne);
+
+  /*
+   * Type of the one-column layout. A paragraph gives up a pixel on a phone, and the text of a card
+   * gains one below `lg`, where it is read at arm's length and centred.
+   */
+  --text-phone-copy: 1.0625rem;
+  --text-phone-card: 0.9375rem;
 }
 
+/*
+ * Every text pair reaches 4.5:1 and every control boundary 3:1, in both themes. The pairs and
+ * their minimums are in src/lib/palette-contract.ts, and e2e/palette.spec.ts checks them.
+ */
 :root {
-  --page-bg: #f8f7f3;
-  --nav-scrolled-bg: rgba(248, 247, 243, 0.88);
+  --paper: #f8f7f3;
+  --surface: #ffffff;
+  --ink: #111111;
+  --ink-muted: #5f5f5f;
+  --brand: #137a3a;
+  --brand-hover: #116d36;
+  --on-brand: #ffffff;
+  --line: #e5e5e5;
+  --line-strong: #8a8a8a;
+  --danger: #c10007;
+
+  --font-display: var(--font-syne), sans-serif;
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
-
-.dark {
-  --page-bg: #111111;
-  --nav-scrolled-bg: rgba(17, 17, 17, 0.88);
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-}
-
-:root {
+  /* Height of the fixed navbar. The stacked sections are laid out below it. */
+  --nav-h: 4rem;
+  /*
+   * Vertical rhythm of a stacked panel. `--squeeze` is how far a wide viewport falls short of
+   * 960 px in height, and each size gives up a share of it. That keeps a panel inside the space
+   * below the navbar on a laptop screen, where it pins with its top at the navbar. It is zero on
+   * a narrow screen, where a panel is taller than the viewport whatever its spacing.
+   */
+  --squeeze: 0px;
+  --panel-pad: calc(4rem - var(--squeeze) * 0.14);
+  --panel-gap: calc(2.5rem - var(--squeeze) * 0.08);
+  --panel-gap-md: calc(var(--panel-gap) * 0.8);
+  --panel-gap-sm: calc(var(--panel-gap) * 0.6);
+  --thumbnail-h: calc(15.6rem - var(--squeeze) * 0.3);
   --ease-expo: cubic-bezier(0.19, 1, 0.22, 1);
   --ease-cubic: cubic-bezier(0.215, 0.61, 0.355, 1);
   --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
+@media (min-width: 1024px) {
+  :root {
+    --squeeze: clamp(0px, 960px - 100svh, 320px);
+  }
+}
+
+.dark {
+  --paper: #111111;
+  --surface: #1a1a1a;
+  --ink: #fafafa;
+  --ink-muted: #a3a3a3;
+  --brand: #4ade80;
+  --brand-hover: #86efac;
+  --on-brand: #111111;
+  --line: #2e2e2e;
+  --line-strong: #737373;
+  --danger: #ff6467;
+}
+
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-line;
   }
 
   body {
-    @apply bg-[var(--page-bg)] text-black dark:text-white antialiased;
+    @apply bg-paper text-ink antialiased;
     font-feature-settings: "kern" 1;
   }
 
-  html {
-    scroll-behavior: smooth;
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
   }
 }
 
 @layer components {
+  /* Squares instead of hairlines: the pixel-art accent of the normal skin. */
+  .pixel-dots {
+    width: 46px;
+    height: 6px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--brand) 0 6px,
+      transparent 6px 10px
+    );
+  }
+
   .section-label {
-    @apply text-xs font-semibold tracking-widest uppercase text-gray dark:text-neutral-400 mb-6;
+    @apply flex items-center gap-3 text-xs font-semibold tracking-widest text-ink-muted uppercase;
+    margin-bottom: var(--panel-gap-sm);
     font-family: var(--font-catamaran), sans-serif;
   }
 
+  .section-label::before {
+    content: "";
+    width: 26px;
+    height: 6px;
+    flex: none;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--brand) 0 6px,
+      transparent 6px 10px
+    );
+  }
+
+  /* Below 2rem only on a phone, where a long heading would take four lines. */
   .section-heading {
-    font-family: var(--font-syne), sans-serif;
+    font-family: var(--font-display);
     font-weight: 700;
-    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-size: clamp(
+      1.625rem,
+      max(min(7vw, 2rem), min(4vw, calc(3.5rem - var(--squeeze) * 0.06))),
+      3.5rem
+    );
     line-height: 1.1;
     letter-spacing: -0.02em;
-    color: var(--foreground);
+    color: var(--ink);
   }
 
-  .accent-link {
-    @apply relative inline-block text-[#16a34a] font-semibold;
+  .hero-title {
+    font-family: var(--font-display);
+    /*
+     * The longest word has to fit the column next to the portrait. It also gives way on a short,
+     * wide viewport: see `--squeeze`.
+     */
+    font-size: clamp(
+      2.5rem,
+      min(7.5vw + 1rem, calc(6.5rem - var(--squeeze) * 0.07)),
+      6.5rem
+    );
+    letter-spacing: -0.03em;
   }
 
-  .accent-link::after {
-    content: "";
-    @apply absolute bottom-0 left-0 w-0 h-px bg-[#16a34a] transition-all duration-300;
-  }
+  /*
+   * The one-column layout, below `lg`: everything is centred. The utilities of the components
+   * that follow it are the `max-lg:` ones.
+   */
+  @media (width < 64rem) {
+    .section-label {
+      justify-content: center;
+    }
 
-  .accent-link:hover::after {
-    @apply w-full;
+    /* `justify-content` is for the heading that reveals word by word, a flex container. */
+    .section-heading {
+      justify-content: center;
+      text-align: center;
+      text-wrap: balance;
+    }
+
+    /* On its own line, the longest word has to fit a 320 px wide screen, in both skins. */
+    .hero-title {
+      font-size: clamp(2.5rem, 13vw, 6.5rem);
+    }
   }
 
   .btn-accent {
-    @apply inline-flex items-center gap-2 bg-[#16a34a] text-white px-6 py-3 font-semibold hover:bg-accent-dark hover:gap-4;
+    @apply inline-flex items-center gap-2 bg-brand px-6 py-3 font-semibold text-on-brand hover:gap-4 hover:bg-brand-hover;
     transition:
       background-color 0.3s var(--ease-expo),
+      box-shadow 0.2s var(--ease-expo),
       gap 0.3s var(--ease-expo);
   }
 
+  /* Hard-edged offset shadows, on hover and on keyboard focus. */
+  .btn-accent:hover,
+  .btn-accent:focus-visible {
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+
   .btn-outline {
-    @apply inline-flex items-center gap-2 border border-black dark:border-white text-black dark:text-white px-6 py-3 font-semibold hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black hover:gap-4;
+    @apply inline-flex items-center gap-2 border border-ink px-6 py-3 font-semibold text-ink hover:gap-4 hover:bg-ink hover:text-paper;
     transition:
       background-color 0.3s var(--ease-expo),
+      box-shadow 0.2s var(--ease-expo),
       color 0.3s var(--ease-expo),
       gap 0.3s var(--ease-expo);
   }
 
-  .stack-icon-container {
-    @apply p-2 rounded-full w-10 h-10 bg-white dark:bg-[#1a1a1a] border border-border flex justify-center items-center;
+  .btn-outline:hover,
+  .btn-outline:focus-visible {
+    box-shadow: 4px 4px 0 var(--brand);
+  }
+
+  /*
+   * Stacked sections. A panel pins when its end reaches the bottom of the viewport and the next
+   * slot slides over it. The spacer and the negative margin cancel out, so the positions and the
+   * height of the page are those of normal flow. `--panel-h` comes from StackController; without
+   * it the fallback `top` can never be reached and the panel does not pin.
+   *
+   * The stack lives in the space below the navbar: a panel is at least that tall and pins with
+   * its top at the bottom edge of the navbar, so nothing slides behind it.
+   */
+  .stack {
+    padding-top: var(--nav-h);
+  }
+
+  .stack-slot {
+    position: relative;
+    scroll-margin-top: var(--nav-h);
+  }
+
+  /* Positioned in every case, so a panel can hold absolute children whether it pins or not. */
+  .stack-panel {
+    position: relative;
+    min-height: calc(100svh - var(--nav-h));
+    background: var(--paper);
+  }
+
+  .stack-slot + .stack-slot > .stack-panel {
+    border-top: 1px solid var(--line);
+    box-shadow: 0 -20px 40px -28px rgb(0 0 0 / 0.35);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .stack-slot:not(:last-child)::after {
+      content: "";
+      display: block;
+      height: calc(100svh - var(--nav-h));
+    }
+
+    .stack-slot + .stack-slot {
+      margin-top: calc(var(--nav-h) - 100svh);
+    }
+
+    .stack-slot:not(:last-child) > .stack-panel {
+      position: sticky;
+      top: min(var(--nav-h), calc(100svh - var(--panel-h, 100000px)));
+    }
+  }
+
+  /* Carousel: a scrollable region on native scroll snap, bleeding to the edge of the section. */
+  .carousel-viewport {
+    @apply relative -mx-6 px-6 lg:-mx-8 lg:px-8;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 1.5rem;
+    scrollbar-width: none;
+  }
+
+  @media (min-width: 1024px) {
+    .carousel-viewport {
+      scroll-padding-inline: 2rem;
+    }
+  }
+
+  .carousel-viewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* The padding leaves room for the offset shadow of a card, which the region would clip. */
+  .carousel-track {
+    @apply flex w-max gap-5 pt-2 pb-3;
+  }
+
+  /* Its width comes from the carousel, which the track needs as well. */
+  .carousel-item {
+    @apply flex-none;
+    width: var(--item-w);
+    scroll-snap-align: start;
+  }
+
+  /*
+   * On a phone one item sits in the middle with a part of each neighbour beside it. The padding
+   * of the track lets the first and the last item reach the centre; it is measured against the
+   * region (container units), which a scrollbar does not widen. From `sm` up several items fit,
+   * and a centred first one would leave half of the row empty.
+   */
+  @media (width < 40rem) {
+    .carousel-viewport {
+      container-type: inline-size;
+      scroll-padding-inline: 0;
+    }
+
+    .carousel-track {
+      padding-inline: max(0px, calc((100cqi - var(--item-w)) / 2));
+    }
+
+    .carousel-item {
+      scroll-snap-align: center;
+    }
+  }
+
+  /*
+   * Position dots of a carousel, below `md`. Squares, the pixel accent of the site; their
+   * measures, colours and transitions are those of the carousel they come from: 6 px dots 6 px
+   * apart, the current one in the accent colour over faint ones, 150 ms on the colour and on the
+   * size. The window clips a row that holds one dot per item. The row has no transition: its
+   * offset follows the scroll on every frame, and a transition would lag behind it.
+   */
+  .carousel-dots {
+    overflow: hidden;
+    padding-block: 0.5rem;
+  }
+
+  .carousel-dots-track {
+    display: flex;
+    gap: 6px;
+    width: max-content;
+  }
+
+  .carousel-dot {
+    flex: none;
+    width: 6px;
+    height: 6px;
+    background-color: var(--line);
     transition:
-      transform 0.4s var(--ease-expo),
-      border-color 0.3s var(--ease-cubic);
+      background-color 150ms cubic-bezier(0.2, 0, 0, 1),
+      transform 150ms cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  .carousel-dot[data-active="true"] {
+    background-color: var(--brand);
+  }
+
+  /* An end of the window: smaller, the sign that there is more beyond it. */
+  .carousel-dot[data-edge="true"] {
+    transform: scale(0.6);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .carousel-dot {
+      transition: none;
+    }
+  }
+
+  .slide-card {
+    @apply relative flex h-full flex-col border border-line bg-surface;
+    transition:
+      border-color 0.3s var(--ease-cubic),
+      box-shadow 0.3s var(--ease-expo),
+      transform 0.3s var(--ease-expo);
+  }
+
+  /* A card whose title link covers it shows the focus ring around the whole card. */
+  .slide-card:has(a:focus-visible) {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+
+  .slide-card:has(a:hover),
+  .slide-card:has(a:focus-visible) {
+    border-color: var(--ink);
+    box-shadow: 5px 5px 0 var(--ink);
+    transform: translate(-2px, -2px);
+  }
+
+  .slide-card a:focus-visible {
     outline: none;
   }
 
-  .stack-icon-container:focus-visible {
-    @apply border-[#16a34a];
-    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.25);
+  /*
+   * A band that moves on its own: two copies of a list side by side, shifted by the width of one
+   * copy, in a loop. Each copy starts with the gap that separates its items, so the seam between
+   * the two is one more gap.
+   */
+  .marquee-viewport {
+    overflow: hidden;
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 4%,
+      black 96%,
+      transparent
+    );
   }
 
-  @media (max-width: 767px) {
-    .stack-icon-container:hover {
-      @apply border-[#16a34a];
-      transform: scale(1.1);
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 40s linear infinite;
+  }
+
+  .marquee-list {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 2.5rem;
+    padding-left: 2.5rem;
+  }
+
+  /* The control, a press on the band and keyboard focus stop it. */
+  .marquee:has(.marquee-pause :checked) .marquee-track,
+  .marquee-viewport:is(:active, :focus-visible) .marquee-track {
+    animation-play-state: paused;
+  }
+
+  /* A pointer over it as well; on a touch screen a hover would stick after a tap. */
+  @media (hover: hover) {
+    .marquee-viewport:hover .marquee-track {
+      animation-play-state: paused;
     }
+  }
+
+  /* The checkbox is hidden; its label shows the focus ring. */
+  .marquee-pause:has(:focus-visible) {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+
+  /* Nothing moves: the list wraps so that every item is on screen, and there is nothing to pause. */
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-viewport {
+      mask-image: none;
+    }
+
+    .marquee-track {
+      width: auto;
+      animation: none;
+    }
+
+    .marquee-list {
+      flex: 1;
+      flex-wrap: wrap;
+      justify-content: center;
+      row-gap: 1rem;
+      padding-inline: 1.5rem;
+    }
+
+    .marquee-list[aria-hidden="true"],
+    .marquee-separator {
+      display: none;
+    }
+  }
+
+  .inspector-heading {
+    @apply mb-2 text-xs font-bold tracking-widest text-ink-muted uppercase;
   }
 
   .nav-links-group:has(a:hover) a {
@@ -213,8 +475,115 @@
     opacity: 1;
   }
 
-  /* project card editorial: image scale on group hover */
-  .group:hover .project-img {
-    transform: scale(1.04) !important;
+  /* A square that drops in four discrete steps. */
+  .scroll-cue {
+    width: 6px;
+    height: 6px;
+    background: var(--ink-muted);
+    animation: scroll-cue 1.2s steps(4, end) infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-cue {
+      animation: none;
+    }
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scroll-cue {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(24px);
+  }
+}
+
+/*
+ * 8-bit skin. It changes type, shape and imagery and keeps the colour tokens, so the contrast
+ * contract of the palette holds in both skins. Unlayered on purpose: these rules have to win over
+ * Tailwind utilities.
+ */
+[data-skin="8bit"] {
+  --font-display: var(--font-pixel), var(--font-syne), sans-serif;
+}
+
+[data-skin="8bit"] * {
+  border-radius: 0;
+  transition-timing-function: steps(3, end) !important;
+}
+
+[data-skin="8bit"] ::selection {
+  background: var(--brand);
+  color: var(--on-brand);
+}
+
+/* Inline letter-spacing is tuned for the normal display font. */
+[data-skin="8bit"] :is(h1, h2, h3) {
+  letter-spacing: 0 !important;
+}
+
+[data-skin="8bit"] :is(.section-label, .btn-accent, .btn-outline, nav a) {
+  font-family: var(--font-display);
+}
+
+[data-skin="8bit"] :is(.btn-accent, .btn-outline) {
+  border: 2px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+[data-skin="8bit"] :is(.btn-accent, .btn-outline):active {
+  box-shadow: none;
+  transform: translate(4px, 4px);
+}
+
+[data-skin="8bit"] :is(.slide-card, [data-slot="card"]) {
+  border: 2px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+[data-skin="8bit"] :is(input, kbd) {
+  border-width: 2px;
+  border-color: var(--ink);
+}
+
+[data-skin="8bit"] nav[data-scrolled="true"] {
+  border-bottom: 2px solid var(--ink);
+}
+
+/* A stepped edge where one panel slides over the other. */
+[data-skin="8bit"] .stack-slot + .stack-slot > .stack-panel {
+  border-top: 2px solid var(--ink);
+  box-shadow: none;
+}
+
+[data-skin="8bit"] .stack-slot + .stack-slot > .stack-panel::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: -10px;
+  height: 8px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--ink) 0 8px,
+    transparent 8px 16px
+  );
+}
+
+/* Switching skin cross-fades in steps, where the browser supports view transitions. */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.35s;
+    animation-timing-function: steps(5, end);
   }
 }

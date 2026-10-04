@@ -1,97 +1,92 @@
-"use client";
-
-import { motion } from "framer-motion";
+import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
+import { getDictionary } from "../data/dictionaries/server";
+import { pixelThumbnail, type Project } from "../data/projects";
 
-type ProjectCardProps = {
-  title: string;
-  description: string;
-  tags: string[];
-  repositoryUrl?: string;
-  websiteUrl?: string;
-  index?: number;
-};
+type ProjectCardProps = { project: Project; index: number };
 
-export default function ProjectCard({
-  title,
-  description,
-  tags,
-  repositoryUrl,
-  websiteUrl,
-  index = 0,
+export default async function ProjectCard({
+  project,
+  index,
 }: ProjectCardProps) {
+  const copy = (await getDictionary()).projects;
+  const { title, tags, thumbnail, repositoryUrl, websiteUrl } = project;
   const number = String(index + 1).padStart(2, "0");
 
   return (
-    <motion.a
-      href={websiteUrl || repositoryUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={`Ver projeto ${title} (abre em nova aba)`}
-      className="group flex items-start gap-6 md:gap-12 py-8 border-b border-border hover:bg-black/5 dark:hover:bg-white/5 -mx-6 px-6 md:mx-0 md:px-0"
-      style={{ transition: "background-color 0.3s var(--ease-cubic)" }}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{
-        duration: 0.6,
-        delay: index * 0.08,
-        ease: [0.19, 1, 0.22, 1],
-      }}
-      viewport={{ once: true, amount: 0 }}
-    >
-      {/* número */}
-      <span
-        className="text-xs tracking-widest text-gray dark:text-neutral-400 group-hover:text-[#16a34a] tabular-nums shrink-0 pt-1 w-5"
-        style={{
-          fontFamily: "var(--font-catamaran), sans-serif",
-          transition: "color 0.3s var(--ease-cubic)",
-        }}
-      >
-        {number}
-      </span>
-
-      {/* conteúdo */}
-      <div className="flex-1 min-w-0 space-y-2">
-        <h3
-          className="font-bold text-black dark:text-white group-hover:text-[#16a34a] text-lg md:text-xl leading-tight"
-          style={{
-            fontFamily: "var(--font-syne), sans-serif",
-            transition: "color 0.3s var(--ease-cubic)",
-          }}
-        >
-          {title}
-        </h3>
-
-        <p className="text-gray dark:text-neutral-400 text-sm leading-relaxed max-w-xl">
-          {description}
-        </p>
-
-        <div className="flex flex-wrap gap-2 pt-1">
-          {tags.map((tag, i) => (
-            <span
-              key={i}
-              className="text-xs text-gray dark:text-neutral-400 group-hover:text-[#16a34a] border border-[#e5e5e5] dark:border-[#333] group-hover:border-[#16a34a]/40 rounded-full px-2.5 py-0.5 tracking-wide"
-              style={{
-                fontFamily: "var(--font-catamaran), sans-serif",
-                transition:
-                  "color 0.3s var(--ease-cubic), border-color 0.3s var(--ease-cubic)",
-              }}
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
+    <article className="slide-card group">
+      <div className="aspect-5/3 max-h-(--thumbnail-h) overflow-hidden border-b border-line bg-paper">
+        <Image
+          src={thumbnail.src}
+          alt={copy.thumbnailAlt(title)}
+          width={thumbnail.width}
+          height={thumbnail.height}
+          sizes="(min-width: 640px) 416px, 80vw"
+          className="h-full w-full object-cover object-top pixel:hidden"
+        />
+        {/* Shown by the 8-bit skin. Hidden and lazy, so the normal skin never requests it. */}
+        <Image
+          src={pixelThumbnail(thumbnail)}
+          alt={copy.thumbnailAlt(title)}
+          width={150}
+          height={90}
+          loading="lazy"
+          unoptimized
+          className="hidden h-full w-full object-cover object-top [image-rendering:pixelated] pixel:block"
+        />
       </div>
 
-      {/* seta */}
-      <ArrowUpRight
-        size={18}
-        className="text-gray dark:text-neutral-400 group-hover:text-[#16a34a] shrink-0 mt-1 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-        style={{
-          transition:
-            "color 0.3s var(--ease-cubic), transform 0.4s var(--ease-expo)",
-        }}
-      />
-    </motion.a>
+      <div className="flex flex-1 flex-col gap-3 p-5 max-lg:text-center">
+        <div className="flex items-center justify-between text-ink-muted">
+          <span
+            aria-hidden="true"
+            className="text-xs tracking-widest tabular-nums"
+          >
+            {number}
+          </span>
+          <ArrowUpRight
+            size={18}
+            aria-hidden="true"
+            className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-brand"
+            style={{
+              transition:
+                "color 0.3s var(--ease-cubic), transform 0.4s var(--ease-expo)",
+            }}
+          />
+        </div>
+
+        <h3
+          className="text-lg leading-tight font-bold text-ink md:text-xl"
+          style={{ fontFamily: "var(--font-display)" }}
+        >
+          {/* The link covers the whole card; the card shows the focus ring. */}
+          <a
+            href={websiteUrl || repositoryUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group-hover:text-brand after:absolute after:inset-0"
+            style={{ transition: "color 0.3s var(--ease-cubic)" }}
+          >
+            {title}
+            <span className="sr-only"> {copy.newTab}</span>
+          </a>
+        </h3>
+
+        <p className="text-sm leading-relaxed text-ink-muted max-lg:text-phone-card max-lg:text-pretty">
+          {copy.descriptions[project.id]}
+        </p>
+
+        <ul className="mt-auto flex flex-wrap gap-2 pt-2 max-lg:justify-center">
+          {tags.map((tag) => (
+            <li
+              key={tag}
+              className="border border-line px-2.5 py-0.5 text-xs tracking-wide text-ink-muted"
+            >
+              {tag}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </article>
   );
 }
