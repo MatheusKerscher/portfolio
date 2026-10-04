@@ -28,6 +28,28 @@ function isObscured(focused: Element) {
 }
 
 /**
+ * Scrolls a carousel to the item that holds the element, when that item is not wholly inside the
+ * visible part of its region. Chromium and Firefox do it on their own when focus moves; WebKit
+ * leaves a card focused outside the region, when moving backwards above all. The target is the
+ * position of the item itself, which is where the snap of the carousel would leave it.
+ */
+function revealInCarousel(element: Element) {
+  const item = element.closest<HTMLElement>(".carousel-item");
+  const region = item?.closest<HTMLElement>("[data-carousel]");
+  if (!item || !region) return;
+
+  const frame = region.getBoundingClientRect();
+  const box = item.getBoundingClientRect();
+  if (box.left >= frame.left - 1 && box.right <= frame.right + 1) return;
+
+  const first = region.querySelector<HTMLElement>(".carousel-item");
+  region.scrollLeft = Math.min(
+    item.offsetLeft - (first?.offsetLeft ?? 0),
+    region.scrollWidth - region.clientWidth,
+  );
+}
+
+/**
  * Behaviour of the stacked sections; the rules are in globals.css.
  *
  * - Keeps `--panel-h` equal to the height of each panel. A panel only pins once that value
@@ -35,6 +57,7 @@ function isObscured(focused: Element) {
  * - A pinned panel is inside the viewport even while the next one covers it, so the browser
  *   sees a focused element in it as visible and does not scroll. This scrolls to the part of
  *   the page where that element really is visible (WCAG 2.4.11, Focus Not Obscured).
+ * - For the same reason a focused card is first brought into its carousel.
  */
 export default function StackController() {
   const lenis = useLenis();
@@ -51,6 +74,8 @@ export default function StackController() {
     panels.forEach((panel) => observer.observe(panel));
 
     function reveal(element: Element) {
+      revealInCarousel(element);
+
       const panel = element.closest<HTMLElement>("[data-stack-panel]");
       const slot = panel?.parentElement;
       if (!panel || !slot || !isObscured(element)) return;
