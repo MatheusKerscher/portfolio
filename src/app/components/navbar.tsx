@@ -19,16 +19,18 @@ export default function Navbar() {
   }, []);
 
   return (
+    // Opaque: the stacked sections pin at its bottom edge, and what scrolls past must not show
+    // through it.
     <nav
       aria-label={navCopy.label}
       data-scrolled={scrolled}
-      className="fixed top-0 right-0 left-0 z-50 border-b border-transparent data-[scrolled=true]:border-line data-[scrolled=true]:bg-paper/90 data-[scrolled=true]:backdrop-blur-md"
-      style={{
-        transition:
-          "background-color 0.4s var(--ease-in-out), border-color 0.4s var(--ease-in-out)",
-      }}
+      className="fixed top-0 right-0 left-0 z-50 border-b border-transparent bg-paper data-[scrolled=true]:border-line"
+      style={{ transition: "border-color 0.4s var(--ease-in-out)" }}
     >
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6 lg:px-8">
+      <div
+        data-nav-bar
+        className="mx-auto flex h-(--nav-h) max-w-6xl items-center justify-between px-6 lg:px-8"
+      >
         <a
           href="#hero"
           aria-label={`${site.initials} — ${site.name}`}

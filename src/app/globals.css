@@ -56,6 +56,8 @@
 
   --font-display: var(--font-syne), sans-serif;
   --radius: 0.625rem;
+  /* Height of the fixed navbar. The stacked sections are laid out below it. */
+  --nav-h: 4rem;
   --ease-expo: cubic-bezier(0.19, 1, 0.22, 1);
   --ease-cubic: cubic-bezier(0.215, 0.61, 0.355, 1);
   --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
@@ -161,15 +163,23 @@
    * slot slides over it. The spacer and the negative margin cancel out, so the positions and the
    * height of the page are those of normal flow. `--panel-h` comes from StackController; without
    * it the fallback `top` can never be reached and the panel does not pin.
+   *
+   * The stack lives in the space below the navbar: a panel is at least that tall and pins with
+   * its top at the bottom edge of the navbar, so nothing slides behind it.
    */
+  .stack {
+    padding-top: var(--nav-h);
+  }
+
   .stack-slot {
     position: relative;
+    scroll-margin-top: var(--nav-h);
   }
 
   /* Positioned in every case, so a panel can hold absolute children whether it pins or not. */
   .stack-panel {
     position: relative;
-    min-height: 100svh;
+    min-height: calc(100svh - var(--nav-h));
     background: var(--paper);
   }
 
@@ -182,16 +192,16 @@
     .stack-slot:not(:last-child)::after {
       content: "";
       display: block;
-      height: 100svh;
+      height: calc(100svh - var(--nav-h));
     }
 
     .stack-slot + .stack-slot {
-      margin-top: -100svh;
+      margin-top: calc(var(--nav-h) - 100svh);
     }
 
     .stack-slot:not(:last-child) > .stack-panel {
       position: sticky;
-      top: min(0px, calc(100svh - var(--panel-h, 100000px)));
+      top: min(var(--nav-h), calc(100svh - var(--panel-h, 100000px)));
     }
   }
 
@@ -336,8 +346,6 @@
 
 [data-skin="8bit"] nav[data-scrolled="true"] {
   border-bottom: 2px solid var(--ink);
-  background: var(--paper);
-  backdrop-filter: none;
 }
 
 /* A stepped edge where one panel slides over the other. */

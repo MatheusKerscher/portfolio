@@ -3,6 +3,7 @@ import { navCopy } from "../src/app/data/site";
 import {
   horizontalOverflow,
   isUnobscured,
+  navbarHeight,
   revealAll,
   scrollToNatural,
   scrollToY,
@@ -41,6 +42,22 @@ async function geometry(page: Page, current: string, next: string) {
   );
 }
 
+/** Where the panel of a slot is on screen, and where its slot sits in normal flow. */
+async function panelBox(page: Page, id: string) {
+  return page.evaluate((slotId) => {
+    const slot = document.querySelector(`#${slotId}`)!;
+    const rect = slot
+      .querySelector("[data-stack-panel]")!
+      .getBoundingClientRect();
+    return {
+      top: rect.top,
+      height: rect.height,
+      naturalTop: slot.getBoundingClientRect().top + window.scrollY,
+      viewport: window.innerHeight,
+    };
+  }, id);
+}
+
 /** Scrolls to the middle of the overlap: the next panel covers half of the viewport. */
 async function scrollToHalfOverlap(page: Page, current: string, next: string) {
   const { nextNaturalTop, smallViewport } = await geometry(page, current, next);
@@ -72,6 +89,41 @@ test.describe("stacked sections", () => {
         [next, during.nextTop + 24] as const,
       );
       expect(covering, `#${next} is painted over #${current}`).toBe(true);
+    }
+  });
+
+  test("no panel goes behind the navbar", async ({ page }) => {
+    await page.goto("/");
+    await waitForStack(page);
+    const navbar = await navbarHeight(page);
+
+    // A panel taller than the screen scrolls past the navbar, so it must not show through:
+    // `rgb()` is an opaque colour, `rgba()` a translucent one.
+    expect(
+      await page
+        .getByRole("navigation", { name: navCopy.label })
+        .evaluate((nav) => getComputedStyle(nav).backgroundColor),
+    ).toMatch(/^rgb\(/);
+
+    for (const [index, id] of SECTION_IDS.entries()) {
+      const { naturalTop } = await panelBox(page, id);
+      await scrollToY(page, naturalTop - navbar);
+      const arrived = await panelBox(page, id);
+      expect(
+        Math.abs(arrived.top - navbar),
+        `#${id} starts at the bottom edge of the navbar`,
+      ).toBeLessThanOrEqual(1);
+
+      // The last panel never pins, and a panel taller than the space below the navbar pins by
+      // its bottom edge.
+      const pins = index < SECTION_IDS.length - 1;
+      if (pins && arrived.height <= arrived.viewport - navbar + 1) {
+        await scrollToY(page, naturalTop - navbar + 200);
+        expect(
+          Math.abs((await panelBox(page, id)).top - navbar),
+          `#${id} pins under the navbar, not behind it`,
+        ).toBeLessThanOrEqual(1);
+      }
     }
   });
 
@@ -166,6 +218,13 @@ test.describe("stacked sections", () => {
     await expect
       .poll(() => isUnobscured(page.locator("#projetos-heading")))
       .toBe(true);
+    // The panel stops at the navbar instead of going behind it.
+    const navbar = await navbarHeight(page);
+    await expect
+      .poll(async () =>
+        Math.abs((await panelBox(page, "projetos")).top - navbar),
+      )
+      .toBeLessThanOrEqual(1);
   });
 
   test("a direct load of a fragment lands on its panel", async ({ page }) => {

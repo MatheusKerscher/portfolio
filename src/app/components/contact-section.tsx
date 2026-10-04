@@ -8,7 +8,7 @@ export default function ContactSection() {
     <section
       data-stack-panel
       aria-labelledby="contato-heading"
-      className="stack-panel flex flex-col justify-center px-6 py-24 lg:px-8"
+      className="stack-panel flex flex-col justify-center px-6 py-16 lg:px-8"
     >
       <div className="mx-auto w-full max-w-6xl">
         <MotionSection>

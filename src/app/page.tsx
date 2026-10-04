@@ -11,27 +11,29 @@ export const metadata = pageMetadata({ path: "/" });
 
 /**
  * Each section is a panel inside a slot. The slot is the anchor target (`#projetos`), because it
- * stays in normal flow while its panel is pinned.
+ * stays in normal flow while its panel is pinned. The stack starts below the fixed navbar.
  */
 export default function Home() {
   return (
     <>
       <JsonLd />
       <StackController />
-      <div id="hero" className="stack-slot">
-        <HeroSection />
-      </div>
-      <div id="sobre" className="stack-slot">
-        <AboutSection />
-      </div>
-      <div id="projetos" className="stack-slot">
-        <ProjectsSection />
-      </div>
-      <div id="curriculo" className="stack-slot">
-        <CurriculumSection />
-      </div>
-      <div id="contato" className="stack-slot">
-        <ContactSection />
+      <div className="stack">
+        <div id="hero" className="stack-slot">
+          <HeroSection />
+        </div>
+        <div id="sobre" className="stack-slot">
+          <AboutSection />
+        </div>
+        <div id="projetos" className="stack-slot">
+          <ProjectsSection />
+        </div>
+        <div id="curriculo" className="stack-slot">
+          <CurriculumSection />
+        </div>
+        <div id="contato" className="stack-slot">
+          <ContactSection />
+        </div>
       </div>
     </>
   );

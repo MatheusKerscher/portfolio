@@ -3,8 +3,12 @@
 import { useEffect } from "react";
 import { useLenis } from "./lenis-context";
 
-const NAVBAR_HEIGHT = 64;
 const BREATHING_ROOM = 16;
+
+/** The fixed navbar covers this much of the top of the viewport. */
+function navbarHeight() {
+  return document.querySelector("[data-nav-bar]")?.clientHeight ?? 0;
+}
 
 /** Whether something else is painted over the centre of the element. */
 function isObscured(element: Element) {
@@ -47,16 +51,18 @@ export default function StackController() {
       const slot = panel?.parentElement;
       if (!panel || !slot || !isObscured(element)) return;
 
+      const navbar = navbarHeight();
       // The slot is never sticky, so its top is where the panel sits in normal flow.
       const slotTop = slot.getBoundingClientRect().top + window.scrollY;
       const offsetInPanel =
         element.getBoundingClientRect().top - panel.getBoundingClientRect().top;
       // Past this point the panel is pinned and the next one starts to cover it.
       const lastUnpinned = slotTop + panel.offsetHeight - window.innerHeight;
+      // Not before the panel reaches the navbar: the previous one would still be on top of it.
       const target = Math.max(
-        slotTop,
+        slotTop - navbar,
         Math.min(
-          slotTop + offsetInPanel - NAVBAR_HEIGHT - BREATHING_ROOM,
+          slotTop + offsetInPanel - navbar - BREATHING_ROOM,
           lastUnpinned,
         ),
       );

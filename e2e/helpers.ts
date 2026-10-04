@@ -59,6 +59,17 @@ export async function waitForStack(page: Page) {
   });
 }
 
+/** Height of the fixed navbar, which the stacked sections are laid out below. */
+export async function navbarHeight(page: Page) {
+  return page
+    .locator("[data-nav-bar]")
+    .evaluate((bar) => bar.getBoundingClientRect().height);
+}
+
+/** Starts the next navigation with the 8-bit skin already stored, as for a returning visitor. */
+export const storeSkin = (page: Page) =>
+  page.addInitScript(() => localStorage.setItem("skin", "8bit"));
+
 /** Jumps to a scroll position and gives layout a moment to settle. */
 export async function scrollToY(page: Page, y: number) {
   await page.evaluate((top) => window.scrollTo(0, top), y);
@@ -82,13 +93,19 @@ export async function scrollToNatural(locator: Locator) {
       region.scrollLeft = item.offsetLeft - (first?.offsetLeft ?? 0);
     }
 
+    const navbar =
+      document.querySelector("[data-nav-bar]")?.getBoundingClientRect()
+        .height ?? 0;
     const slotTop = slot.getBoundingClientRect().top + window.scrollY;
     const offset =
       element.getBoundingClientRect().top - panel.getBoundingClientRect().top;
     const lastUnpinned = slotTop + panel.offsetHeight - window.innerHeight;
     window.scrollTo(
       0,
-      Math.max(slotTop, Math.min(slotTop + offset - 80, lastUnpinned)),
+      Math.max(
+        slotTop - navbar,
+        Math.min(slotTop + offset - navbar - 16, lastUnpinned),
+      ),
     );
   });
   await locator.page().waitForTimeout(120);

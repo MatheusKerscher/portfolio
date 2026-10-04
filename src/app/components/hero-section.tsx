@@ -10,7 +10,7 @@ export default function HeroSection() {
     <section
       data-stack-panel
       aria-labelledby="hero-heading"
-      className="stack-panel flex flex-col justify-center overflow-hidden px-6 pt-24 pb-28 lg:px-8"
+      className="stack-panel flex flex-col justify-center overflow-hidden px-6 pt-8 pb-28 lg:px-8"
     >
       <div className="mx-auto grid w-full max-w-6xl items-center gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-16">
         <div className="order-2 lg:order-1">
