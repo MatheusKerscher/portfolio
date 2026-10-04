@@ -1,4 +1,4 @@
-import { timeline } from "../data/curriculum";
+import { formatPeriod, timeline } from "../data/curriculum";
 import { curriculumCopy } from "../data/site";
 import { Carousel, CarouselItem } from "./carousel";
 import MotionSection from "./motion-section";
@@ -26,7 +26,7 @@ export default function CurriculumSection() {
             }
           >
             {timeline.map((item) => (
-              <CarouselItem key={item.title} className="w-[min(85vw,24rem)]">
+              <CarouselItem key={item.id} className="w-[min(85vw,24rem)]">
                 <article className="slide-card gap-3 p-6">
                   <p className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-xs">
                     <span className="bg-ink px-2 py-0.5 font-semibold tracking-widest text-paper uppercase">
@@ -40,7 +40,7 @@ export default function CurriculumSection() {
                       }
                       className="font-medium text-ink-muted"
                     >
-                      {item.period}
+                      {formatPeriod(item, curriculumCopy)}
                     </time>
                   </p>
                   <h3

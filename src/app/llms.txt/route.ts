@@ -1,11 +1,16 @@
-import { education, experience, type TimelineItem } from "../data/curriculum";
+import {
+  education,
+  experience,
+  formatPeriod,
+  type TimelineItem,
+} from "../data/curriculum";
 import { projects } from "../data/projects";
-import { site, socials, stackSummary } from "../data/site";
+import { curriculumCopy, site, socials, stackSummary } from "../data/site";
 
 export const dynamic = "force-static";
 
 const timelineEntry = (item: TimelineItem) => [
-  `- ${item.title} — ${item.organization} (${item.period})`,
+  `- ${item.title} — ${item.organization} (${formatPeriod(item, curriculumCopy)})`,
   `  ${item.description}`,
 ];
 

@@ -39,6 +39,7 @@ export function buildJsonLd(): Graph {
     description: site.summary,
     address: {
       "@type": "PostalAddress",
+      addressLocality: site.city,
       addressRegion: site.region,
       addressCountry: site.country,
     },
