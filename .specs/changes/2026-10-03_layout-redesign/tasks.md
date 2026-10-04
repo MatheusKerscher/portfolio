@@ -126,9 +126,9 @@ and with a site that can be published.
       landmarks on screen are outlined and labelled, and the boxes go away with the overlay. A box is
       drawn only for what is on screen and not covered by another panel, so the count is not one per
       landmark of the page.
-- [~] `npm run audit -- --write` and the lab scores in the Performance tab — _verified by:_ the panel
-  shows the values of `audit.json` (the `inspector` suite compares them). The file is measured again
-  after the last code change of the branch.
+- [x] `npm run audit -- --write` and the lab scores in the Performance tab — _verified by:_ the panel
+      shows the values of `audit.json` (the `inspector` suite compares them). The file was measured again
+      on `75db4b7`, after the last code change of the branch.
 - [x] The panel is accessible — _verified by:_ axe with the Inspector open on each tab, in both themes;
       `Escape` returns focus to the toggle.
 
@@ -136,34 +136,36 @@ and with a site that can be published.
 
 Planned and approved in the conversation on 2026-10-03, with the three choices recorded in `spec.md`.
 
-- [ ] The stack below the navbar — _verified by:_ the `stacking` suite: the navbar is opaque, every
-      panel starts at its bottom edge and pins there; screenshots of the overlap on desktop and on a
-      phone.
-- [ ] 8-bit mode as an Easter egg: the pixel in the footer and the Konami code; the navbar toggle only
+- [x] The stack below the navbar — _verified by:_ the `stacking` suite in the five projects: the navbar
+      is opaque, every panel starts at its bottom edge and the ones that fit pin there; screenshots of
+      the overlap at 1440×900 and on a Pixel 7; panel heights in `findings.md`.
+- [x] 8-bit mode as an Easter egg: the pixel in the footer and the Konami code; the navbar toggle only
       inside the skin; no chip on the portrait — _verified by:_ the `skin` suite.
-- [ ] The Inspector only inside 8-bit mode — _verified by:_ the `inspector` suite: the toggle is hidden
+- [x] The Inspector only inside 8-bit mode — _verified by:_ the `inspector` suite: the toggle is hidden
       in the normal skin and leaving the skin removes the panel.
-- [ ] The pixel art sits on the `brand` green; `pixel-yellow` and `on-yellow` are removed — _verified
-      by:_ `grep -rn "yellow\|f0da50" src scripts e2e` returns nothing; the `palette` suite; the assets
-      regenerated and `/opengraph-image` looked at.
-- [ ] Measurement after the adjustments — _verified by:_ `npm run audit -- --write`; the medians are in
-      `findings.md` and in `audit.json`.
+- [x] The pixel art sits on the `brand` green; `pixel-yellow` and `on-yellow` are removed — _verified
+      by:_ `grep -rn "yellow\|f0da50" src scripts e2e` returns nothing; the `palette` suite; a second
+      run of `npm run assets:pixel` is byte-identical; `/opengraph-image`, the icons and the 8-bit hero
+      in both themes looked at.
+- [x] Measurement after the adjustments — _verified by:_ `npm run audit -- --write` on `75db4b7`: 100 in
+      every category, mobile and desktop; the medians are in `findings.md` and in `audit.json`.
 
 ### Phase 7 — hardening and documentation
 
-- [ ] The whole suite in the five projects — _verified by:_ `npm run test:e2e` exits 0.
-- [ ] Local performance — _verified by:_ `npm run audit` reports medians ≥ 95 in both presets. Each
-      contingency step from `design.md`, if used, has its before and after in `findings.md`.
-- [ ] `README.md` and `CLAUDE.md` updated; README thumbnail recaptured — _verified by:_ every command
-      they name is in `package.json` `scripts` and every path exists.
-- [ ] Repeatable procedures (regenerating the pixel assets, refreshing `audit.json`) documented —
-      _verified by:_ a section in `README.md` or a file in `docs/runbooks/`.
-- [ ] Verified facts moved to `.specs/memory/` — _verified by:_ each entry states the evidence that
-      proved it.
+- [x] The whole suite in the five projects — _verified by:_ `npm run test:e2e` exits 0 (236 passed, 99
+      skipped).
+- [x] Local performance — _verified by:_ `npm run audit` reports a median of 100 in both presets. No
+      contingency step is applied; what each one was worth is in `findings.md`.
+- [x] `README.md` and `CLAUDE.md` updated; README thumbnail recaptured — _verified by:_ a script checked
+      that every `npm run` command they name is in `package.json` `scripts` and every path exists.
+- [x] Repeatable procedures (regenerating the pixel assets, refreshing `audit.json`) documented —
+      _verified by:_ the sections "Performance audit" and "Generated assets" of `README.md`.
+- [x] Verified facts moved to `.specs/memory/` — _verified by:_ three files, each claim with the
+      measurement or the error that proved it.
 
 ## Rollout
 
-- [ ] Commits follow the conventional format — _verified by:_ the `commit-msg` hook accepts each one.
+- [x] Commits follow the conventional format — _verified by:_ the `commit-msg` hook accepted each one.
 - [ ] Pull request opened and CI green — _verified by:_ the `Linting` and `E2E` workflows pass.
 - [ ] Manual check on the Vercel preview: both routes in the four modes, and the stacking on an iPhone
       and an Android phone — _verified by:_ the requester's confirmation, recorded here.

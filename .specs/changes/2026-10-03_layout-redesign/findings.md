@@ -35,8 +35,12 @@ from such a median, it is corrected below.
 | baseline (`96880d8`) | desktop | 100         | 96            | 100            | 100 | 284 ms        | 736 ms        | 109 ms       | 1076 ms      | 0 ms | 0   | 200.2 KB           |
 | after phase 5        | mobile  | 100         | 100           | 100            | 100 | 987 ms        | 1587 ms       | 122 ms       | 122 ms       | 1 ms | 0   | 195.4 KB           |
 | after phase 5        | desktop | 100         | 100           | 100            | 100 | 326 ms        | 446 ms        | 119 ms       | 119 ms       | 0 ms | 0   | 195.4 KB           |
+| final (`75db4b7`)    | mobile  | 100         | 100           | 100            | 100 | 984 ms        | 1584 ms       | 121 ms       | 121 ms       | 0 ms | 0   | 197.9 KB           |
+| final (`75db4b7`)    | desktop | 100         | 100           | 100            | 100 | 325 ms        | 445 ms        | 117 ms       | 117 ms       | 0 ms | 0   | 197.9 KB           |
 
 The baseline is `main` (the site code of `96880d8`), built in a separate worktree with its own `npm ci`.
+The final rows are the build of `75db4b7`, with the Inspector and the adjustments of phase 6.1; they are
+the values in `src/app/data/audit.json`.
 
 - **LCP waited for hydration.** In the baseline the observed LCP is about 0.95 s after the observed FCP in
   both presets. The LCP element was the hero label (`<p … style="opacity: 1; transform: none;">`), a
@@ -45,8 +49,9 @@ The baseline is `main` (the site code of `96880d8`), built in a separate worktre
   observed FCP.
 - **Accessibility was 96 because of contrast.** The only failing audit was `color-contrast`, on
   `<a href="#projetos" class="btn-accent">` (white on `#16a34a`, 3.30:1).
-- **Initial JavaScript went from 200.2 KB to 195.4 KB transferred**, with the stack, the carousels and the
-  8-bit mode added. The criterion is "baseline plus 15 KB".
+- **Initial JavaScript went from 200.2 KB to 197.9 KB transferred**, with the stack, the carousels, the
+  8-bit mode, the Easter egg and the Inspector toggle added (195.4 KB after phase 5). The Inspector panel
+  is not part of it: it is fetched when opened. The criterion is "baseline plus 15 KB".
 - **PageSpeed Insights could not be measured.** The public API answered 429 ("Quota exceeded … Queries per
   day") on every attempt on 2026-10-03. No production number exists yet.
 
@@ -161,6 +166,27 @@ measurement is 100 without them and `design.md` applies them only when the measu
 - axe reads a colour in the middle of a CSS transition. A tab trigger whose background flips at once
   while its text colour fades reported `color-contrast`; the Inspector tabs have no transition.
 
+## The adjustments of phase 6.1
+
+- **The stack below the navbar.** With the navbar outside the panels, the sections lost the padding that
+  used to clear it (6 rem to 4 rem; the hero from 6 rem to 2 rem at the top). Measured on the production
+  build: at 1440×900 (836 px below the navbar) and at 1920×1080 (1016 px) every panel is exactly that
+  space tall, so each one pins with its top at the navbar. At 1366×768 (704 px) "Sobre" is 832 px and
+  "Projetos" 795 px, and on a Pixel 7 (775 px) "Sobre" is 1061 px: those pin by their bottom edge and
+  their top scrolls behind the opaque navbar, as on any page with a fixed header. Before the padding
+  change, a screenshot at 1440×900 showed the top of "Sobre" behind the navbar while it was pinned.
+- **Lenis applies the scroll margin.** The in-page link test ends with the top of the panel within 1 px
+  of the bottom edge of the navbar in the five projects.
+- **Showing the navbar toggles with CSS needed no state.** They are in the server HTML with
+  `display: none` and the `pixel` variant displays them; `getByRole` does not see them in the normal
+  skin, which is what the tests assert.
+- **Closing the Inspector when the skin is left** is a state update during render, guarded by its
+  condition (`if (open && !pixel) setOpen(false)`). ESLint accepts it, and the `inspector` suite checks
+  that the panel is gone.
+- **The suite after the adjustments:** 236 passed, 99 skipped, in 1.4 minutes. The skipped ones are the
+  theme and skin matrix of axe and the palette outside desktop Chromium, and the desktop-only tests on
+  mobile.
+
 ## The sprite
 
 The drawn draft (92×92, 18 colours, 850 bytes, four rounds of review against the photo) was shown to the
@@ -176,3 +202,6 @@ is now the source (`scripts/assets/portrait-art.jpeg`, 1024×1024, 331 KB, not s
   fringe on a paper or dark background; they now go with whichever of the two they have more of.
 - Result: `public/avatar/avatar.png` is 92×92, indexed, 30 colours with transparency, 1,250 bytes. A
   second run of `npm run assets:pixel` produces byte-identical files.
+- The tile behind it changed from the yellow of the reference to the `brand` green at the requester's
+  request. The white outline keeps the figure apart from the tile in both themes (`#137a3a` and
+  `#4ade80`); on a white or near-black tile it would disappear in one of them.

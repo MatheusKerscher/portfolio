@@ -158,58 +158,58 @@ proving both.
 All commands are run from the repository root. The Playwright projects are `chromium`, `firefox`,
 `webkit`, `mobile-chrome` and `mobile-safari`.
 
-- [ ] `npm ci` succeeds without `--force` or `--legacy-peer-deps`, and `npm ls` reports no `invalid`.
-- [ ] `npm run lint:eslint:check`, `npm run lint:prettier:check`, `npm run build` and `npm run test:e2e`
+- [x] `npm ci` succeeds without `--force` or `--legacy-peer-deps`, and `npm ls` reports no `invalid`.
+- [x] `npm run lint:eslint:check`, `npm run lint:prettier:check`, `npm run build` and `npm run test:e2e`
       exit 0.
-- [ ] **Stacking**, in the five projects: for each of the first four panels, once the page is scrolled
+- [x] **Stacking**, in the five projects: for each of the first four panels, once the page is scrolled
       past the end of the panel, its bottom edge stays within 1 px of the bottom of the viewport while the
       top edge of the next panel moves up, and a hit-test inside the overlap returns an element of the
       next panel.
-- [ ] **The navbar is respected**, in the five projects: the navbar has an opaque background. Scrolled
+- [x] **The navbar is respected**, in the five projects: the navbar has an opaque background. Scrolled
       to its natural position, the top edge of every panel is within 1 px of the bottom edge of the
       navbar, and a panel that fits below the navbar keeps that position while it is pinned. A fragment
       link lands with the top of its panel at the bottom edge of the navbar.
-- [ ] **No pinning when it is not wanted:** with `prefers-reduced-motion: reduce`, and separately with
+- [x] **No pinning when it is not wanted:** with `prefers-reduced-motion: reduce`, and separately with
       JavaScript disabled, the top edge of every panel moves by the scrolled distance.
-- [ ] **Nothing is cut:** at a 390×667 viewport, every heading, link and button of every panel can be
+- [x] **Nothing is cut:** at a 390×667 viewport, every heading, link and button of every panel can be
       scrolled to a position where a hit-test at its centre returns the element or one of its
       descendants.
-- [ ] **Focus is never obscured:** tabbing forward through the whole page and then backward, the focused
+- [x] **Focus is never obscured:** tabbing forward through the whole page and then backward, the focused
       element always passes the same hit-test.
-- [ ] **In-page links:** from the last panel, the navbar link to `#projetos` ends with the "Projetos"
+- [x] **In-page links:** from the last panel, the navbar link to `#projetos` ends with the "Projetos"
       heading inside the viewport and passing the hit-test. The same holds for a direct load of
       `/#curriculo`.
-- [ ] **Carousels:** the three carousels hold 9, 5 and 4 items, all present in the raw server HTML. The
+- [x] **Carousels:** the three carousels hold 9, 5 and 4 items, all present in the raw server HTML. The
       items of each carousel share the same `top` coordinate. "Next" moves the track and enables
       "previous"; "previous" is disabled at the start and "next" at the end. A horizontal wheel gesture
       over a track scrolls the track, and a vertical one scrolls the page.
-- [ ] **Hero:** the raw server HTML of `#hero` contains neither `opacity:0` nor `translateY(`. The `h1`
+- [x] **Hero:** the raw server HTML of `#hero` contains neither `opacity:0` nor `translateY(`. The `h1`
       has computed opacity 1 at load. Lighthouse reports the `h1` or the portrait as the LCP element.
-- [ ] **8-bit mode:** in the normal skin the navbar shows neither the skin toggle nor the Inspector
+- [x] **8-bit mode:** in the normal skin the navbar shows neither the skin toggle nor the Inspector
       toggle, and the portrait carries no control. The pixel in the footer, and separately the Konami
       code, set `data-skin="8bit"` on `<html>`; the code is ignored while a form field has focus. In the
       skin the navbar toggle is visible with `aria-pressed="true"`, and it removes the attribute. After a
       reload the attribute is already set when `DOMContentLoaded` fires. The portrait is the sprite, with
       computed `image-rendering: pixelated`, and headings compute to the pixel font. In the normal skin
       there is no request for the pixel font file, `/avatar/avatar.png` or `/thumbnails/8bit/`.
-- [ ] **Inspector:** its toggle is visible only in the 8-bit skin, and leaving the skin removes the
+- [x] **Inspector:** its toggle is visible only in the 8-bit skin, and leaving the skin removes the
       panel. Before it is opened its panel is not in the DOM, and opening it is what triggers
       the first request for its script. It shows a dialog with four tabs. In Chromium the Performance tab
       shows a numeric LCP. A metric the browser does not support is labelled as unsupported. The contrast
       table lists every pair of the palette contract. `Escape` closes it and returns focus to the toggle.
-- [ ] **Palette:** in light and in dark, every pair in `src/lib/palette-contract.ts`, computed from the
+- [x] **Palette:** in light and in dark, every pair in `src/lib/palette-contract.ts`, computed from the
       live CSS variables, meets its minimum, with the values of the table in Scope.
       `grep -rn "#16a34a" src` returns nothing.
-- [ ] **axe:** zero violations for the tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa` and `wcag22aa` on
+- [x] **axe:** zero violations for the tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa` and `wcag22aa` on
       `/` and `/email-signature`, in light and dark, normal and 8-bit, and on `/` with the Inspector
       open.
-- [ ] **Reflow:** at a 320 px wide viewport, `document.documentElement.scrollWidth` does not exceed the
+- [x] **Reflow:** at a 320 px wide viewport, `document.documentElement.scrollWidth` does not exceed the
       viewport width on both routes.
-- [ ] **Server HTML:** the raw HTML of `/` contains the `h1` text, every project title, every timeline
+- [x] **Server HTML:** the raw HTML of `/` contains the `h1` text, every project title, every timeline
       title and the stats `3+` and `8+`. With JavaScript disabled all of them are visible. The text
       content of every heading keeps the spaces between its words (`MATHEUS KERSCHER`, not
       `MATHEUSKERSCHER` — see `findings.md`).
-- [ ] **SEO and GEO:** `/` has exactly one `h1`. The canonical of `/` is `https://kerscher.dev.br` and
+- [x] **SEO and GEO:** `/` has exactly one `h1`. The canonical of `/` is `https://kerscher.dev.br` and
       the canonical of `/email-signature` is `https://kerscher.dev.br/email-signature`, which also has
       its own title and description. One JSON-LD script holds a `@graph` with `WebSite`, `ProfilePage`,
       `Person` and `ItemList`. `matheuskerscher@outlook.com` is the only email address in the HTML, the
@@ -219,16 +219,16 @@ All commands are run from the repository root. The Playwright projects are `chro
 - [ ] **Sprite:** `public/avatar/avatar.png` is 92×92, has at most 32 colours and weighs at most 4 KB.
       Running `npm run assets:pixel` again leaves `git status` clean. The requester's approval of the
       render is recorded in `tasks.md`.
-- [ ] **Performance, local:** `npm run audit` — Lighthouse 13.5.0 against the production build served
+- [x] **Performance, local:** `npm run audit` — Lighthouse 13.5.0 against the production build served
       with 40 ms of latency per response, mobile and desktop presets, median of 5 runs — reports
       Performance ≥ 95, and Accessibility, Best Practices and SEO ≥ 95. The latency was added during the
       work: without it the mobile result flips between two values (`findings.md`).
 - [ ] **Performance, deployed:** PageSpeed Insights on `https://kerscher.dev.br/` reports Performance
       ≥ 95 on mobile and on desktop, median of 3 runs each.
-- [ ] **Initial JavaScript:** the script bytes transferred on the first load of `/` are recorded in
+- [x] **Initial JavaScript:** the script bytes transferred on the first load of `/` are recorded in
       `findings.md` for the baseline and for the final build, and the final value is at most the baseline
       plus 15 KB.
-- [ ] **Documentation:** every command named in `README.md` and `CLAUDE.md` exists in `package.json`
+- [x] **Documentation:** every command named in `README.md` and `CLAUDE.md` exists in `package.json`
       `scripts`, every path they name exists, and the README thumbnail shows the new home page.
 - [ ] Manual check on `npm run dev`: `/` and `/email-signature` in light and dark, normal and 8-bit. The
       theme toggle, smooth scroll, carousels, the Easter egg, the Inspector and the signature copy
