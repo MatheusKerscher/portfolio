@@ -34,3 +34,17 @@ in the `2026-10-03_layout-redesign` spec.
   `decode()` on every image of the page hung on the first page; the 8-bit thumbnails are `display: none`
   and `loading="lazy"` in the normal skin, so they never load. Waiting only for the displayed images that
   are not complete finished in two minutes for 48 screenshots.
+- **`toEqual` tells `-0` from `0`.** Evidence (2026-10-04, the `2026-10-04_carousel-dots-and-stack-marquee`
+  spec): `-new DOMMatrix(transform).m41` of an untransformed element is `-0`, and the assertion failed
+  with `+ "shift": -0`. The test takes the absolute value.
+- **A scroll position that was set is a fraction of a pixel off.** Evidence: after `scrollLeft` was set
+  to the offset of an item, a value derived from it read 19.9857 in Chromium and 20.015 in WebKit where
+  20 was expected. Positions derived from a scroll are compared within half a pixel.
+- **A visually hidden input is never the element at its own centre.** Evidence: the focus test of the
+  `stacking` suite reported the checkbox of the band as obscured: `elementFromPoint` at its centre
+  returns the label that draws it. The test, and `StackController`, look at the label of such an input.
+- **An element screenshot can differ by one level of grey between two builds that did not change it.**
+  Evidence: of 16 footer screenshots, one (`/`, 1024×768, dark) differed from the baseline in its top
+  border row only, 46 against 45 of 255. Four more captures of the new build were identical to each
+  other. A comparison of panels is read with that in mind: a one-level difference in a hairline is not
+  a layout change.

@@ -66,6 +66,13 @@ the English page; compare the script bytes it prints with the previous run.
   for the column is a `max-lg:` utility (or `max-md:`, `max-sm:`) or a rule inside a
   `@media (width < 64rem)` block, never a change to a base class: the desktop fits a laptop screen by
   a few pixels and must not move. `e2e/mobile.spec.ts` checks the centring, the targets and the type.
+- **Carousels:** from `md` up a carousel has previous and next buttons and a position bar; below it,
+  dots, one per item, which are not controls. Both are rendered by `CarouselControls` and the
+  stylesheet shows one. The arithmetic of the dots is in `src/lib/carousel-dots.ts`, whose step has to
+  match the size and the gap of `.carousel-dot` in the stylesheet.
+- **Content that moves on its own** (the band of technologies, `Marquee`) is CSS only. It has a pause
+  control that works without JavaScript, and under `prefers-reduced-motion` it stands still with all
+  of its content on screen. `e2e/marquee.spec.ts` checks the three.
 - **8-bit mode is an Easter egg:** nothing in the normal skin announces it. The ways in are in
   `src/app/components/skin-easter-egg.tsx`, and the Inspector exists only inside that skin. Tests enter
   it with `storeSkin` from `e2e/helpers.ts`.

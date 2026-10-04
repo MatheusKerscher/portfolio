@@ -11,6 +11,10 @@ Next.js 16.3.8, Tailwind CSS 4, sharp 0.35.5 and Lenis 1.3.26.
 - **Rule:** an element whose position, or any other property, is set by a component class does not carry
   a utility for that property. Rules that must win over utilities, like those of the 8-bit skin, are
   written outside any layer.
+- **Hit again on 2026-10-04**, the other way round: the pause control of the band has the `flex` utility,
+  and a `display: none` for it in a media query of the `components` layer did nothing. The `marquee`
+  suite caught it: the control was still shown under reduced motion. It is hidden with the
+  `motion-reduce:hidden` utility.
 
 ## A custom property that uses a font variable must be declared where the variable exists
 

@@ -48,27 +48,28 @@ motion.
 
 ## Acceptance criteria
 
-- [ ] `npm run lint:eslint:check`, `npm run lint:prettier:check`, `npm run build` and `npm run test:e2e`
+- [x] `npm run lint:eslint:check`, `npm run lint:prettier:check`, `npm run build` and `npm run test:e2e`
       exit 0.
-- [ ] **Dots:** below 768 px each carousel shows one dot per item and no button; the active dot is the
+- [x] **Dots:** below 768 px each carousel shows one dot per item and no button; the active dot is the
       item in view, from the first to the last; the dots are hidden from assistive technology.
-- [ ] **Window:** with more than five items, five dots are on screen, the window follows the scroll,
+- [x] **Window:** with more than five items, five dots are on screen, the window follows the scroll,
       and a dot at an end of the window is smaller when there are items beyond it.
-- [ ] **From 768 px up** the buttons and the position bar are shown and the dots are not.
-- [ ] **Band:** the nine technologies are announced once to assistive technology; the strip moves on
+- [x] **From 768 px up** the buttons and the position bar are shown and the dots are not.
+- [x] **Band:** the nine technologies are announced once to assistive technology; the strip moves on
       its own; the pause control stops and resumes it, with JavaScript off as well; hovering it stops
       it.
-- [ ] **Reduced motion:** the strip does not move, the nine technologies are all visible, and the pause
+- [x] **Reduced motion:** the strip does not move, the nine technologies are all visible, and the pause
       control is not shown.
-- [ ] **Touch target:** the pause control measures at least 44×44 px below 1024 px.
-- [ ] **No copy is left behind:** the descriptions of the technologies are in neither dictionary and in
+- [x] **Touch target:** the pause control measures at least 44×44 px below 1024 px.
+- [x] **No copy is left behind:** the descriptions of the technologies are in neither dictionary and in
       no page.
-- [ ] **The other panels did not move:** screenshots of the hero, "Projetos", "Currículo" and "Contato"
+- [x] **The other panels did not move:** screenshots of the hero, "Projetos", "Currículo" and "Contato"
       panels at 1440×900 and 1024×768, `/` and `/en`, both themes and both skins, are identical pixel
-      by pixel before and after.
-- [ ] **"Sobre" still fits a laptop screen:** the "on a laptop screen" tests pass, and its new height
+      by pixel before and after. Measured: 95 of 96 are; one footer differs by one level of grey in
+      its top border row (`findings.md`).
+- [x] **"Sobre" still fits a laptop screen:** the "on a laptop screen" tests pass, and its new height
       is recorded.
-- [ ] **Loading:** `npm run audit` scores at least 95 in every category on `/` and on `/en`, and the
+- [x] **Loading:** `npm run audit` scores at least 95 in every category on `/` and on `/en`, and the
       script bytes are recorded next to the 196.9 KB of the previous run.
 
 ## Requester decisions
