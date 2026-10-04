@@ -1,8 +1,11 @@
 import { expect, test, type Page } from "@playwright/test";
-import { navCopy } from "../src/app/data/site";
+import { headingId, sections } from "../src/app/data/site";
 import {
+  DEFAULT_COPY,
+  homeOf,
   horizontalOverflow,
   isUnobscured,
+  LOCALES,
   navbarHeight,
   revealAll,
   scrollToNatural,
@@ -11,6 +14,9 @@ import {
   storeSkin,
   waitForStack,
 } from "./helpers";
+
+// How the panels pin does not depend on the language; whether they fit does.
+const navCopy = DEFAULT_COPY.nav;
 
 /** Every panel but the last pins; each one is paired with the panel that covers it. */
 const PAIRS = SECTION_IDS.slice(0, -1).map(
@@ -136,34 +142,36 @@ test.describe("stacked sections", () => {
       { width: 1366, height: 641 },
     ];
 
-    for (const viewport of VIEWPORTS) {
-      for (const skin of ["normal", "8-bit"] as const) {
-        test(`every panel fits below the navbar at ${viewport.width}×${viewport.height}, ${skin} skin`, async ({
-          page,
-          isMobile,
-        }) => {
-          test.skip(isMobile, "a laptop screen is not a phone");
-          await page.setViewportSize(viewport);
-          if (skin === "8-bit") await storeSkin(page);
-          await page.goto("/");
-          await waitForStack(page);
-          await page.evaluate(() => document.fonts.ready);
-          const navbar = await navbarHeight(page);
-          const space = viewport.height - navbar;
+    for (const locale of LOCALES) {
+      for (const viewport of VIEWPORTS) {
+        for (const skin of ["normal", "8-bit"] as const) {
+          test(`every panel fits below the navbar at ${viewport.width}×${viewport.height}, ${skin} skin, ${locale}`, async ({
+            page,
+            isMobile,
+          }) => {
+            test.skip(isMobile, "a laptop screen is not a phone");
+            await page.setViewportSize(viewport);
+            if (skin === "8-bit") await storeSkin(page);
+            await page.goto(homeOf(locale));
+            await waitForStack(page);
+            await page.evaluate(() => document.fonts.ready);
+            const navbar = await navbarHeight(page);
+            const space = viewport.height - navbar;
 
-          for (const [index, id] of SECTION_IDS.entries()) {
-            const { naturalTop, height } = await panelBox(page, id);
-            expect(height, `#${id} fits`).toBeLessThanOrEqual(space + 1);
+            for (const [index, id] of SECTION_IDS.entries()) {
+              const { naturalTop, height } = await panelBox(page, id);
+              expect(height, `#${id} fits`).toBeLessThanOrEqual(space + 1);
 
-            // The last panel never pins. The others stay put while the next one covers them.
-            if (index === SECTION_IDS.length - 1) continue;
-            await scrollToY(page, naturalTop - navbar + space / 2);
-            expect(
-              Math.abs((await panelBox(page, id)).top - navbar),
-              `#${id} stays below the navbar while it is covered`,
-            ).toBeLessThanOrEqual(1);
-          }
-        });
+              // The last panel never pins. The others stay put while the next one covers them.
+              if (index === SECTION_IDS.length - 1) continue;
+              await scrollToY(page, naturalTop - navbar + space / 2);
+              expect(
+                Math.abs((await panelBox(page, id)).top - navbar),
+                `#${id} stays below the navbar while it is covered`,
+              ).toBeLessThanOrEqual(1);
+            }
+          });
+        }
       }
     }
   });
@@ -246,33 +254,33 @@ test.describe("stacked sections", () => {
       await page.getByRole("button", { name: navCopy.openMenu }).click();
       await page
         .locator("#mobile-nav")
-        .getByRole("link", { name: "Projetos" })
+        .getByRole("link", { name: navCopy.links.projects })
         .click();
     } else {
       await page
         .getByRole("navigation", { name: navCopy.label })
-        .getByRole("link", { name: "Projetos" })
+        .getByRole("link", { name: navCopy.links.projects })
         .click();
     }
 
-    await expect(page).toHaveURL(/#projetos$/);
+    await expect(page).toHaveURL(new RegExp(`#${sections.projects}$`));
     await expect
-      .poll(() => isUnobscured(page.locator("#projetos-heading")))
+      .poll(() => isUnobscured(page.locator(`#${headingId("projects")}`)))
       .toBe(true);
     // The panel stops at the navbar instead of going behind it.
     const navbar = await navbarHeight(page);
     await expect
       .poll(async () =>
-        Math.abs((await panelBox(page, "projetos")).top - navbar),
+        Math.abs((await panelBox(page, sections.projects)).top - navbar),
       )
       .toBeLessThanOrEqual(1);
   });
 
   test("a direct load of a fragment lands on its panel", async ({ page }) => {
-    await page.goto("/#curriculo");
+    await page.goto(`/#${sections.experience}`);
     await waitForStack(page);
     await expect
-      .poll(() => isUnobscured(page.locator("#curriculo-heading")))
+      .poll(() => isUnobscured(page.locator(`#${headingId("experience")}`)))
       .toBe(true);
   });
 
@@ -303,13 +311,17 @@ test.describe("stacked sections", () => {
       expect(cut).toEqual([]);
     });
 
-    test("the page does not scroll sideways at 320 px", async ({ page }) => {
-      await page.setViewportSize({ width: 320, height: 640 });
-      await page.goto("/");
-      expect(await horizontalOverflow(page)).toEqual({
-        overflow: 0,
-        clipped: [],
+    for (const locale of LOCALES) {
+      test(`the page does not scroll sideways at 320 px, ${locale}`, async ({
+        page,
+      }) => {
+        await page.setViewportSize({ width: 320, height: 640 });
+        await page.goto(homeOf(locale));
+        expect(await horizontalOverflow(page)).toEqual({
+          overflow: 0,
+          clipped: [],
+        });
       });
-    });
+    }
   });
 });

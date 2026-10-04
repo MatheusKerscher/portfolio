@@ -1,24 +1,28 @@
 import { ArrowRight } from "lucide-react";
-import { contactCopy, layoutCopy, site, socials } from "../data/site";
+import { getDictionary } from "../data/dictionaries/server";
+import { headingId, site, socials } from "../data/site";
 import MotionSection from "./motion-section";
 import { SocialIcon } from "./social-icons";
 
-export default function ContactSection() {
+export default async function ContactSection() {
+  const dict = await getDictionary();
+  const { contact } = dict;
+
   return (
     <section
       data-stack-panel
-      aria-labelledby="contato-heading"
+      aria-labelledby={headingId("contact")}
       className="stack-panel flex flex-col justify-center px-6 py-(--panel-pad) lg:px-8"
     >
       <div className="mx-auto w-full max-w-6xl">
         <MotionSection>
-          <p className="section-label">{contactCopy.label}</p>
+          <p className="section-label">{contact.label}</p>
         </MotionSection>
 
         <div className="max-w-2xl">
           <MotionSection delay={0.1}>
             <h2
-              id="contato-heading"
+              id={headingId("contact")}
               className="mb-8 leading-tight font-bold text-ink"
               style={{
                 fontFamily: "var(--font-display)",
@@ -26,13 +30,13 @@ export default function ContactSection() {
                 letterSpacing: "-0.02em",
               }}
             >
-              {contactCopy.heading}
+              {contact.heading}
             </h2>
           </MotionSection>
 
           <MotionSection delay={0.2}>
             <p className="mb-10 text-lg leading-relaxed text-ink-muted">
-              {contactCopy.text}
+              {contact.text}
             </p>
           </MotionSection>
 
@@ -75,7 +79,7 @@ export default function ContactSection() {
                       rel="noopener noreferrer"
                       className="flex min-h-6 items-center gap-2 text-ink-muted hover:text-brand"
                       style={{ transition: "color 0.3s var(--ease-cubic)" }}
-                      aria-label={layoutCopy.profileOf(link.name)}
+                      aria-label={dict.layout.profileOf(link.name)}
                     >
                       <SocialIcon id={link.id} size={20} />
                       <span className="text-sm font-medium">{link.name}</span>

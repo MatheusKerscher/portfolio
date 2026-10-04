@@ -1,42 +1,23 @@
 /**
- * Facts about the site and its owner, and the copy of the interface. Sections, metadata, JSON-LD,
- * llms.txt, the sitemap and the Open Graph image all read from here.
+ * Facts about the site and its owner that do not depend on the language. The copy is in
+ * `dictionaries/`. Sections, metadata, JSON-LD, llms.txt, the sitemap and the Open Graph image
+ * read both.
  */
 import { yearsOfExperience } from "./curriculum";
 
 export const site = {
   url: "https://kerscher.dev.br",
   name: "Matheus Kerscher",
+  /** The `h1` of the page and the name on the Open Graph image. */
+  heading: "MATHEUS KERSCHER",
   initials: "MK",
-  role: "Desenvolvedor FullStack",
-  title: "Matheus Kerscher — Desenvolvedor FullStack",
-  description:
-    "Portfólio de Matheus Kerscher, desenvolvedor FullStack especializado em React, Next.js e Node.js. Baseado em Curitiba, Paraná.",
-  summary: `Matheus Kerscher é desenvolvedor FullStack com mais de ${yearsOfExperience} anos de experiência em aplicações web e mobile, especializado em React, Next.js, Node.js e TypeScript. Atua como Full-Stack Software Engineer na Coopers Digital, em Curitiba, PR, e também como freelancer.`,
-  availability: "Disponível para trabalho, freelas e colaborações.",
   email: "matheuskerscher@outlook.com",
-  language: "pt-BR",
-  locale: "pt_BR",
   city: "Curitiba",
   region: "Paraná",
   country: "BR",
   repository: "https://github.com/MatheusKerscher/portfolio",
   /** Bump when the visible content changes: it is the `lastmod` of the sitemap. */
   contentUpdatedAt: "2026-10-04",
-  keywords: [
-    "Matheus Kerscher",
-    "Desenvolvedor FullStack",
-    "React",
-    "Next.js",
-    "Node.js",
-    "TypeScript",
-    "React Native",
-    "Curitiba",
-    "Paraná",
-    "Brasil",
-    "freelancer",
-    "desenvolvimento web",
-  ],
   /** The first four are printed on the Open Graph image. */
   knowsAbout: [
     "React",
@@ -61,6 +42,22 @@ export const site = {
   /** The `--paper` token of each theme, for the browser chrome. Checked by e2e/seo.spec.ts. */
   themeColor: { light: "#f8f7f3", dark: "#111111" },
 };
+
+/**
+ * Ids of the stacked sections, in the order of the page. They are the anchors of the page and
+ * are the same in every language.
+ */
+export const sections = {
+  hero: "hero",
+  about: "about",
+  projects: "projects",
+  experience: "experience",
+  contact: "contact",
+} as const;
+
+export type SectionKey = keyof typeof sections;
+
+export const headingId = (key: SectionKey) => `${sections[key]}-heading`;
 
 export type SocialId = "email" | "linkedin" | "github" | "instagram";
 
@@ -101,60 +98,37 @@ export const socials: Social[] = [
 export const social = (id: SocialId) =>
   socials.find((item) => item.id === id) as Social;
 
-export type Technology = { name: string; icon: string; description: string };
+export type TechnologyId =
+  | "nextjs"
+  | "react"
+  | "typescript"
+  | "nodejs"
+  | "tailwindcss"
+  | "git"
+  | "javascript"
+  | "html"
+  | "css";
+
+export type Technology = { id: TechnologyId; name: string; icon: string };
 
 export const technologies: Technology[] = [
-  {
-    name: "Next.js",
-    icon: "/nextjs.svg",
-    description: "Framework React com SSR e geração estática",
-  },
-  {
-    name: "React",
-    icon: "/react.svg",
-    description: "Biblioteca para interfaces declarativas e reativas",
-  },
-  {
-    name: "TypeScript",
-    icon: "/typescript.svg",
-    description: "JavaScript com tipagem estática e maior previsibilidade",
-  },
-  {
-    name: "Node.js",
-    icon: "/nodejs.svg",
-    description: "Runtime JavaScript para servidores e APIs",
-  },
-  {
-    name: "Tailwind CSS",
-    icon: "/tailwindcss.svg",
-    description: "Framework CSS utilitário para estilização rápida",
-  },
-  {
-    name: "Git",
-    icon: "/git.svg",
-    description: "Controle de versão distribuído para colaboração",
-  },
-  {
-    name: "JavaScript",
-    icon: "/javascript.svg",
-    description: "Linguagem dinâmica base da web moderna",
-  },
-  {
-    name: "HTML5",
-    icon: "/html.svg",
-    description: "Linguagem de marcação para estrutura de páginas",
-  },
-  {
-    name: "CSS3",
-    icon: "/css.svg",
-    description: "Linguagem de estilo para design e animações",
-  },
+  { id: "nextjs", name: "Next.js", icon: "/nextjs.svg" },
+  { id: "react", name: "React", icon: "/react.svg" },
+  { id: "typescript", name: "TypeScript", icon: "/typescript.svg" },
+  { id: "nodejs", name: "Node.js", icon: "/nodejs.svg" },
+  { id: "tailwindcss", name: "Tailwind CSS", icon: "/tailwindcss.svg" },
+  { id: "git", name: "Git", icon: "/git.svg" },
+  { id: "javascript", name: "JavaScript", icon: "/javascript.svg" },
+  { id: "html", name: "HTML5", icon: "/html.svg" },
+  { id: "css", name: "CSS3", icon: "/css.svg" },
 ];
 
+export type StackLayer = "frontend" | "mobile" | "backend" | "cms" | "tools";
+
 /** The stack as llms.txt lists it, grouped by layer. */
-export const stackSummary = [
+export const stackSummary: { layer: StackLayer; items: string[] }[] = [
   {
-    layer: "Frontend",
+    layer: "frontend",
     items: [
       "React",
       "Next.js",
@@ -167,200 +141,17 @@ export const stackSummary = [
       "CSS3",
     ],
   },
-  { layer: "Mobile", items: ["React Native"] },
-  { layer: "Backend", items: ["Node.js", "NestJS", "PHP", "PostgreSQL"] },
-  { layer: "CMS", items: ["WordPress", "Hygraph"] },
-  { layer: "Ferramentas", items: ["Git", "CI/CD"] },
+  { layer: "mobile", items: ["React Native"] },
+  { layer: "backend", items: ["Node.js", "NestJS", "PHP", "PostgreSQL"] },
+  { layer: "cms", items: ["WordPress", "Hygraph"] },
+  { layer: "tools", items: ["Git", "CI/CD"] },
 ];
 
-export type Stat = { value: number; suffix: string; label: string };
+export type StatId = "years" | "clients";
+
+export type Stat = { id: StatId; value: number; suffix: string };
 
 export const stats: Stat[] = [
-  { value: yearsOfExperience, suffix: "+", label: "anos de exp." },
-  { value: 8, suffix: "+", label: "clientes" },
+  { id: "years", value: yearsOfExperience, suffix: "+" },
+  { id: "clients", value: 8, suffix: "+" },
 ];
-
-export const layoutCopy = {
-  skipLink: "Pular para o conteúdo principal",
-  copyright: (year: number) => `© ${year} ${site.name}`,
-  profileOf: (network: string) => `${network} de ${site.name}`,
-};
-
-export const navCopy = {
-  label: "Navegação principal",
-  links: [
-    { label: "Projetos", href: "#projetos" },
-    { label: "Currículo", href: "#curriculo" },
-    { label: "Contato", href: "#contato" },
-  ],
-  openMenu: "Abrir menu",
-  closeMenu: "Fechar menu",
-  lightTheme: "Ativar tema claro",
-  darkTheme: "Ativar tema escuro",
-  backToTop: "Voltar ao topo",
-};
-
-export const skinCopy = {
-  toggle: "Modo 8-bit",
-};
-
-export const inspectorCopy = {
-  toggle: "Inspetor do site",
-  title: "Inspetor",
-  intro:
-    "Este site se audita ao vivo. Os números abaixo foram medidos agora, no seu navegador.",
-  close: "Fechar inspetor",
-  tabs: {
-    performance: "Performance",
-    accessibility: "Acessibilidade",
-    seo: "SEO & GEO",
-    code: "Código",
-  },
-  vitals: {
-    heading: "Core Web Vitals desta visita",
-    waiting: "aguardando",
-    waitingForInput: "interaja com a página",
-    unsupported: "não suportado neste navegador",
-    ratings: {
-      good: "bom",
-      "needs-improvement": "precisa melhorar",
-      poor: "ruim",
-    },
-    names: {
-      LCP: "Largest Contentful Paint",
-      CLS: "Cumulative Layout Shift",
-      INP: "Interaction to Next Paint",
-      FCP: "First Contentful Paint",
-      TTFB: "Time to First Byte",
-    },
-  },
-  weight: {
-    heading: "Peso desta página",
-    requests: "requisições",
-    transferred: "transferidos",
-    script: "de JavaScript",
-    cached: "Nada foi transferido agora: a página veio do cache.",
-  },
-  lab: {
-    heading: "Lighthouse em laboratório",
-    mobile: "Mobile",
-    desktop: "Desktop",
-    categories: {
-      performance: "Performance",
-      accessibility: "Acessibilidade",
-      bestPractices: "Boas práticas",
-      seo: "SEO",
-    },
-    note: (run: {
-      runs: number;
-      version: string;
-      date: string;
-      commit: string;
-      latency: number;
-    }) =>
-      `Mediana de ${run.runs} execuções do Lighthouse ${run.version} em ${run.date}, no commit ${run.commit}, com ${run.latency} ms de latência por resposta.`,
-  },
-  overlays: {
-    heading: "Destacar na página",
-    landmarks: "Landmarks",
-    headings: "Títulos",
-    focus: "Ordem de foco",
-  },
-  contrast: {
-    heading: "Contraste da paleta, lido do CSS desta página",
-    on: "sobre",
-    minimum: "mínimo",
-    pass: "passa",
-    fail: "falha",
-  },
-  preferences: {
-    heading: "Suas preferências",
-    reducedMotion: "Movimento reduzido",
-    theme: "Tema",
-    skin: "Skin",
-    on: "ativo",
-    off: "inativo",
-    light: "claro",
-    dark: "escuro",
-    normal: "normal",
-    pixel: "8-bit",
-  },
-  seo: {
-    heading: "O que buscadores e IAs leem",
-    title: "Título",
-    description: "Descrição",
-    canonical: "Canônico",
-    language: "Idioma",
-    structured: "Dados estruturados (JSON-LD)",
-    none: "nenhum nesta página",
-    files: "Arquivos para buscadores e IAs",
-  },
-  code: {
-    heading: "Como foi construído",
-    stack: "Stack, como declarada no package.json",
-    repository: "Repositório",
-    spec: "Especificações do projeto",
-    commit: "Commit publicado",
-  },
-};
-
-export const carouselCopy = {
-  previous: (list: string) => `Anterior em ${list}`,
-  next: (list: string) => `Próximo em ${list}`,
-};
-
-export const heroCopy = {
-  eyebrow: "Desenvolvedor FullStack · Curitiba, PR",
-  heading: "MATHEUS KERSCHER",
-  tagline:
-    "Construo aplicações web com foco em experiência de usuário, performance e código limpo.",
-  primaryCta: { label: "Ver Projetos", href: "#projetos" },
-  secondaryCta: { label: "Entre em Contato", href: "#contato" },
-  scrollCue: "Scroll",
-  portraitAlt: `Retrato de ${site.name}`,
-};
-
-export const aboutCopy = {
-  label: "01 — Sobre",
-  heading: "Apaixonado por criar experiências digitais que fazem sentido.",
-  bio: "Sou desenvolvedor FullStack com foco em React e Node.js, baseado em Curitiba, Paraná. Gosto de transformar ideias complexas em interfaces simples e funcionais, sempre com atenção aos detalhes e à qualidade do código.",
-  technologies: "Principais Stacks",
-  socials: "Redes e contato",
-};
-
-export const projectsCopy = {
-  label: "02 — Projetos",
-  heading: "Trabalhos selecionados.",
-  count: (total: number) => `${total} projetos`,
-  carousel: "Projetos",
-  newTab: "(abre em nova aba)",
-  thumbnailAlt: (title: string) => `Tela do projeto ${title}`,
-};
-
-export const curriculumCopy = {
-  label: "03 — Currículo",
-  heading: "Experiência & Formação.",
-  carousel: "Experiência e formação",
-  kinds: { experience: "Experiência", education: "Formação" },
-  months: [
-    "Jan",
-    "Fev",
-    "Mar",
-    "Abr",
-    "Mai",
-    "Jun",
-    "Jul",
-    "Ago",
-    "Set",
-    "Out",
-    "Nov",
-    "Dez",
-  ],
-  present: "Presente",
-};
-
-export const contactCopy = {
-  label: "04 — Contato",
-  heading: "Vamos construir algo juntos?",
-  text: "Estou aberto a oportunidades de trabalho, freelas e colaborações. Se tiver um projeto em mente, adoraria conversar.",
-};

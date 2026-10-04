@@ -1,10 +1,9 @@
 import { contrastRatio } from "@/lib/contrast";
 import { palettePairs } from "@/lib/palette-contract";
-import { inspectorCopy } from "../../data/site";
+import { useInspector } from "./inspector-context";
 import { OVERLAY_KINDS, type OverlayKind } from "./overlays";
 import { usePageState } from "./use-page-state";
 
-const copy = inspectorCopy;
 const token = (variable: string) => variable.replace(/^--/, "");
 
 type AccessibilityTabProps = {
@@ -16,6 +15,7 @@ export default function AccessibilityTab({
   overlays,
   onToggleOverlay,
 }: AccessibilityTabProps) {
+  const { copy } = useInspector();
   // Re-renders when the theme or the skin changes, so the ratios below are the current ones.
   const page = usePageState();
   const style = getComputedStyle(document.documentElement);

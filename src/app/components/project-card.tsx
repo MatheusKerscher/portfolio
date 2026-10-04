@@ -1,19 +1,16 @@
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
+import { getDictionary } from "../data/dictionaries/server";
 import { pixelThumbnail, type Project } from "../data/projects";
-import { projectsCopy } from "../data/site";
 
-type ProjectCardProps = Project & { index: number };
+type ProjectCardProps = { project: Project; index: number };
 
-export default function ProjectCard({
-  title,
-  description,
-  tags,
-  thumbnail,
-  repositoryUrl,
-  websiteUrl,
+export default async function ProjectCard({
+  project,
   index,
 }: ProjectCardProps) {
+  const copy = (await getDictionary()).projects;
+  const { title, tags, thumbnail, repositoryUrl, websiteUrl } = project;
   const number = String(index + 1).padStart(2, "0");
 
   return (
@@ -21,7 +18,7 @@ export default function ProjectCard({
       <div className="aspect-5/3 max-h-(--thumbnail-h) overflow-hidden border-b border-line bg-paper">
         <Image
           src={thumbnail.src}
-          alt={projectsCopy.thumbnailAlt(title)}
+          alt={copy.thumbnailAlt(title)}
           width={thumbnail.width}
           height={thumbnail.height}
           sizes="(min-width: 640px) 416px, 85vw"
@@ -30,7 +27,7 @@ export default function ProjectCard({
         {/* Shown by the 8-bit skin. Hidden and lazy, so the normal skin never requests it. */}
         <Image
           src={pixelThumbnail(thumbnail)}
-          alt={projectsCopy.thumbnailAlt(title)}
+          alt={copy.thumbnailAlt(title)}
           width={150}
           height={90}
           loading="lazy"
@@ -71,11 +68,13 @@ export default function ProjectCard({
             style={{ transition: "color 0.3s var(--ease-cubic)" }}
           >
             {title}
-            <span className="sr-only"> {projectsCopy.newTab}</span>
+            <span className="sr-only"> {copy.newTab}</span>
           </a>
         </h3>
 
-        <p className="text-sm leading-relaxed text-ink-muted">{description}</p>
+        <p className="text-sm leading-relaxed text-ink-muted">
+          {copy.descriptions[project.id]}
+        </p>
 
         <ul className="mt-auto flex flex-wrap gap-2 pt-2">
           {tags.map((tag) => (

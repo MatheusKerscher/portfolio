@@ -1,5 +1,26 @@
 import AxeBuilder from "@axe-core/playwright";
 import type { Locator, Page } from "@playwright/test";
+import { dictionaryFor } from "../src/app/data/dictionaries";
+import { inspectorDictionaryFor } from "../src/app/data/dictionaries/inspector";
+import {
+  defaultLocale,
+  localeCodes,
+  localePath,
+  type Locale,
+} from "../src/app/data/locales";
+import { sections } from "../src/app/data/site";
+
+/** The languages of the site. A suite that depends on copy or on layout runs in each of them. */
+export const LOCALES = localeCodes;
+
+/** The home page of a language: `/` or `/en`. */
+export const homeOf = (locale: Locale) => localePath(locale);
+
+export const copyOf = dictionaryFor;
+export const inspectorCopyOf = inspectorDictionaryFor;
+
+/** For the suites that check behaviour, not copy, and run in the default language only. */
+export const DEFAULT_COPY = dictionaryFor(defaultLocale);
 
 const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 
@@ -12,13 +33,8 @@ export async function violations(page: Page) {
   );
 }
 
-export const SECTION_IDS = [
-  "hero",
-  "sobre",
-  "projetos",
-  "curriculo",
-  "contato",
-] as const;
+/** The anchors of the page, in its order; they are the same in every language. */
+export const SECTION_IDS = Object.values(sections);
 
 /** Scrolls through the page so every scroll-triggered reveal has played. */
 export async function revealAll(page: Page) {

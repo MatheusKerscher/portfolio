@@ -1,7 +1,8 @@
 import { expect, test } from "@playwright/test";
-import { revealAll, storeSkin, violations } from "./helpers";
+import { headingId } from "../src/app/data/site";
+import { homeOf, LOCALES, revealAll, storeSkin, violations } from "./helpers";
 
-const ROUTES = ["/"];
+const ROUTES = LOCALES.map(homeOf);
 const THEMES = ["light", "dark"] as const;
 const SKINS = ["normal", "8-bit"] as const;
 
@@ -36,7 +37,7 @@ test.describe("accessibility", () => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/");
     await revealAll(page);
-    await expect(page.locator("#sobre-heading")).toBeVisible();
+    await expect(page.locator(`#${headingId("about")}`)).toBeVisible();
     expect(
       await page
         .locator(".scroll-cue")

@@ -1,17 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { inspectorCopy } from "../../data/site";
+import type { Locale } from "../../data/locales";
 import AccessibilityTab from "./accessibility-tab";
 import CodeTab from "./code-tab";
+import { InspectorContext, inspectorValue } from "./inspector-context";
 import Overlays, { type OverlayKind } from "./overlays";
 import PerformanceTab from "./performance-tab";
 import SeoTab from "./seo-tab";
 
-const copy = inspectorCopy;
 const TABS = ["performance", "accessibility", "seo", "code"] as const;
 
 // No transition: the background flips at once, and a text colour that fades behind it would
@@ -25,7 +25,15 @@ const triggerClass =
  * scrollable behind it. Rendered into `body`: a fixed element inside the navbar would be placed
  * relative to it once the navbar has a backdrop filter.
  */
-export default function InspectorPanel({ onClose }: { onClose: () => void }) {
+export default function InspectorPanel({
+  locale,
+  onClose,
+}: {
+  locale: Locale;
+  onClose: () => void;
+}) {
+  const value = useMemo(() => inspectorValue(locale), [locale]);
+  const { copy } = value;
   const title = useRef<HTMLHeadingElement>(null);
   const [overlays, setOverlays] = useState<OverlayKind[]>([]);
 
@@ -49,7 +57,7 @@ export default function InspectorPanel({ onClose }: { onClose: () => void }) {
     );
 
   return createPortal(
-    <>
+    <InspectorContext.Provider value={value}>
       <Overlays kinds={overlays} />
       <div
         id="inspector-panel"
@@ -111,7 +119,7 @@ export default function InspectorPanel({ onClose }: { onClose: () => void }) {
           </div>
         </Tabs>
       </div>
-    </>,
+    </InspectorContext.Provider>,
     document.body,
   );
 }

@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { useCallback, useRef, useState } from "react";
 import { useSkin } from "@/lib/skin";
-import { inspectorCopy } from "../../data/site";
+import type { Locale } from "../../data/locales";
 
 // Fetched when the Inspector is first opened, so it adds nothing to the page load it measures.
 const InspectorPanel = dynamic(() => import("./inspector-panel"), {
@@ -26,8 +26,13 @@ function Magnifier() {
   );
 }
 
+type InspectorToggleProps = { label: string; locale: Locale };
+
 /** The Inspector belongs to the 8-bit skin: its toggle is displayed only there. */
-export default function InspectorToggle() {
+export default function InspectorToggle({
+  label,
+  locale,
+}: InspectorToggleProps) {
   const pixel = useSkin() === "8bit";
   const [open, setOpen] = useState(false);
   const button = useRef<HTMLButtonElement>(null);
@@ -45,8 +50,8 @@ export default function InspectorToggle() {
       <button
         ref={button}
         type="button"
-        aria-label={inspectorCopy.toggle}
-        title={inspectorCopy.toggle}
+        aria-label={label}
+        title={label}
         aria-expanded={open}
         aria-controls={open ? "inspector-panel" : undefined}
         onClick={() => setOpen((current) => !current)}
@@ -54,7 +59,7 @@ export default function InspectorToggle() {
       >
         <Magnifier />
       </button>
-      {open && <InspectorPanel onClose={close} />}
+      {open && <InspectorPanel locale={locale} onClose={close} />}
     </>
   );
 }

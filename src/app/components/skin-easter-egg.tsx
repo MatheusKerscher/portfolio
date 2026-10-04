@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import { toggleSkin, useSkin } from "@/lib/skin";
-import { skinCopy } from "../data/site";
 
 const KONAMI = [
   "ArrowUp",
@@ -22,7 +21,7 @@ const KONAMI = [
  * pixel, a real button for a pointer, a touch screen or a screen reader, and the Konami code
  * for a keyboard.
  */
-export default function SkinEasterEgg() {
+export default function SkinEasterEgg({ label }: { label: string }) {
   const active = useSkin() === "8bit";
 
   useEffect(() => {
@@ -51,7 +50,7 @@ export default function SkinEasterEgg() {
     <button
       type="button"
       aria-pressed={active}
-      aria-label={skinCopy.toggle}
+      aria-label={label}
       onClick={toggleSkin}
       className="group flex h-6 w-6 items-center justify-center"
     >

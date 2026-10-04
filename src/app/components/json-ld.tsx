@@ -1,27 +1,38 @@
 import type { Graph, ItemList, Person, ProfilePage, WebSite } from "schema-dts";
+import { yearsOfExperience } from "../data/curriculum";
+import { dictionaryFor } from "../data/dictionaries";
+import { getLocale } from "../data/dictionaries/server";
+import { localeCodes, localePath, locales, type Locale } from "../data/locales";
 import { projects } from "../data/projects";
 import { site, socials } from "../data/site";
 
+/** Ids of the site and the person do not change with the language: both pages describe one entity. */
 const id = (fragment: string) => `${site.url}/#${fragment}`;
 
-export function buildJsonLd(): Graph {
+export function buildJsonLd(locale: Locale): Graph {
+  const dict = dictionaryFor(locale);
+  const { meta } = dict;
+  const language = locales[locale].htmlLang;
+  const path = localePath(locale);
+  const pageUrl = `${site.url}${path === "/" ? "" : path}`;
+
   const website: WebSite = {
     "@type": "WebSite",
     "@id": id("website"),
     url: site.url,
     name: site.name,
-    description: site.description,
-    inLanguage: site.language,
+    description: meta.description,
+    inLanguage: localeCodes.map((code) => locales[code].htmlLang),
     publisher: { "@id": id("person") },
   };
 
   const profilePage: ProfilePage = {
     "@type": "ProfilePage",
-    "@id": id("profilepage"),
-    url: site.url,
-    name: site.title,
-    description: site.description,
-    inLanguage: site.language,
+    "@id": `${pageUrl}/#profilepage`,
+    url: pageUrl,
+    name: meta.title,
+    description: meta.description,
+    inLanguage: language,
     dateModified: site.contentUpdatedAt,
     isPartOf: { "@id": id("website") },
     about: { "@id": id("person") },
@@ -35,8 +46,8 @@ export function buildJsonLd(): Graph {
     url: site.url,
     email: site.email,
     image: `${site.url}${site.portrait.src}`,
-    jobTitle: site.role,
-    description: site.summary,
+    jobTitle: meta.role,
+    description: meta.summary(yearsOfExperience),
     address: {
       "@type": "PostalAddress",
       addressLocality: site.city,
@@ -65,9 +76,9 @@ export function buildJsonLd(): Graph {
 
   const portfolio: ItemList = {
     "@type": "ItemList",
-    "@id": id("projects"),
-    name: `Projetos de ${site.name}`,
-    description: `Projetos selecionados desenvolvidos por ${site.name}`,
+    "@id": `${pageUrl}/#projects`,
+    name: dict.structuredData.projectsName,
+    description: dict.structuredData.projectsDescription,
     itemListElement: projects.map((project, index) => ({
       "@type": "ListItem",
       position: index + 1,
@@ -75,7 +86,7 @@ export function buildJsonLd(): Graph {
         "@type": "SoftwareApplication",
         name: project.title,
         url: project.websiteUrl ?? project.repositoryUrl,
-        description: project.description,
+        description: dict.projects.descriptions[project.id],
         author: { "@id": id("person") },
         applicationCategory: "WebApplication",
       },
@@ -89,12 +100,14 @@ export function buildJsonLd(): Graph {
 }
 
 /** JSON-LD script, escaped as the bundled Next guide recommends (01-app/02-guides/json-ld.md). */
-export default function JsonLd() {
+export default async function JsonLd() {
+  const graph = buildJsonLd(await getLocale());
+
   return (
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify(buildJsonLd()).replace(/</g, "\\u003c"),
+        __html: JSON.stringify(graph).replace(/</g, "\\u003c"),
       }}
     />
   );

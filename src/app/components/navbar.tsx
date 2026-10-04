@@ -1,13 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { navCopy, site } from "../data/site";
-import InspectorToggle from "./inspector/inspector-toggle";
-import SkinToggle from "./skin-toggle";
-import ThemeToggle from "./theme-toggle";
 
-export default function Navbar() {
+type NavbarProps = {
+  /** Resolved by the layout: a Client Component does not import a dictionary. */
+  copy: {
+    label: string;
+    brand: string;
+    brandLabel: string;
+    homeHref: string;
+    links: { label: string; href: string }[];
+    openMenu: string;
+    closeMenu: string;
+  };
+  /** The toggles at the end of the bar. */
+  actions: ReactNode;
+};
+
+export default function Navbar({ copy, actions }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -22,7 +33,7 @@ export default function Navbar() {
     // Opaque: the stacked sections pin at its bottom edge, and what scrolls past must not show
     // through it.
     <nav
-      aria-label={navCopy.label}
+      aria-label={copy.label}
       data-scrolled={scrolled}
       className="fixed top-0 right-0 left-0 z-50 border-b border-transparent bg-paper data-[scrolled=true]:border-line"
       style={{ transition: "border-color 0.4s var(--ease-in-out)" }}
@@ -32,16 +43,16 @@ export default function Navbar() {
         className="mx-auto flex h-(--nav-h) max-w-6xl items-center justify-between px-6 lg:px-8"
       >
         <a
-          href="#hero"
-          aria-label={`${site.initials} — ${site.name}`}
+          href={copy.homeHref}
+          aria-label={copy.brandLabel}
           className="text-xl font-bold tracking-tight text-ink"
           style={{ fontFamily: "var(--font-display)" }}
         >
-          {site.initials}
+          {copy.brand}
         </a>
 
         <ul className="nav-links-group hidden items-center gap-8 md:flex">
-          {navCopy.links.map((link) => (
+          {copy.links.map((link) => (
             <li key={link.href}>
               <a
                 href={link.href}
@@ -60,15 +71,12 @@ export default function Navbar() {
         </ul>
 
         <div className="flex items-center gap-2">
-          {/* Both are displayed only inside the 8-bit skin. */}
-          <SkinToggle />
-          <InspectorToggle />
-          <ThemeToggle />
+          {actions}
 
           <button
             className="flex flex-col gap-1.5 p-1 md:hidden"
             onClick={() => setMenuOpen(!menuOpen)}
-            aria-label={menuOpen ? navCopy.closeMenu : navCopy.openMenu}
+            aria-label={menuOpen ? copy.closeMenu : copy.openMenu}
             aria-expanded={menuOpen}
             aria-controls="mobile-nav"
           >
@@ -104,7 +112,7 @@ export default function Navbar() {
             className="overflow-hidden border-t border-line bg-paper md:hidden"
           >
             <ul className="flex flex-col gap-4 px-6 py-4">
-              {navCopy.links.map((link, i) => (
+              {copy.links.map((link, i) => (
                 <motion.li
                   key={link.href}
                   initial={{ opacity: 0, x: -12 }}

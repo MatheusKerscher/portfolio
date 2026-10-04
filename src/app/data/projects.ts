@@ -4,9 +4,13 @@ export type Thumbnail = { src: string; width: number; height: number };
 export const pixelThumbnail = (thumbnail: Thumbnail) =>
   thumbnail.src.replace("/thumbnails/", "/thumbnails/8bit/");
 
+export type ProjectId =
+  "to-do-list" | "web-carros" | "dev-controle" | "my-mock" | "cripto-currency";
+
+/** The description of a project is copy: it is in the dictionaries, by id. */
 export type Project = {
+  id: ProjectId;
   title: string;
-  description: string;
   tags: string[];
   /** Screenshot of the project, in `public/thumbnails/`, with its intrinsic size. */
   thumbnail: Thumbnail;
@@ -16,9 +20,8 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    id: "to-do-list",
     title: "To-do List",
-    description:
-      "Aplicação de to-do list para organização das tarefas do dia a dia com foco em produtividade. Exigindo autenticação para acesso e uso das funções, além de formulário de contato para disparo de e-mail",
     tags: ["Next.js", "React", "TypeScript", "Tailwind"],
     thumbnail: {
       src: "/thumbnails/thumbnail-to-do-list.png",
@@ -28,9 +31,8 @@ export const projects: Project[] = [
     websiteUrl: "https://coopers-front.kerscher.dev.br/",
   },
   {
+    id: "web-carros",
     title: "Web Carros",
-    description:
-      "Plataforma de compra e venda de veículos com listagem, filtros avançados e autenticação de usuários.",
     tags: ["Next.js", "React", "TypeScript", "Tailwind"],
     thumbnail: {
       src: "/thumbnails/thumbnail-web-carros.png",
@@ -40,9 +42,8 @@ export const projects: Project[] = [
     websiteUrl: "https://web-carros-pi.vercel.app/",
   },
   {
+    id: "dev-controle",
     title: "Dev Controle",
-    description:
-      "Sistema de controle de chamados e gerenciamento de clientes para desenvolvedores freelancers.",
     tags: ["Next.js", "PostgreSQL", "TypeScript", "Tailwind"],
     thumbnail: {
       src: "/thumbnails/thumbnail-dev-controle.png",
@@ -52,9 +53,8 @@ export const projects: Project[] = [
     websiteUrl: "https://dev-controle-topaz.vercel.app/",
   },
   {
+    id: "my-mock",
     title: "MyMock",
-    description:
-      "Ferramenta online para criação e gerenciamento de mock APIs para acelerar o desenvolvimento e testes.",
     tags: ["Next.js", "React", "Node.js", "TypeScript"],
     thumbnail: {
       src: "/thumbnails/thumbnail-my-mock.png",
@@ -64,8 +64,8 @@ export const projects: Project[] = [
     websiteUrl: "https://my-mock-ecru.vercel.app/",
   },
   {
+    id: "cripto-currency",
     title: "Cripto Currency",
-    description: "Dashboard de acompanhamento de criptomoedas em tempo real.",
     tags: ["React", "API REST", "Tailwind"],
     thumbnail: {
       src: "/thumbnails/thumbnail-cripto-currency.png",

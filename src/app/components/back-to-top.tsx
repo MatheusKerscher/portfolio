@@ -2,10 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { navCopy } from "../data/site";
 import { useLenis } from "./lenis-context";
 
-export default function BackToTop() {
+export default function BackToTop({ label }: { label: string }) {
   const lenis = useLenis();
   const [visible, setVisible] = useState(false);
 
@@ -29,7 +28,7 @@ export default function BackToTop() {
           exit={{ opacity: 0, scale: 0.8 }}
           transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
           onClick={scrollToTop}
-          aria-label={navCopy.backToTop}
+          aria-label={label}
           className="fixed right-6 bottom-6 z-50 flex h-12 w-12 cursor-pointer items-center justify-center rounded-md border border-line-strong bg-paper text-ink-muted shadow-sm transition-colors duration-200 hover:border-brand hover:text-brand"
         >
           <svg

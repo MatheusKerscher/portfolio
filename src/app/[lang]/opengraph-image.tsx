@@ -1,10 +1,12 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
-import { localeParams } from "../data/locales";
-import { heroCopy, site } from "../data/site";
+import { dictionaryFor } from "../data/dictionaries";
+import { defaultLocale, hasLocale, localeParams } from "../data/locales";
+import { site } from "../data/site";
 
-export const alt = site.title;
+// The name is the same in every language; the image itself is rendered per language.
+export const alt = site.name;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -18,9 +20,12 @@ const INK = "#111111";
 const MUTED = "#5f5f5f";
 const BRAND = "#137a3a";
 
-const [firstName, lastName] = heroCopy.heading.split(" ");
+const [firstName, lastName] = site.heading.split(" ");
 
-export default async function OgImage() {
+export default async function OgImage({ params }: PageProps<"/[lang]">) {
+  const { lang } = await params;
+  const { hero } = dictionaryFor(hasLocale(lang) ? lang : defaultLocale);
+
   // Pre-scaled 5× by scripts/pixel-assets.mjs: the renderer would blur an enlarged sprite.
   const sprite = await readFile(
     join(process.cwd(), "public/avatar/avatar-460.png"),
@@ -59,7 +64,7 @@ export default async function OgImage() {
             textTransform: "uppercase",
           }}
         >
-          {heroCopy.eyebrow}
+          {hero.eyebrow}
         </p>
 
         <div

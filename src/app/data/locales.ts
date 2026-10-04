@@ -17,3 +17,7 @@ export const hasLocale = (value: string): value is Locale =>
 
 /** `generateStaticParams` of everything under `app/[lang]`. */
 export const localeParams = () => localeCodes.map((lang) => ({ lang }));
+
+/** The home page of a language: `/` for the default one, `/en` for English. */
+export const localePath = (locale: Locale, path = "") =>
+  `${locales[locale].path}${path}` || "/";

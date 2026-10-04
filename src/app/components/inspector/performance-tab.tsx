@@ -1,6 +1,6 @@
 import { useState } from "react";
 import audit from "../../data/audit.json";
-import { inspectorCopy } from "../../data/site";
+import { useInspector } from "./inspector-context";
 import {
   isSupported,
   useWebVitals,
@@ -9,7 +9,6 @@ import {
   type VitalName,
 } from "./use-web-vitals";
 
-const copy = inspectorCopy;
 const kilobytes = (bytes: number) => `${(bytes / 1024).toFixed(1)} KB`;
 
 function format(name: VitalName, value: number) {
@@ -35,6 +34,7 @@ function pageWeight() {
 }
 
 function VitalRow({ name, vital }: { name: VitalName; vital?: Vital }) {
+  const { copy } = useInspector();
   const supported = isSupported(name);
   let value: string;
   if (vital) value = format(name, vital.value);
@@ -71,6 +71,7 @@ function VitalRow({ name, vital }: { name: VitalName; vital?: Vital }) {
 }
 
 export default function PerformanceTab() {
+  const { copy } = useInspector();
   const vitals = useWebVitals();
   const [weight] = useState(pageWeight);
 

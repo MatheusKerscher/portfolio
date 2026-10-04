@@ -1,71 +1,92 @@
 import { expect, test } from "@playwright/test";
-import { education, experience } from "../src/app/data/curriculum";
+import { timeline } from "../src/app/data/curriculum";
 import { projects } from "../src/app/data/projects";
-import { aboutCopy, heroCopy, stats, technologies } from "../src/app/data/site";
+import {
+  headingId,
+  site,
+  stats,
+  technologies,
+  type SectionKey,
+} from "../src/app/data/site";
+import { copyOf, homeOf, LOCALES } from "./helpers";
 
-test.describe("server rendering", () => {
-  test("raw HTML already holds the content", async ({ request }) => {
-    const html = await (await request.get("/")).text();
-    expect(html).toContain(heroCopy.heading);
-    for (const project of projects) {
-      expect(html, project.title).toContain(project.title);
-    }
-    for (const item of [...experience, ...education]) {
-      expect(html, item.title).toContain(item.title);
-    }
-    // Slides that start outside the carousel viewport are in the HTML too.
-    for (const technology of technologies) {
-      expect(html, technology.name).toContain(technology.description);
-    }
-    // The stats are the real numbers, not the start of a count-up animation.
-    for (const stat of stats) {
-      expect(html, stat.label).toContain(`>${stat.value}${stat.suffix}<`);
-    }
-  });
+for (const locale of LOCALES) {
+  const copy = copyOf(locale);
+  const home = homeOf(locale);
 
-  test("hero is not gated on hydration", async ({ page, request }) => {
-    // The hero holds the LCP element: an entrance that starts hidden would delay it.
-    const html = await (await request.get("/")).text();
-    const start = html.indexOf('id="hero"');
-    const hero = html.slice(start, html.indexOf("</section>", start));
-    expect(hero.length).toBeGreaterThan(0);
-    expect(hero).not.toContain("opacity:0");
-    expect(hero).not.toContain("translateY(");
-
-    await page.goto("/");
-    expect(
-      await page.locator("h1").evaluate((el) => getComputedStyle(el).opacity),
-    ).toBe("1");
-  });
-
-  test("headings keep the spaces between their words", async ({ page }) => {
-    await page.goto("/");
-    expect(await page.locator("h1").textContent()).toBe(heroCopy.heading);
-    expect(await page.locator("#sobre-heading").textContent()).toBe(
-      aboutCopy.heading,
-    );
-  });
-
-  test.describe("without JavaScript", () => {
-    test.use({ javaScriptEnabled: false });
-
-    test("content is visible", async ({ page }) => {
-      await page.goto("/");
-      await expect(page.locator("h1")).toBeVisible();
-      for (const id of ["sobre", "projetos", "curriculo", "contato"]) {
-        await expect(page.locator(`#${id}-heading`)).toBeVisible();
+  test.describe(`server rendering, ${locale}`, () => {
+    test("raw HTML already holds the content", async ({ request }) => {
+      const html = await (await request.get(home)).text();
+      expect(html).toContain(site.heading);
+      for (const project of projects) {
+        expect(html, project.title).toContain(project.title);
       }
-      await expect(page.getByText(projects[0].title).first()).toBeVisible();
+      for (const item of timeline) {
+        expect(html, item.id).toContain(copy.curriculum.items[item.id].title);
+      }
+      // Slides that start outside the carousel viewport are in the HTML too.
+      for (const technology of technologies) {
+        expect(html, technology.name).toContain(
+          copy.technologies[technology.id],
+        );
+      }
+      // The stats are the real numbers, not the start of a count-up animation.
+      for (const stat of stats) {
+        expect(html, stat.id).toContain(`>${stat.value}${stat.suffix}<`);
+        expect(html, stat.id).toContain(copy.about.stats[stat.id]);
+      }
+    });
 
-      // Playwright treats opacity 0 as visible, so the reveal start state is checked directly.
-      const stillHidden = await page.locator("[data-reveal]").evaluateAll(
-        (elements) =>
-          elements.filter((element) => {
-            const style = getComputedStyle(element);
-            return style.opacity !== "1" || style.transform !== "none";
-          }).length,
+    test("hero is not gated on hydration", async ({ page, request }) => {
+      // The hero holds the LCP element: an entrance that starts hidden would delay it.
+      const html = await (await request.get(home)).text();
+      const start = html.indexOf('id="hero"');
+      const hero = html.slice(start, html.indexOf("</section>", start));
+      expect(hero.length).toBeGreaterThan(0);
+      expect(hero).not.toContain("opacity:0");
+      expect(hero).not.toContain("translateY(");
+
+      await page.goto(home);
+      expect(
+        await page.locator("h1").evaluate((el) => getComputedStyle(el).opacity),
+      ).toBe("1");
+    });
+
+    test("headings keep the spaces between their words", async ({ page }) => {
+      await page.goto(home);
+      expect(await page.locator("h1").textContent()).toBe(site.heading);
+      expect(await page.locator(`#${headingId("about")}`).textContent()).toBe(
+        copy.about.heading,
       );
-      expect(stillHidden).toBe(0);
+    });
+
+    test.describe("without JavaScript", () => {
+      test.use({ javaScriptEnabled: false });
+
+      test("content is visible", async ({ page }) => {
+        await page.goto(home);
+        await expect(page.locator("h1")).toBeVisible();
+        const keys: SectionKey[] = [
+          "about",
+          "projects",
+          "experience",
+          "contact",
+        ];
+        for (const key of keys) {
+          await expect(page.locator(`#${headingId(key)}`)).toBeVisible();
+        }
+        await expect(page.getByText(projects[0].title).first()).toBeVisible();
+
+        // Playwright treats opacity 0 as visible, so the reveal start state is checked directly.
+        const stillHidden = await page.locator("[data-reveal]").evaluateAll(
+          (elements) =>
+            elements.filter((element) => {
+              const style = getComputedStyle(element);
+              return style.opacity !== "1" || style.transform !== "none";
+            }).length,
+        );
+        expect(stillHidden).toBe(0);
+      });
     });
   });
-});
+}

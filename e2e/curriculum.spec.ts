@@ -5,8 +5,9 @@ import {
   yearsOfExperience,
   yearsSince,
 } from "../src/app/data/curriculum";
-import { curriculumCopy } from "../src/app/data/site";
-import { readJsonLd } from "./helpers";
+import { DEFAULT_COPY, readJsonLd } from "./helpers";
+
+const curriculumCopy = DEFAULT_COPY.curriculum;
 
 test.describe("curriculum", () => {
   // The same HTML and the same functions for every engine.
@@ -19,7 +20,7 @@ test.describe("curriculum", () => {
     page,
   }) => {
     await page.goto("/");
-    const cards = page.locator("#carrossel-curriculo article");
+    const cards = page.locator("#carousel-experience article");
     const organizations = await cards.locator("h3 + p").allTextContents();
     expect(organizations.map((text) => text.split(" · ")[0])).toEqual([
       "Coopers Digital",

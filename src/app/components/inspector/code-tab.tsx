@@ -1,7 +1,6 @@
 import packageJson from "../../../../package.json";
-import { inspectorCopy, site } from "../../data/site";
-
-const copy = inspectorCopy.code;
+import { site } from "../../data/site";
+import { useInspector } from "./inspector-context";
 
 const declared: Record<string, string> = {
   ...packageJson.dependencies,
@@ -26,6 +25,8 @@ const linkClass =
   "inline-flex min-h-6 items-center font-bold break-all text-brand underline";
 
 export default function CodeTab() {
+  const copy = useInspector().copy.code;
+
   return (
     <div className="space-y-6">
       <section aria-labelledby="inspector-stack">

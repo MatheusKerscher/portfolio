@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { heroCopy, site } from "../data/site";
+import { getDictionary } from "../data/dictionaries/server";
+import { site } from "../data/site";
 
 /** Native size of the sprite written by `scripts/pixel-assets.mjs`. */
 const SPRITE = { src: "/avatar/avatar.png", size: 92 };
@@ -11,7 +12,9 @@ const SPRITE = { src: "/avatar/avatar.png", size: 92 };
  * sizes are multiples of 46 px, half the grid of the sprite, so the sprite keeps whole pixels at
  * every breakpoint.
  */
-export default function Portrait({ className }: { className?: string }) {
+export default async function Portrait({ className }: { className?: string }) {
+  const { hero } = await getDictionary();
+
   return (
     <div
       className={cn(
@@ -26,7 +29,7 @@ export default function Portrait({ className }: { className?: string }) {
       {/* Above the fold and a candidate for LCP: fetched eagerly and with high priority. */}
       <Image
         src={site.portrait.src}
-        alt={heroCopy.portraitAlt}
+        alt={hero.portraitAlt}
         width={site.portrait.width}
         height={site.portrait.height}
         sizes="(min-width: 1280px) 368px, (min-width: 640px) 276px, 138px"
@@ -37,7 +40,7 @@ export default function Portrait({ className }: { className?: string }) {
       {/* Hidden and lazy, so the normal skin never requests it. Not optimised: re-encoding would blur the pixels. */}
       <Image
         src={SPRITE.src}
-        alt={heroCopy.portraitAlt}
+        alt={hero.portraitAlt}
         width={SPRITE.size}
         height={SPRITE.size}
         loading="lazy"

@@ -1,32 +1,36 @@
 import Image from "next/image";
-import { aboutCopy, socials, stats, technologies } from "../data/site";
+import { getDictionary } from "../data/dictionaries/server";
+import { headingId, socials, stats, technologies } from "../data/site";
 import AnimatedText from "./animated-text";
 import { Carousel, CarouselItem } from "./carousel";
 import CountUp from "./count-up";
 import MotionSection from "./motion-section";
 import { SocialIcon } from "./social-icons";
 
-export default function AboutSection() {
+export default async function AboutSection() {
+  const dict = await getDictionary();
+  const { about } = dict;
+
   return (
     <section
       data-stack-panel
-      aria-labelledby="sobre-heading"
+      aria-labelledby={headingId("about")}
       className="stack-panel flex flex-col justify-center px-6 py-(--panel-pad) lg:px-8"
     >
       <div className="mx-auto w-full max-w-6xl">
         <MotionSection>
-          <p className="section-label">{aboutCopy.label}</p>
+          <p className="section-label">{about.label}</p>
         </MotionSection>
 
         <div className="mt-2 space-y-(--panel-gap)">
           <AnimatedText
             as="h2"
-            id="sobre-heading"
+            id={headingId("about")}
             delay={0.1}
             stagger={0.04}
             className="section-heading"
           >
-            {aboutCopy.heading}
+            {about.heading}
           </AnimatedText>
 
           <MotionSection
@@ -35,9 +39,9 @@ export default function AboutSection() {
           >
             <dl className="flex gap-10">
               {stats.map((stat) => (
-                <div key={stat.label} className="flex flex-col-reverse gap-1">
+                <div key={stat.id} className="flex flex-col-reverse gap-1">
                   <dt className="text-xs tracking-widest text-ink-muted uppercase">
-                    {stat.label}
+                    {about.stats[stat.id]}
                   </dt>
                   <dd
                     className="leading-none font-bold text-ink"
@@ -54,11 +58,11 @@ export default function AboutSection() {
 
             <div className="space-y-(--panel-gap-sm)">
               <p className="text-lg leading-relaxed text-ink-muted">
-                {aboutCopy.bio}
+                {about.bio}
               </p>
 
               <ul
-                aria-label={aboutCopy.socials}
+                aria-label={about.socials}
                 className="nav-links-group flex flex-wrap gap-x-6 gap-y-3"
               >
                 {socials.map((link) => (
@@ -84,16 +88,16 @@ export default function AboutSection() {
 
           <MotionSection delay={0.3}>
             <Carousel
-              id="carrossel-stacks"
-              label={aboutCopy.technologies}
+              id="carousel-stacks"
+              label={about.technologies}
               header={
                 <h3 className="text-xs font-semibold tracking-widest text-ink-muted uppercase">
-                  {aboutCopy.technologies}
+                  {about.technologies}
                 </h3>
               }
             >
               {technologies.map((technology) => (
-                <CarouselItem key={technology.name} className="w-52">
+                <CarouselItem key={technology.id} className="w-52">
                   <div className="slide-card gap-3 p-5">
                     <span className="flex h-11 w-11 items-center justify-center border border-line bg-paper">
                       <Image
@@ -110,7 +114,7 @@ export default function AboutSection() {
                       {technology.name}
                     </p>
                     <p className="text-sm leading-relaxed text-ink-muted">
-                      {technology.description}
+                      {dict.technologies[technology.id]}
                     </p>
                   </div>
                 </CarouselItem>

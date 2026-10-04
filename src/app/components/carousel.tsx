@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { carouselCopy } from "../data/site";
+import { getDictionary } from "../data/dictionaries/server";
 import CarouselControls from "./carousel-controls";
 
 type CarouselProps = {
@@ -19,21 +19,23 @@ type CarouselProps = {
  * hydration and without JavaScript, by touch, trackpad and keyboard; the controls only add
  * buttons. The items stay a list for assistive technology.
  */
-export function Carousel({
+export async function Carousel({
   id,
   label,
   header,
   children,
   className,
 }: CarouselProps) {
+  const { carousel } = await getDictionary();
+
   return (
     <div className={className}>
       <div className="mb-(--panel-gap-sm) flex items-end justify-between gap-6">
         <div className="min-w-0">{header}</div>
         <CarouselControls
           viewportId={id}
-          previousLabel={carouselCopy.previous(label)}
-          nextLabel={carouselCopy.next(label)}
+          previousLabel={carousel.previous(label)}
+          nextLabel={carousel.next(label)}
         />
       </div>
       <div

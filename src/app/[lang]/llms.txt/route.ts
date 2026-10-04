@@ -2,60 +2,78 @@ import {
   education,
   experience,
   formatPeriod,
+  yearsOfExperience,
   type TimelineItem,
 } from "../../data/curriculum";
-import { localeParams } from "../../data/locales";
+import { dictionaryFor } from "../../data/dictionaries";
+import {
+  hasLocale,
+  localeCodes,
+  localeParams,
+  localePath,
+  locales,
+} from "../../data/locales";
 import { projects } from "../../data/projects";
-import { curriculumCopy, site, socials, stackSummary } from "../../data/site";
+import { site, socials, stackSummary } from "../../data/site";
 
 export const dynamic = "force-static";
 export const dynamicParams = false;
 
 export const generateStaticParams = localeParams;
 
-const timelineEntry = (item: TimelineItem) => [
-  `- ${item.title} — ${item.organization} (${formatPeriod(item, curriculumCopy)})`,
-  `  ${item.description}`,
-];
+const absolute = (path: string) => `${site.url}${path === "/" ? "" : path}`;
 
 /** llms.txt (https://llmstxt.org), built from the same data as the page so it cannot drift. */
-export function GET() {
+export async function GET(
+  _request: Request,
+  { params }: RouteContext<"/[lang]/llms.txt">,
+) {
+  const { lang } = await params;
+  if (!hasLocale(lang)) return new Response(null, { status: 404 });
+  const dict = dictionaryFor(lang);
+  const { meta, llms, curriculum } = dict;
+
+  const timelineEntry = (item: TimelineItem) => [
+    `- ${curriculum.items[item.id].title} — ${item.organization} (${formatPeriod(item, curriculum)})`,
+    `  ${curriculum.items[item.id].description}`,
+  ];
+
   const lines = [
     `# ${site.name}`,
     "",
-    `> ${site.description}`,
-    `> ${site.availability}`,
+    `> ${meta.description}`,
+    `> ${meta.availability}`,
     "",
-    "## Sobre",
+    `## ${llms.about}`,
     "",
-    site.summary,
+    meta.summary(yearsOfExperience),
     "",
-    "## Stack principal",
+    `## ${llms.stack}`,
     "",
     ...stackSummary.map(
-      (group) => `- ${group.layer}: ${group.items.join(", ")}`,
+      (group) => `- ${llms.layers[group.layer]}: ${group.items.join(", ")}`,
     ),
     "",
-    "## Experiência profissional",
+    `## ${llms.experience}`,
     "",
     ...experience.flatMap(timelineEntry),
     "",
-    "## Formação",
+    `## ${llms.education}`,
     "",
     ...education.flatMap(timelineEntry),
     "",
-    "## Projetos selecionados",
+    `## ${llms.projects}`,
     "",
     ...projects.flatMap((project) => [
-      `- [${project.title}](${project.websiteUrl ?? project.repositoryUrl}): ${project.description}`,
+      `- [${project.title}](${project.websiteUrl ?? project.repositoryUrl}): ${dict.projects.descriptions[project.id]}`,
       `  Stack: ${project.tags.join(", ")}`,
     ]),
     "",
-    "## Páginas",
+    `## ${llms.pages}`,
     "",
-    `- [${site.title}](${site.url}): ${site.description}`,
+    `- [${meta.title}](${absolute(localePath(lang))}): ${meta.description}`,
     "",
-    "## Contato",
+    `## ${llms.contact}`,
     "",
     ...socials.map(
       (link) =>
@@ -63,13 +81,30 @@ export function GET() {
     ),
     `- Site: ${site.url}`,
     "",
-    "## Idioma",
+    `## ${llms.language}`,
     "",
-    `Português (${site.language})`,
+    llms.languageName,
     "",
+    // The same file in the other languages, when there are any.
+    ...(localeCodes.length > 1
+      ? [
+          `## ${llms.otherLanguages}`,
+          "",
+          ...localeCodes
+            .filter((code) => code !== lang)
+            .map(
+              (code) =>
+                `- [${dictionaryFor(code).llms.languageName}](${site.url}${localePath(code, "/llms.txt")})`,
+            ),
+          "",
+        ]
+      : []),
   ];
 
   return new Response(lines.join("\n"), {
-    headers: { "Content-Type": "text/markdown; charset=utf-8" },
+    headers: {
+      "Content-Type": "text/markdown; charset=utf-8",
+      "Content-Language": locales[lang].htmlLang,
+    },
   });
 }

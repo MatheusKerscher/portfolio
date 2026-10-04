@@ -1,10 +1,12 @@
-import { layoutCopy, social } from "../data/site";
+import { getDictionary } from "../data/dictionaries/server";
+import { site, social } from "../data/site";
 import SkinEasterEgg from "./skin-easter-egg";
 import { SocialIcon } from "./social-icons";
 
 const links = [social("github"), social("linkedin")];
 
-export default function Footer() {
+export default async function Footer() {
+  const dict = await getDictionary();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -13,9 +15,9 @@ export default function Footer() {
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 pr-16 xl:pr-0">
         <div className="flex items-center gap-1">
           <p className="text-sm text-ink-muted">
-            {layoutCopy.copyright(currentYear)}
+            © {currentYear} {site.name}
           </p>
-          <SkinEasterEgg />
+          <SkinEasterEgg label={dict.skin.toggle} />
         </div>
 
         <div className="flex items-center gap-4">
@@ -26,7 +28,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               className="text-ink-muted transition-colors duration-200 hover:text-ink"
-              aria-label={layoutCopy.profileOf(link.name)}
+              aria-label={dict.layout.profileOf(link.name)}
               title={link.name}
             >
               <SocialIcon id={link.id} />

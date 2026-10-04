@@ -1,12 +1,17 @@
 import type { MetadataRoute } from "next";
+import { dictionaryFor } from "./data/dictionaries";
+import { defaultLocale, locales } from "./data/locales";
 import { site } from "./data/site";
 
+/** One manifest for the site, in its default language. */
 export default function manifest(): MetadataRoute.Manifest {
+  const { meta } = dictionaryFor(defaultLocale);
+
   return {
-    name: site.title,
+    name: meta.title,
     short_name: site.name,
-    description: site.description,
-    lang: site.language,
+    description: meta.description,
+    lang: locales[defaultLocale].htmlLang,
     start_url: "/",
     display: "browser",
     background_color: site.themeColor.light,

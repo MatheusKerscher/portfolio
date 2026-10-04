@@ -1,13 +1,12 @@
 import { expect, test, type Page } from "@playwright/test";
+import { defaultLocale } from "../src/app/data/locales";
 import {
-  heroCopy,
-  inspectorCopy,
-  navCopy,
-  skinCopy,
-} from "../src/app/data/site";
-import {
+  DEFAULT_COPY,
+  homeOf,
   horizontalOverflow,
+  inspectorCopyOf,
   isUnobscured,
+  LOCALES,
   revealAll,
   scrollToNatural,
   storeSkin,
@@ -15,6 +14,10 @@ import {
 } from "./helpers";
 
 type WithSkinProbe = Window & { skinAtDomContentLoaded?: string };
+
+// How the skin is entered and left does not depend on the language.
+const { hero: heroCopy, nav: navCopy, skin: skinCopy } = DEFAULT_COPY;
+const inspectorCopy = inspectorCopyOf(defaultLocale);
 
 const KONAMI = [
   "ArrowUp",
@@ -169,7 +172,7 @@ test.describe("8-bit mode", () => {
       )
       .toBe(true);
 
-    const region = page.locator("#carrossel-projetos");
+    const region = page.locator("#carousel-projects");
     await scrollToNatural(region);
     const thumbnail = region.getByRole("img").first();
     await expect(thumbnail).toHaveAttribute("src", /\/thumbnails\/8bit\//);
@@ -204,14 +207,18 @@ test.describe("8-bit mode", () => {
     expect(pixelFaces.every((status) => status === "unloaded")).toBe(true);
   });
 
-  test("the 8-bit skin fits a 320 px wide screen", async ({ page }) => {
-    await storeSkin(page);
-    await page.setViewportSize({ width: 320, height: 640 });
-    await page.goto("/");
-    await page.evaluate(() => document.fonts.ready);
-    expect(await horizontalOverflow(page)).toEqual({
-      overflow: 0,
-      clipped: [],
+  for (const locale of LOCALES) {
+    test(`the 8-bit skin fits a 320 px wide screen, ${locale}`, async ({
+      page,
+    }) => {
+      await storeSkin(page);
+      await page.setViewportSize({ width: 320, height: 640 });
+      await page.goto(homeOf(locale));
+      await page.evaluate(() => document.fonts.ready);
+      expect(await horizontalOverflow(page)).toEqual({
+        overflow: 0,
+        clipped: [],
+      });
     });
-  });
+  }
 });

@@ -1,8 +1,6 @@
 import { useState } from "react";
-import { inspectorCopy } from "../../data/site";
-
-const copy = inspectorCopy.seo;
-const FILES = ["/llms.txt", "/sitemap.xml", "/robots.txt"];
+import { localePath } from "../../data/locales";
+import { useInspector } from "./inspector-context";
 
 type Node = { "@type"?: string; name?: string };
 
@@ -33,6 +31,14 @@ function readPage() {
 }
 
 export default function SeoTab() {
+  const { copy: inspector, locale } = useInspector();
+  const copy = inspector.seo;
+  // llms.txt exists once per language; the sitemap and robots.txt are for the whole site.
+  const files = [
+    localePath(locale, "/llms.txt"),
+    "/sitemap.xml",
+    "/robots.txt",
+  ];
   const [page] = useState(readPage);
 
   return (
@@ -85,7 +91,7 @@ export default function SeoTab() {
           {copy.files}
         </h3>
         <ul className="flex flex-wrap gap-x-4 gap-y-2">
-          {FILES.map((path) => (
+          {files.map((path) => (
             <li key={path}>
               <a
                 href={path}

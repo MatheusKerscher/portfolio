@@ -1,29 +1,26 @@
 import { expect, test } from "@playwright/test";
 import { timeline } from "../src/app/data/curriculum";
 import { projects } from "../src/app/data/projects";
-import {
-  aboutCopy,
-  carouselCopy,
-  curriculumCopy,
-  projectsCopy,
-  technologies,
-} from "../src/app/data/site";
-import { scrollToNatural, waitForStack } from "./helpers";
+import { technologies } from "../src/app/data/site";
+import { DEFAULT_COPY, scrollToNatural, waitForStack } from "./helpers";
+
+// How a carousel behaves does not depend on the language.
+const copy = DEFAULT_COPY;
 
 const CAROUSELS = [
   {
-    id: "carrossel-stacks",
-    label: aboutCopy.technologies,
+    id: "carousel-stacks",
+    label: copy.about.technologies,
     count: technologies.length,
   },
   {
-    id: "carrossel-projetos",
-    label: projectsCopy.carousel,
+    id: "carousel-projects",
+    label: copy.projects.carousel,
     count: projects.length,
   },
   {
-    id: "carrossel-curriculo",
-    label: curriculumCopy.carousel,
+    id: "carousel-experience",
+    label: copy.curriculum.carousel,
     count: timeline.length,
   },
 ];
@@ -53,10 +50,10 @@ test.describe("carousels", () => {
     }) => {
       const region = page.locator(`#${carousel.id}`);
       const previous = page.getByRole("button", {
-        name: carouselCopy.previous(carousel.label),
+        name: copy.carousel.previous(carousel.label),
       });
       const next = page.getByRole("button", {
-        name: carouselCopy.next(carousel.label),
+        name: copy.carousel.next(carousel.label),
       });
       const scrollLeft = () => region.evaluate((element) => element.scrollLeft);
       // A smooth scroll is over when two readings in a row are equal. Without this the test
@@ -107,7 +104,7 @@ test.describe("carousels", () => {
   }
 
   test("every project card has a thumbnail that loads", async ({ page }) => {
-    const region = page.locator("#carrossel-projetos");
+    const region = page.locator("#carousel-projects");
     await scrollToNatural(region);
     // Each card holds both skins' thumbnails; only the current one is rendered.
     const thumbnails = region.getByRole("img");
@@ -116,7 +113,7 @@ test.describe("carousels", () => {
       const thumbnail = thumbnails.nth(index);
       await expect(thumbnail).toHaveAttribute(
         "alt",
-        projectsCopy.thumbnailAlt(project.title),
+        copy.projects.thumbnailAlt(project.title),
       );
       // Lazy images load once their slide is scrolled into the carousel.
       await thumbnail.scrollIntoViewIfNeeded();
@@ -133,7 +130,7 @@ test.describe("carousels", () => {
     isMobile,
   }) => {
     test.skip(isMobile, "touch devices have no wheel");
-    const region = page.locator("#carrossel-projetos");
+    const region = page.locator("#carousel-projects");
     await scrollToNatural(region);
     const box = (await region.boundingBox())!;
     await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);

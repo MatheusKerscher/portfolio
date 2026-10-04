@@ -4,9 +4,13 @@ import { useSyncExternalStore } from "react";
 import { useTheme } from "next-themes";
 import { AnimatePresence, motion } from "framer-motion";
 import { Moon, Sun } from "lucide-react";
-import { navCopy } from "../data/site";
 
-export default function ThemeToggle() {
+type ThemeToggleProps = { lightLabel: string; darkLabel: string };
+
+export default function ThemeToggle({
+  lightLabel,
+  darkLabel,
+}: ThemeToggleProps) {
   const { resolvedTheme, setTheme } = useTheme();
   const mounted = useSyncExternalStore(
     () => () => {},
@@ -21,7 +25,7 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      aria-label={isDark ? navCopy.lightTheme : navCopy.darkTheme}
+      aria-label={isDark ? lightLabel : darkLabel}
       className="relative flex h-8 w-8 items-center justify-center text-ink transition-colors duration-200 hover:text-brand"
     >
       <AnimatePresence mode="wait" initial={false}>
