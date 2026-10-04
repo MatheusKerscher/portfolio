@@ -9,6 +9,7 @@ import InspectorToggle from "../components/inspector/inspector-toggle";
 import LanguageSwitch from "../components/language-switch";
 import { MotionProvider } from "../components/motion-provider";
 import Navbar from "../components/navbar";
+import ProfileLinks from "../components/profile-links";
 import SkinToggle from "../components/skin-toggle";
 import SmoothScrollProvider from "../components/smooth-scroll-provider";
 import { ThemeProvider } from "../components/theme-provider";
@@ -145,6 +146,11 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
                     label={nav.language}
                     options={languageOptions(locale)}
                   />
+                }
+                menuFooter={
+                  <div className="flex items-center gap-1">
+                    <ProfileLinks ids={["linkedin", "github", "instagram"]} />
+                  </div>
                 }
                 actions={
                   <>

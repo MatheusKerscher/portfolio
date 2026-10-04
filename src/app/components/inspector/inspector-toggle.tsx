@@ -55,7 +55,7 @@ export default function InspectorToggle({
         aria-expanded={open}
         aria-controls={open ? "inspector-panel" : undefined}
         onClick={() => setOpen((current) => !current)}
-        className="hidden h-8 w-8 items-center justify-center text-ink transition-colors duration-200 hover:text-brand aria-expanded:bg-ink aria-expanded:text-paper pixel:flex"
+        className="hidden h-8 w-8 items-center justify-center text-ink transition-colors duration-200 hover:text-brand aria-expanded:bg-ink aria-expanded:text-paper max-lg:h-11 max-lg:w-11 pixel:flex"
       >
         <Magnifier />
       </button>

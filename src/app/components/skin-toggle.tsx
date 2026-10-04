@@ -17,9 +17,12 @@ export default function SkinToggle({ label }: { label: string }) {
       aria-label={label}
       title={label}
       onClick={toggleSkin}
-      className="hidden h-8 w-8 items-center justify-center overflow-hidden border border-ink bg-brand shadow-[3px_3px_0_var(--ink)] transition-shadow duration-200 hover:shadow-[1px_1px_0_var(--ink)] pixel:flex"
+      className="group hidden h-8 w-8 items-center justify-center max-lg:h-11 max-lg:w-11 pixel:flex"
     >
-      <MiniSprite size={30} />
+      {/* The button is the touch target; the framed sprite keeps its size inside it. */}
+      <span className="flex h-8 w-8 items-center justify-center overflow-hidden border border-ink bg-brand shadow-[3px_3px_0_var(--ink)] transition-shadow duration-200 group-hover:shadow-[1px_1px_0_var(--ink)]">
+        <MiniSprite size={30} />
+      </span>
     </button>
   );
 }

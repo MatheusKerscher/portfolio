@@ -18,7 +18,7 @@ export default function ThemeToggle({
     () => false,
   );
 
-  if (!mounted) return <div className="h-8 w-8" />;
+  if (!mounted) return <div className="h-8 w-8 max-lg:h-11 max-lg:w-11" />;
 
   const isDark = resolvedTheme === "dark";
 
@@ -26,7 +26,7 @@ export default function ThemeToggle({
     <button
       onClick={() => setTheme(isDark ? "light" : "dark")}
       aria-label={isDark ? lightLabel : darkLabel}
-      className="relative flex h-8 w-8 items-center justify-center text-ink transition-colors duration-200 hover:text-brand"
+      className="relative flex h-8 w-8 items-center justify-center text-ink transition-colors duration-200 hover:text-brand max-lg:h-11 max-lg:w-11"
     >
       <AnimatePresence mode="wait" initial={false}>
         <motion.span
