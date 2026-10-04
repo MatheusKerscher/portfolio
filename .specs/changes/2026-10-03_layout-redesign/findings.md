@@ -29,18 +29,21 @@ from such a median, it is corrected below.
 
 ## Before and after, with 40 ms of latency
 
-| Build                | Preset  | Performance | Accessibility | Best Practices | SEO | Simulated FCP | Simulated LCP | Observed FCP | Observed LCP | TBT  | CLS | Script transferred |
-| -------------------- | ------- | ----------- | ------------- | -------------- | --- | ------------- | ------------- | ------------ | ------------ | ---- | --- | ------------------ |
-| baseline (`96880d8`) | mobile  | 94          | 96            | 100            | 100 | 834 ms        | 3093 ms       | 126 ms       | 1082 ms      | 0 ms | 0   | 200.2 KB           |
-| baseline (`96880d8`) | desktop | 100         | 96            | 100            | 100 | 284 ms        | 736 ms        | 109 ms       | 1076 ms      | 0 ms | 0   | 200.2 KB           |
-| after phase 5        | mobile  | 100         | 100           | 100            | 100 | 987 ms        | 1587 ms       | 122 ms       | 122 ms       | 1 ms | 0   | 195.4 KB           |
-| after phase 5        | desktop | 100         | 100           | 100            | 100 | 326 ms        | 446 ms        | 119 ms       | 119 ms       | 0 ms | 0   | 195.4 KB           |
-| final (`75db4b7`)    | mobile  | 100         | 100           | 100            | 100 | 984 ms        | 1584 ms       | 121 ms       | 121 ms       | 0 ms | 0   | 197.9 KB           |
-| final (`75db4b7`)    | desktop | 100         | 100           | 100            | 100 | 325 ms        | 445 ms        | 117 ms       | 117 ms       | 0 ms | 0   | 197.9 KB           |
+| Build                 | Preset  | Performance | Accessibility | Best Practices | SEO | Simulated FCP | Simulated LCP | Observed FCP | Observed LCP | TBT  | CLS | Script transferred |
+| --------------------- | ------- | ----------- | ------------- | -------------- | --- | ------------- | ------------- | ------------ | ------------ | ---- | --- | ------------------ |
+| baseline (`96880d8`)  | mobile  | 94          | 96            | 100            | 100 | 834 ms        | 3093 ms       | 126 ms       | 1082 ms      | 0 ms | 0   | 200.2 KB           |
+| baseline (`96880d8`)  | desktop | 100         | 96            | 100            | 100 | 284 ms        | 736 ms        | 109 ms       | 1076 ms      | 0 ms | 0   | 200.2 KB           |
+| after phase 5         | mobile  | 100         | 100           | 100            | 100 | 987 ms        | 1587 ms       | 122 ms       | 122 ms       | 1 ms | 0   | 195.4 KB           |
+| after phase 5         | desktop | 100         | 100           | 100            | 100 | 326 ms        | 446 ms        | 119 ms       | 119 ms       | 0 ms | 0   | 195.4 KB           |
+| final (`75db4b7`)     | mobile  | 100         | 100           | 100            | 100 | 984 ms        | 1584 ms       | 121 ms       | 121 ms       | 0 ms | 0   | 197.9 KB           |
+| final (`75db4b7`)     | desktop | 100         | 100           | 100            | 100 | 325 ms        | 445 ms        | 117 ms       | 117 ms       | 0 ms | 0   | 197.9 KB           |
+| phase 6.2 (`ecefe2f`) | mobile  | 100         | 100           | 100            | 100 | 986 ms        | 1586 ms       | 118 ms       | 118 ms       | 1 ms | 0   | 197.9 KB           |
+| phase 6.2 (`ecefe2f`) | desktop | 100         | 100           | 100            | 100 | 325 ms        | 445 ms        | 118 ms       | 118 ms       | 0 ms | 0   | 197.9 KB           |
 
 The baseline is `main` (the site code of `96880d8`), built in a separate worktree with its own `npm ci`.
-The final rows are the build of `75db4b7`, with the Inspector and the adjustments of phase 6.1; they are
-the values in `src/app/data/audit.json`.
+The final rows are the build of `75db4b7`, with the Inspector and the adjustments of phase 6.1. The rows
+of phase 6.2 are the build of `ecefe2f`, measured on 2026-10-04 after the panels were made to fit below
+the navbar; they are the values in `src/app/data/audit.json`.
 
 - **LCP waited for hydration.** In the baseline the observed LCP is about 0.95 s after the observed FCP in
   both presets. The LCP element was the hero label (`<p … style="opacity: 1; transform: none;">`), a

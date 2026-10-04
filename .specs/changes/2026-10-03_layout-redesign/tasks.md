@@ -160,6 +160,9 @@ The requester's screenshot (1512×749) showed "Sobre" pinned with its heading be
       1366×641.
 - [x] Nothing changes on phones and on tall screens — _verified by:_ the panel heights on a Pixel 7 and
       at 1920×1080 are the ones measured in phase 6.1.
+- [x] The gate and the measurement after the adjustment — _verified by:_ `npm run test:e2e` exits 0 (248
+      passed, 107 skipped); `npm run audit -- --write` on `ecefe2f`: 100 in every category, mobile and
+      desktop, with the medians in `findings.md` and in `audit.json`.
 
 ### Phase 7 — hardening and documentation
 
