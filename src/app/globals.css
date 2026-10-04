@@ -32,6 +32,13 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --font-syne: var(--font-syne);
+
+  /*
+   * Type of the one-column layout. A paragraph gives up a pixel on a phone, and the text of a card
+   * gains one below `lg`, where it is read at arm's length and centred.
+   */
+  --text-phone-copy: 1.0625rem;
+  --text-phone-card: 0.9375rem;
 }
 
 /*
@@ -136,17 +143,54 @@
     );
   }
 
+  /* Below 2rem only on a phone, where a long heading would take four lines. */
   .section-heading {
     font-family: var(--font-display);
     font-weight: 700;
     font-size: clamp(
-      2rem,
-      min(4vw, calc(3.5rem - var(--squeeze) * 0.06)),
+      1.625rem,
+      max(min(7vw, 2rem), min(4vw, calc(3.5rem - var(--squeeze) * 0.06))),
       3.5rem
     );
     line-height: 1.1;
     letter-spacing: -0.02em;
     color: var(--ink);
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    /*
+     * The longest word has to fit the column next to the portrait. It also gives way on a short,
+     * wide viewport: see `--squeeze`.
+     */
+    font-size: clamp(
+      2.5rem,
+      min(7.5vw + 1rem, calc(6.5rem - var(--squeeze) * 0.07)),
+      6.5rem
+    );
+    letter-spacing: -0.03em;
+  }
+
+  /*
+   * The one-column layout, below `lg`: everything is centred. The utilities of the components
+   * that follow it are the `max-lg:` ones.
+   */
+  @media (width < 64rem) {
+    .section-label {
+      justify-content: center;
+    }
+
+    /* `justify-content` is for the heading that reveals word by word, a flex container. */
+    .section-heading {
+      justify-content: center;
+      text-align: center;
+      text-wrap: balance;
+    }
+
+    /* On its own line, the longest word has to fit a 320 px wide screen, in both skins. */
+    .hero-title {
+      font-size: clamp(2.5rem, 13vw, 6.5rem);
+    }
   }
 
   .btn-accent {
@@ -249,9 +293,32 @@
     @apply flex w-max gap-5 pt-2 pb-3;
   }
 
+  /* Its width comes from the carousel, which the track needs as well. */
   .carousel-item {
     @apply flex-none;
+    width: var(--item-w);
     scroll-snap-align: start;
+  }
+
+  /*
+   * On a phone one item sits in the middle with a part of each neighbour beside it. The padding
+   * of the track lets the first and the last item reach the centre; it is measured against the
+   * region (container units), which a scrollbar does not widen. From `sm` up several items fit,
+   * and a centred first one would leave half of the row empty.
+   */
+  @media (width < 40rem) {
+    .carousel-viewport {
+      container-type: inline-size;
+      scroll-padding-inline: 0;
+    }
+
+    .carousel-track {
+      padding-inline: max(0px, calc((100cqi - var(--item-w)) / 2));
+    }
+
+    .carousel-item {
+      scroll-snap-align: center;
+    }
   }
 
   .slide-card {

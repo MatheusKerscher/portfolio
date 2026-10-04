@@ -19,11 +19,11 @@ export default async function ContactSection() {
           <p className="section-label">{contact.label}</p>
         </MotionSection>
 
-        <div className="max-w-2xl">
+        <div className="max-w-2xl max-lg:mx-auto max-lg:text-center">
           <MotionSection delay={0.1}>
             <h2
               id={headingId("contact")}
-              className="mb-8 leading-tight font-bold text-ink"
+              className="mb-8 leading-tight font-bold text-ink max-lg:text-balance"
               style={{
                 fontFamily: "var(--font-display)",
                 fontSize: "clamp(2rem, 5vw, 4rem)",
@@ -35,7 +35,7 @@ export default async function ContactSection() {
           </MotionSection>
 
           <MotionSection delay={0.2}>
-            <p className="mb-10 text-lg leading-relaxed text-ink-muted">
+            <p className="mb-10 text-lg leading-relaxed text-ink-muted max-lg:text-pretty max-sm:text-phone-copy">
               {contact.text}
             </p>
           </MotionSection>
@@ -43,13 +43,16 @@ export default async function ContactSection() {
           <MotionSection delay={0.3}>
             <a
               href={`mailto:${site.email}`}
-              className="group mb-12 flex w-fit items-center gap-3"
+              className="group mb-12 flex w-fit items-center gap-3 max-lg:mx-auto max-lg:min-h-11"
             >
+              {/* Underlined below `lg`: a touch screen has no hover to reveal the arrow. */}
               <span
-                className="font-bold break-all text-ink group-hover:text-brand"
+                className="font-bold break-all text-ink group-hover:text-brand max-lg:underline max-lg:decoration-brand max-lg:decoration-2 max-lg:underline-offset-4"
                 style={{
                   fontFamily: "var(--font-display)",
-                  fontSize: "clamp(1rem, 2.5vw, 1.4rem)",
+                  // One line down to a 320 px wide screen; from `lg` up it is 2.5vw, capped.
+                  fontSize:
+                    "clamp(0.875rem, max(2.5vw, min(4.6vw, 1.125rem)), 1.4rem)",
                   transition: "color 0.3s var(--ease-cubic)",
                 }}
               >
@@ -58,7 +61,7 @@ export default async function ContactSection() {
               <ArrowRight
                 size={20}
                 aria-hidden="true"
-                className="-translate-x-2 text-brand opacity-0 group-hover:translate-x-0 group-hover:opacity-100"
+                className="-translate-x-2 text-brand opacity-0 group-hover:translate-x-0 group-hover:opacity-100 max-lg:hidden"
                 style={{
                   transition:
                     "opacity 0.3s var(--ease-cubic), transform 0.4s var(--ease-expo)",
@@ -68,7 +71,8 @@ export default async function ContactSection() {
           </MotionSection>
 
           <MotionSection delay={0.4} className="border-t border-line pt-8">
-            <ul className="flex flex-wrap items-center gap-x-6 gap-y-3">
+            {/* The narrower gap keeps the three of them on one row at 320 px. */}
+            <ul className="flex flex-wrap items-center gap-x-6 gap-y-3 max-lg:justify-center max-sm:gap-x-4">
               {socials
                 .filter((link) => link.id !== "email")
                 .map((link) => (
@@ -77,7 +81,7 @@ export default async function ContactSection() {
                       href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex min-h-6 items-center gap-2 text-ink-muted hover:text-brand"
+                      className="flex min-h-6 items-center gap-2 text-ink-muted hover:text-brand max-lg:min-h-11"
                       style={{ transition: "color 0.3s var(--ease-cubic)" }}
                       aria-label={dict.layout.profileOf(link.name)}
                     >

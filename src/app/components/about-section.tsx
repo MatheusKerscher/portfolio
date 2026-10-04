@@ -37,9 +37,12 @@ export default async function AboutSection() {
             delay={0.2}
             className="grid gap-8 border-y border-line py-(--panel-gap-md) lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-16"
           >
-            <dl className="flex gap-10">
+            <dl className="flex gap-10 max-lg:justify-center max-lg:gap-12">
               {stats.map((stat) => (
-                <div key={stat.id} className="flex flex-col-reverse gap-1">
+                <div
+                  key={stat.id}
+                  className="flex flex-col-reverse gap-1 max-lg:items-center"
+                >
                   <dt className="text-xs tracking-widest text-ink-muted uppercase">
                     {about.stats[stat.id]}
                   </dt>
@@ -47,7 +50,8 @@ export default async function AboutSection() {
                     className="leading-none font-bold text-ink"
                     style={{
                       fontFamily: "var(--font-display)",
-                      fontSize: "clamp(2rem, 4vw, 3rem)",
+                      // The minimum is reached below `lg` only.
+                      fontSize: "clamp(2.5rem, 4vw, 3rem)",
                     }}
                   >
                     <CountUp value={stat.value} suffix={stat.suffix} />
@@ -57,13 +61,13 @@ export default async function AboutSection() {
             </dl>
 
             <div className="space-y-(--panel-gap-sm)">
-              <p className="text-lg leading-relaxed text-ink-muted">
+              <p className="text-lg leading-relaxed text-ink-muted max-lg:mx-auto max-lg:max-w-prose max-lg:text-center max-lg:text-pretty max-sm:text-phone-copy">
                 {about.bio}
               </p>
 
               <ul
                 aria-label={about.socials}
-                className="nav-links-group flex flex-wrap gap-x-6 gap-y-3"
+                className="nav-links-group flex flex-wrap gap-x-6 gap-y-3 max-lg:justify-center max-sm:gap-x-2"
               >
                 {socials.map((link) => (
                   <li key={link.id}>
@@ -71,14 +75,19 @@ export default async function AboutSection() {
                       href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex min-h-6 items-center gap-2 text-ink-muted hover:text-brand"
+                      // On a phone the handles would wrap into uneven rows: the icon is the link,
+                      // a 44 px target, and the handle stays its accessible name.
+                      className="flex min-h-6 items-center gap-2 text-ink-muted hover:text-brand max-lg:min-h-11 max-sm:min-w-11 max-sm:justify-center max-sm:[&>svg]:size-6"
                       style={{
                         transition:
                           "color 0.3s var(--ease-cubic), opacity 0.3s var(--ease-cubic)",
                       }}
+                      title={link.name}
                     >
                       <SocialIcon id={link.id} />
-                      <span className="text-sm">{link.handle}</span>
+                      <span className="text-sm max-sm:sr-only">
+                        {link.handle}
+                      </span>
                     </a>
                   </li>
                 ))}
@@ -90,15 +99,16 @@ export default async function AboutSection() {
             <Carousel
               id="carousel-stacks"
               label={about.technologies}
+              itemWidth="13rem"
               header={
-                <h3 className="text-xs font-semibold tracking-widest text-ink-muted uppercase">
+                <h3 className="text-xs font-semibold tracking-widest text-ink-muted uppercase max-lg:text-center">
                   {about.technologies}
                 </h3>
               }
             >
               {technologies.map((technology) => (
-                <CarouselItem key={technology.id} className="w-52">
-                  <div className="slide-card gap-3 p-5">
+                <CarouselItem key={technology.id}>
+                  <div className="slide-card gap-3 p-5 max-lg:items-center max-lg:text-center">
                     <span className="flex h-11 w-11 items-center justify-center border border-line bg-paper">
                       <Image
                         src={technology.icon}
@@ -113,7 +123,7 @@ export default async function AboutSection() {
                     >
                       {technology.name}
                     </p>
-                    <p className="text-sm leading-relaxed text-ink-muted">
+                    <p className="text-sm leading-relaxed text-ink-muted max-lg:text-phone-card max-lg:text-balance">
                       {dict.technologies[technology.id]}
                     </p>
                   </div>

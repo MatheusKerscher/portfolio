@@ -13,40 +13,41 @@ export default async function HeroSection() {
     <section
       data-stack-panel
       aria-labelledby={headingId("hero")}
-      className="stack-panel flex flex-col justify-center overflow-hidden px-6 pt-8 pb-28 lg:px-8"
+      // The bottom padding is the room of the scroll cue, which is shown from `md` up.
+      className="stack-panel flex flex-col justify-center overflow-hidden px-6 pt-8 pb-28 max-md:pb-8 lg:px-8"
     >
-      <div className="mx-auto grid w-full max-w-6xl items-center gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-16">
+      {/* Below `lg` it is one centred column, the portrait first. */}
+      <div className="mx-auto grid w-full max-w-6xl items-center gap-10 max-lg:justify-items-center max-lg:text-center lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-16">
         <div className="order-2 lg:order-1">
-          <div aria-hidden="true" className="pixel-dots mb-8" />
+          <div aria-hidden="true" className="pixel-dots mb-8 max-lg:mx-auto" />
 
-          <p className="mb-6 text-sm font-semibold tracking-widest text-brand uppercase">
+          <p className="mb-6 text-sm font-semibold tracking-widest text-brand uppercase max-lg:text-balance max-sm:text-xs">
             {hero.eyebrow}
           </p>
 
           <h1
             id={headingId("hero")}
-            className="mb-6 leading-none font-bold text-ink"
-            style={{
-              fontFamily: "var(--font-display)",
-              // The longest word has to fit a 320 px wide screen and the column next to the portrait.
-              // It also gives way on a short, wide viewport: see `--squeeze` in globals.css.
-              fontSize:
-                "clamp(2.5rem, min(7.5vw + 1rem, 6.5rem - var(--squeeze) * 0.07), 6.5rem)",
-              letterSpacing: "-0.03em",
-            }}
+            className="hero-title mb-6 leading-none font-bold text-ink"
           >
             {site.heading}
           </h1>
 
-          <p className="mb-10 max-w-xl text-lg leading-relaxed text-ink-muted md:text-xl">
+          <p className="mb-10 max-w-xl text-lg leading-relaxed text-ink-muted max-lg:mx-auto max-lg:text-balance max-sm:text-phone-copy md:text-xl">
             {hero.tagline}
           </p>
 
-          <div className="flex flex-wrap gap-4">
-            <a href={`#${sections.projects}`} className="btn-accent">
+          {/* On a phone the two buttons are stacked and share one width. */}
+          <div className="flex flex-wrap gap-4 max-lg:justify-center max-sm:mx-auto max-sm:max-w-xs max-sm:flex-col">
+            <a
+              href={`#${sections.projects}`}
+              className="btn-accent max-sm:justify-center"
+            >
               {hero.primaryCta} <span aria-hidden="true">→</span>
             </a>
-            <a href={`#${sections.contact}`} className="btn-outline">
+            <a
+              href={`#${sections.contact}`}
+              className="btn-outline max-sm:justify-center"
+            >
               {hero.secondaryCta}
             </a>
           </div>

@@ -21,7 +21,7 @@ export default async function ProjectCard({
           alt={copy.thumbnailAlt(title)}
           width={thumbnail.width}
           height={thumbnail.height}
-          sizes="(min-width: 640px) 416px, 85vw"
+          sizes="(min-width: 640px) 416px, 80vw"
           className="h-full w-full object-cover object-top pixel:hidden"
         />
         {/* Shown by the 8-bit skin. Hidden and lazy, so the normal skin never requests it. */}
@@ -36,7 +36,7 @@ export default async function ProjectCard({
         />
       </div>
 
-      <div className="flex flex-1 flex-col gap-3 p-5">
+      <div className="flex flex-1 flex-col gap-3 p-5 max-lg:text-center">
         <div className="flex items-center justify-between text-ink-muted">
           <span
             aria-hidden="true"
@@ -72,11 +72,11 @@ export default async function ProjectCard({
           </a>
         </h3>
 
-        <p className="text-sm leading-relaxed text-ink-muted">
+        <p className="text-sm leading-relaxed text-ink-muted max-lg:text-phone-card max-lg:text-pretty">
           {copy.descriptions[project.id]}
         </p>
 
-        <ul className="mt-auto flex flex-wrap gap-2 pt-2">
+        <ul className="mt-auto flex flex-wrap gap-2 pt-2 max-lg:justify-center">
           {tags.map((tag) => (
             <li
               key={tag}

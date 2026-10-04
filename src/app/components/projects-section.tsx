@@ -23,19 +23,20 @@ export default async function ProjectsSection() {
           <Carousel
             id="carousel-projects"
             label={copy.carousel}
+            itemWidth="min(80vw, 26rem)"
             header={
               <>
                 <h2 id={headingId("projects")} className="section-heading">
                   {copy.heading}
                 </h2>
-                <p className="mt-3 text-sm text-ink-muted">
+                <p className="mt-3 text-sm text-ink-muted max-lg:text-center">
                   {copy.count(projects.length)}
                 </p>
               </>
             }
           >
             {projects.map((project, index) => (
-              <CarouselItem key={project.id} className="w-[min(85vw,26rem)]">
+              <CarouselItem key={project.id}>
                 <ProjectCard project={project} index={index} />
               </CarouselItem>
             ))}

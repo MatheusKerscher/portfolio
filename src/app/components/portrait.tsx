@@ -18,7 +18,7 @@ export default async function Portrait({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "relative h-[138px] w-[138px] shrink-0 sm:h-[276px] sm:w-[276px] xl:h-[368px] xl:w-[368px]",
+        "relative h-[184px] w-[184px] shrink-0 sm:h-[276px] sm:w-[276px] xl:h-[368px] xl:w-[368px]",
         className,
       )}
     >
@@ -32,7 +32,7 @@ export default async function Portrait({ className }: { className?: string }) {
         alt={hero.portraitAlt}
         width={site.portrait.width}
         height={site.portrait.height}
-        sizes="(min-width: 1280px) 368px, (min-width: 640px) 276px, 138px"
+        sizes="(min-width: 1280px) 368px, (min-width: 640px) 276px, 184px"
         fetchPriority="high"
         loading="eager"
         className="relative h-full w-full border border-ink object-cover pixel:hidden"

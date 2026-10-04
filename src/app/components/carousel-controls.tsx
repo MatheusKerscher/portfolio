@@ -110,11 +110,12 @@ export default function CarouselControls({
     <div
       data-js-only
       data-overflows={position.overflows}
-      className="flex shrink-0 items-center gap-4 data-[overflows=false]:invisible"
+      className="flex shrink-0 items-center gap-4 data-[overflows=false]:invisible max-lg:order-last max-lg:mt-3 max-lg:justify-center"
     >
+      {/* Below `lg` it sits between the two buttons, which are placed around it by `order`. */}
       <div
         aria-hidden="true"
-        className="relative hidden h-0.5 w-24 bg-line sm:block"
+        className="relative h-0.5 w-24 bg-line max-lg:order-2 max-sm:w-20"
       >
         <div
           className="absolute inset-y-0 bg-brand"
@@ -124,7 +125,7 @@ export default function CarouselControls({
           }}
         />
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-2 max-lg:contents">
         {/* aria-disabled, not disabled: the button keeps the focus when it reaches an end. */}
         <button
           type="button"
@@ -132,7 +133,7 @@ export default function CarouselControls({
           aria-controls={viewportId}
           aria-disabled={position.atStart}
           onClick={() => move(-1)}
-          className={buttonClass}
+          className={`${buttonClass} max-lg:order-1`}
         >
           <ChevronLeft size={18} aria-hidden="true" />
         </button>
@@ -142,7 +143,7 @@ export default function CarouselControls({
           aria-controls={viewportId}
           aria-disabled={position.atEnd}
           onClick={() => move(1)}
-          className={buttonClass}
+          className={`${buttonClass} max-lg:order-3`}
         >
           <ChevronRight size={18} aria-hidden="true" />
         </button>
