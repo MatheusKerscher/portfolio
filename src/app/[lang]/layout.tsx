@@ -1,15 +1,18 @@
 import type { Metadata, Viewport } from "next";
 import { Catamaran, Pixelify_Sans, Syne } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 
-import BackToTop from "./components/back-to-top";
-import Footer from "./components/footer";
-import { MotionProvider } from "./components/motion-provider";
-import Navbar from "./components/navbar";
-import SmoothScrollProvider from "./components/smooth-scroll-provider";
-import { ThemeProvider } from "./components/theme-provider";
+import BackToTop from "../components/back-to-top";
+import Footer from "../components/footer";
+import { MotionProvider } from "../components/motion-provider";
+import Navbar from "../components/navbar";
+import SmoothScrollProvider from "../components/smooth-scroll-provider";
+import { ThemeProvider } from "../components/theme-provider";
+import { notFound } from "next/navigation";
+import { lang } from "next/root-params";
 import { skinScript } from "@/lib/skin-script";
-import { layoutCopy, site } from "./data/site";
+import { hasLocale, localeParams, locales } from "../data/locales";
+import { layoutCopy, site } from "../data/site";
 
 const catamaran = Catamaran({
   variable: "--font-catamaran",
@@ -67,15 +70,19 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+// Only the languages below exist: any other first segment is a 404.
+export const dynamicParams = false;
+
+export const generateStaticParams = localeParams;
+
+export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
+  const locale = await lang();
+  if (!hasLocale(locale)) notFound();
+
   return (
     // The font variables sit on <html> so the custom properties of :root can refer to them.
     <html
-      lang={site.language}
+      lang={locales[locale].htmlLang}
       className={`${catamaran.variable} ${syne.variable} ${pixelify.variable}`}
       suppressHydrationWarning
     >

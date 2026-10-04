@@ -1,11 +1,16 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
-import { heroCopy, site } from "./data/site";
+import { localeParams } from "../data/locales";
+import { heroCopy, site } from "../data/site";
 
 export const alt = site.title;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
+
+// A metadata image under a dynamic segment is prerendered only for the params it lists itself.
+export const dynamicParams = false;
+export const generateStaticParams = localeParams;
 
 // The light-theme tokens of globals.css: the image renderer has no CSS variables.
 const PAPER = "#f8f7f3";

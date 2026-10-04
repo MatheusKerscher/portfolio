@@ -44,14 +44,26 @@ test.describe("SEO and GEO", () => {
     );
   });
 
-  test("the removed email signature page redirects to the home page", async ({
+  test("a URL has one address: duplicates and the removed page redirect", async ({
     request,
   }) => {
-    const response = await request.get("/email-signature", {
-      maxRedirects: 0,
-    });
-    expect(response.status()).toBe(308);
-    expect(response.headers().location).toBe("/");
+    for (const [from, to] of [
+      // The default language is served without its prefix.
+      ["/pt", "/"],
+      ["/pt/llms.txt", "/llms.txt"],
+      // The email signature tool was removed.
+      ["/email-signature", "/"],
+    ]) {
+      const response = await request.get(from, { maxRedirects: 0 });
+      expect(response.status(), from).toBe(308);
+      expect(response.headers().location, from).toBe(to);
+    }
+  });
+
+  test("an unknown path is a 404", async ({ request }) => {
+    for (const path of ["/de", "/pt/nothing", "/nothing/at/all"]) {
+      expect((await request.get(path)).status(), path).toBe(404);
+    }
   });
 
   test("one JSON-LD graph describes the site, the page, the person and the projects", async ({
@@ -93,7 +105,7 @@ test.describe("SEO and GEO", () => {
       "/apple-icon.png",
       "/avatar/icon-192.png",
       "/avatar/icon-512.png",
-      "/opengraph-image",
+      "/pt/opengraph-image",
     ]) {
       expect((await request.get(path)).status(), path).toBe(200);
     }

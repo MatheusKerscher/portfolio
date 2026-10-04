@@ -3,11 +3,15 @@ import {
   experience,
   formatPeriod,
   type TimelineItem,
-} from "../data/curriculum";
-import { projects } from "../data/projects";
-import { curriculumCopy, site, socials, stackSummary } from "../data/site";
+} from "../../data/curriculum";
+import { localeParams } from "../../data/locales";
+import { projects } from "../../data/projects";
+import { curriculumCopy, site, socials, stackSummary } from "../../data/site";
 
 export const dynamic = "force-static";
+export const dynamicParams = false;
+
+export const generateStaticParams = localeParams;
 
 const timelineEntry = (item: TimelineItem) => [
   `- ${item.title} — ${item.organization} (${formatPeriod(item, curriculumCopy)})`,
