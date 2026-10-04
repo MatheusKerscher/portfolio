@@ -150,6 +150,17 @@ Planned and approved in the conversation on 2026-10-03, with the three choices r
 - [x] Measurement after the adjustments — _verified by:_ `npm run audit -- --write` on `75db4b7`: 100 in
       every category, mobile and desktop; the medians are in `findings.md` and in `audit.json`.
 
+### Phase 6.2 — panels fit below the navbar, asked by the requester on 2026-10-04
+
+The requester's screenshot (1512×749) showed "Sobre" pinned with its heading behind the navbar.
+
+- [x] Fluid vertical rhythm on wide screens (`--squeeze` and the `--panel-*` tokens) — _verified by:_
+      the "on a laptop screen" tests of the `stacking` suite, in the three desktop projects and both
+      skins; the grid of viewports in `findings.md`; screenshots of every panel at 1512×749 and
+      1366×641.
+- [x] Nothing changes on phones and on tall screens — _verified by:_ the panel heights on a Pixel 7 and
+      at 1920×1080 are the ones measured in phase 6.1.
+
 ### Phase 7 — hardening and documentation
 
 - [x] The whole suite in the five projects — _verified by:_ `npm run test:e2e` exits 0 (236 passed, 99

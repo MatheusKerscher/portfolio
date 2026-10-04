@@ -69,7 +69,10 @@ proving both.
    `prefers-reduced-motion: reduce` or without JavaScript. Keyboard focus never rests on a covered
    element, and in-page links land on the right panel in both directions. The stack works in the space
    below the navbar, which is opaque: a panel slides up to the navbar and pins under it, never behind
-   it.
+   it. For that to hold, a panel has to fit in that space: on a wide screen (1024 px and up) the
+   vertical spacing and the headings of a panel tighten as the viewport gets shorter. Only where a panel
+   cannot fit, on a phone or in a window shorter than about 640 px, does it scroll past the navbar
+   before it pins.
 2. **Carousels instead of vertical lists.** Technologies (9), projects (5) and the timeline (experience
    and education, 4) become horizontal carousels with previous and next controls and a position
    indicator. Technology cards always show the name and the description. Project cards gain a thumbnail.
@@ -169,6 +172,9 @@ All commands are run from the repository root. The Playwright projects are `chro
       to its natural position, the top edge of every panel is within 1 px of the bottom edge of the
       navbar, and a panel that fits below the navbar keeps that position while it is pinned. A fragment
       link lands with the top of its panel at the bottom edge of the navbar.
+- [x] **Panels fit on a laptop screen**, in the three desktop projects and in both skins: at 1512×749
+      and at 1366×641 no panel is taller than the space below the navbar, and halfway through being
+      covered by the next one its top edge is within 1 px of the bottom edge of the navbar.
 - [x] **No pinning when it is not wanted:** with `prefers-reduced-motion: reduce`, and separately with
       JavaScript disabled, the top edge of every panel moves by the scrolled distance.
 - [x] **Nothing is cut:** at a 390×667 viewport, every heading, link and button of every panel can be
@@ -237,20 +243,21 @@ All commands are run from the repository root. The Playwright projects are `chro
 
 ## Requester decisions
 
-| Decision                       | Choice                                                                                                                                                        | When       |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| Structure of the work          | One spec for the whole redesign, executed in phases                                                                                                           | 2026-10-03 |
-| PageSpeed target               | Performance ≥ 95                                                                                                                                              | 2026-10-03 |
-| Interactive feature            | Inspector mode and 8-bit mode. "Entrevista 8-bit" and "Quest log" were proposed and not chosen                                                                | 2026-10-03 |
-| Pixel-art portrait             | Drawn by script; the requester approves the render before it is used; fallback is art he supplies                                                             | 2026-10-03 |
-| Pixel-art portrait, revised    | After seeing the drawn draft the requester added a generated pixel-art portrait to the branch. It replaces the drawn sprite, as the fallback above            | 2026-10-03 |
-| Tile behind the pixel art      | The colours of the project instead of the yellow of the reference: the `brand` green. The `pixel-yellow` token is removed                                     | 2026-10-03 |
-| 8-bit mode                     | An Easter egg that is not easy to find, and the only place from which the Inspector is reachable. Entered with the Konami code or a small pixel in the footer | 2026-10-03 |
-| Stacking and the navbar        | The navbar gets a solid background and the panels stop and pin below it                                                                                       | 2026-10-03 |
-| Animation and scroll libraries | Keep `framer-motion` and Lenis; only the hero becomes static. A CSS-only replacement was declined                                                             | 2026-10-03 |
-| Portrait photo                 | The new photo in `public/images/`; `profile-photo.jpg` is removed                                                                                             | 2026-10-03 |
-| Canonical host                 | The apex, `https://kerscher.dev.br`; the requester switches the primary domain on Vercel                                                                      | 2026-10-03 |
-| Contact email                  | `matheuskerscher@outlook.com` everywhere                                                                                                                      | 2026-10-03 |
+| Decision                       | Choice                                                                                                                                                                                                | When       |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| Structure of the work          | One spec for the whole redesign, executed in phases                                                                                                                                                   | 2026-10-03 |
+| PageSpeed target               | Performance ≥ 95                                                                                                                                                                                      | 2026-10-03 |
+| Interactive feature            | Inspector mode and 8-bit mode. "Entrevista 8-bit" and "Quest log" were proposed and not chosen                                                                                                        | 2026-10-03 |
+| Pixel-art portrait             | Drawn by script; the requester approves the render before it is used; fallback is art he supplies                                                                                                     | 2026-10-03 |
+| Pixel-art portrait, revised    | After seeing the drawn draft the requester added a generated pixel-art portrait to the branch. It replaces the drawn sprite, as the fallback above                                                    | 2026-10-03 |
+| Tile behind the pixel art      | The colours of the project instead of the yellow of the reference: the `brand` green. The `pixel-yellow` token is removed                                                                             | 2026-10-03 |
+| 8-bit mode                     | An Easter egg that is not easy to find, and the only place from which the Inspector is reachable. Entered with the Konami code or a small pixel in the footer                                         | 2026-10-03 |
+| Stacking and the navbar        | The navbar gets a solid background and the panels stop and pin below it                                                                                                                               | 2026-10-03 |
+| Stacking on a laptop screen    | On the requester's screen (1512×749) "Sobre" pinned with its heading behind the navbar. A section has to stop at the navbar, which is the limit of its scroll, so the panels are made to fit below it | 2026-10-04 |
+| Animation and scroll libraries | Keep `framer-motion` and Lenis; only the hero becomes static. A CSS-only replacement was declined                                                                                                     | 2026-10-03 |
+| Portrait photo                 | The new photo in `public/images/`; `profile-photo.jpg` is removed                                                                                                                                     | 2026-10-03 |
+| Canonical host                 | The apex, `https://kerscher.dev.br`; the requester switches the primary domain on Vercel                                                                                                              | 2026-10-03 |
+| Contact email                  | `matheuskerscher@outlook.com` everywhere                                                                                                                                                              | 2026-10-03 |
 
 Decided by Matheus Kerscher.
 

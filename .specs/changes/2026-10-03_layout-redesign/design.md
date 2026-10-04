@@ -125,8 +125,9 @@ The navbar is fixed, `--nav-h` tall and opaque, and the stack is laid out in wha
 viewport: the first panel starts under the navbar, a panel is at least that space tall, and it pins with
 its top at the bottom edge of the navbar. The next panel therefore travels from the bottom of the
 viewport to the navbar and stops there. Only a panel taller than that space goes behind the navbar, by
-scrolling, as on any page with a fixed header; the opaque background hides it. The slot has a
-`scroll-margin-top` of the same height, which both the browser's fragment navigation and Lenis apply.
+scrolling, as on any page with a fixed header; the opaque background hides it. The next section keeps
+that case to phones and very short windows. The slot has a `scroll-margin-top` of the same height, which
+both the browser's fragment navigation and Lenis apply.
 
 **Why:** sticky positioning is done by the browser, with no script on the scroll path. The spacer and the
 negative margin cancel out, so the layout positions and the document height are those of the unstyled
@@ -149,6 +150,47 @@ them equally, and they need the same focus handling. `framer-motion` `useScroll`
 the main thread for every frame. Keeping the pinning at the top and adding top padding to every panel —
 offered to the requester and declined: the content would clear the navbar, but the edge of the panel
 would still slide behind it.
+
+### A panel fits below the navbar on a wide screen
+
+**Choice:**
+
+```css
+:root {
+  --squeeze: 0px;
+  --panel-pad: calc(4rem - var(--squeeze) * 0.14);
+  --panel-gap: calc(2.5rem - var(--squeeze) * 0.08);
+  --panel-gap-md: calc(var(--panel-gap) * 0.8);
+  --panel-gap-sm: calc(var(--panel-gap) * 0.6);
+  --thumbnail-h: calc(15.6rem - var(--squeeze) * 0.3);
+}
+@media (min-width: 1024px) {
+  :root {
+    --squeeze: clamp(0px, 960px - 100svh, 320px);
+  }
+}
+```
+
+`--squeeze` is how far a wide viewport falls short of 960 px in height. The padding of a panel, the gaps
+between its blocks, the section headings, the hero heading and the height of a project thumbnail each
+give up a share of it. At 960 px and above nothing changes; from there down to 640 px the content of the
+tallest panel loses about 0.8 px for each pixel the viewport loses, starting from a panel that needed 835
+px. The sections use the tokens through Tailwind (`py-(--panel-pad)`, `space-y-(--panel-gap)`,
+`max-h-(--thumbnail-h)`).
+
+**Why:** a panel that does not fit pins by its bottom edge, and its top then rests behind the navbar for
+as long as the next panel covers it. On the requester's screen (1512×749, 685 px below the navbar)
+"Sobre" needed 835 px and "Projetos" 797 px, so both rested with their heading cut by the navbar. No
+positioning rule fixes that: content taller than the space has to pass the navbar to be read. The
+content has to fit. Below 1024 px wide the value is zero on purpose: there a panel is taller than the
+viewport whatever its spacing, and the looser rhythm reads better.
+
+**Rejected alternative:** breakpoints on `max-height` — the fit would hold at the heights tested and jump
+between them. Scaling the panel with `zoom` or `transform` by a ratio computed in script — it shrinks
+the body text with everything else and adds script to the layout. Not pinning a panel that does not fit
+— nothing would rest behind the navbar, but the stacking would be lost on every phone, where it works
+well because the panel has already been read. Scrolling the overflow inside a pinned panel — the content
+is clipped at the same edge, so it looks the same and adds a second scroll container.
 
 ### A covered focus target is scrolled to its natural position
 

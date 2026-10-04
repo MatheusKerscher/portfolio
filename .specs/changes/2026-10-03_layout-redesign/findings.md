@@ -187,6 +187,38 @@ measurement is 100 without them and `design.md` applies them only when the measu
   theme and skin matrix of axe and the palette outside desktop Chromium, and the desktop-only tests on
   mobile.
 
+## The adjustment of phase 6.2
+
+On the requester's screen, 1512×749 with 685 px below the navbar, "Sobre" needed 835 px and "Projetos"
+797 px. Both pinned by their bottom edge and rested with their heading cut by the navbar. What phase 6.1
+recorded as "as on any page with a fixed header" is true while the page moves; a pinned panel stays in
+that position, which is what the requester saw.
+
+Height each panel needs for its content, production build, Chromium:
+
+| Viewport  | Space | Before: Sobre | Before: Projetos | After: Sobre | After: Projetos | After: Hero |
+| --------- | ----- | ------------- | ---------------- | ------------ | --------------- | ----------- |
+| 1512×749  | 685   | 835           | 797              | 657          | 642             | 583         |
+| 1280×720  | 656   | 824           | 792              | 632          | 620             | 579         |
+| 1024×768  | 704   | 831           | 780              | 694          | 652             | 586         |
+| 1920×1080 | 1016  | 835           | 797              | 835          | 797             | 613         |
+
+Margin of the tallest panel against the space below the navbar (negative fits), measured over widths
+from 1152 to 2560 px, where it does not depend on the width:
+
+| Viewport height | 600 | 625 | 640 | 660 | 700 | 749 | 800 | 900 | 960 |
+| --------------- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Normal skin     | +32 | +7  | −8  | −14 | −21 | −28 | −36 | −52 | −61 |
+| 8-bit skin      | +34 | +9  | −6  | −11 | −18 | −25 | −33 | −49 | −58 |
+
+- Firefox and WebKit give the same margins as Chromium at the heights checked (640, 660, 749, 900).
+- At 1024 px wide the biography wraps onto a third line, and "Sobre" misses by 4 to 18 px between 640
+  and 720 px of height. The padding above its label is at least 19 px there, so nothing visible is cut.
+- Below 640 px the hero is the first to miss. At 625 px it is by 7 px, inside its 32 px of top padding.
+- Phones are untouched: on a Pixel 7 "Sobre" is still 1061 px, as in phase 6.1.
+- A `max-height` on a box with `aspect-ratio` keeps the full width and cuts the height, so the project
+  thumbnail is cropped from the bottom instead of the card getting narrower.
+
 ## The sprite
 
 The drawn draft (92×92, 18 colours, 850 bytes, four rounds of review against the photo) was shown to the

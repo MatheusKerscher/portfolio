@@ -47,7 +47,9 @@ on the raw localhost is not evidence (`.specs/memory/lighthouse-on-localhost.md`
   tailwind-merge to the browser. Join its classes by hand.
 - **Stacked sections:** a `.stack-panel` carries no Tailwind position utility (`relative`,
   `absolute`, …); it would override the sticky positioning of the stylesheet. The stack is laid out
-  below the navbar through `--nav-h`.
+  below the navbar through `--nav-h`, and a panel has to fit in that space on a laptop screen: its
+  vertical spacing uses the `--panel-*` tokens, which tighten on a short, wide viewport. The "on a
+  laptop screen" tests of `e2e/stacking.spec.ts` fail when a panel outgrows it.
 - **8-bit mode is an Easter egg:** nothing in the normal skin announces it. The ways in are in
   `src/app/components/skin-easter-egg.tsx`, and the Inspector exists only inside that skin. Tests enter
   it with `storeSkin` from `e2e/helpers.ts`.
