@@ -1,54 +1,26 @@
 /**
- * Draws the pixel-art portrait and exports every asset derived from it.
+ * Snaps the pixel-art portrait to its grid and exports every asset derived from it.
  *
  *   node scripts/pixel-assets.mjs
- *   node scripts/pixel-assets.mjs --sheet=<out.png> [--reference=<style-reference.png>]
+ *   node scripts/pixel-assets.mjs --sheet=<out.png>
  *
- * The sprite is drawn on a 92×92 grid, the grid of the style reference, from a fixed palette. It
- * is the single source: the avatar, the icons, the Open Graph render and the 8-bit thumbnails are
- * all generated here, so running it again reproduces the same files.
+ * The source is scripts/assets/portrait-art.jpeg, the art supplied by the owner of the site. The
+ * sprite made from it is the single source of the avatar, the icons, the Open Graph render and,
+ * along with the project screenshots, of the 8-bit thumbnails: running the script again
+ * reproduces the same files, and replacing the art replaces all of them.
  *
- * --sheet writes a contact sheet for review (photo, reference, sprite at 1×, 4× and 8× on both
- * themes) instead of the assets.
+ * --sheet writes a contact sheet for review (photo, art, sprite at 1×, 4× and 8× on both themes)
+ * instead of the assets.
  */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { basename, dirname } from "node:path";
 import sharp from "sharp";
 
+const ART = "scripts/assets/portrait-art.jpeg";
 const SIZE = 92;
-
-/** Index 0 is transparent. Keep the list at 32 colours or fewer. */
-const PALETTE = {
-  none: [0, 0, 0, 0],
-  ink: "#111111",
-  white: "#ffffff",
-  skin: "#f0bf9d",
-  skinLight: "#f9d9ba",
-  skinShade: "#dc9d7c",
-  skinDeep: "#b8775a",
-  skinLine: "#6e3f2f",
-  hair: "#3b2b22",
-  hairLight: "#5c4536",
-  hairDark: "#231813",
-  lens: "#d9ebf0",
-  eyeWhite: "#f6f2ea",
-  iris: "#3a2416",
-  mouth: "#a8514f",
-  shirt: "#28345a",
-  shirtLight: "#3b4b7c",
-  shirtDark: "#1a2340",
-  button: "#a3acc4",
-};
-
-const NAMES = Object.keys(PALETTE);
-const INDEX = Object.fromEntries(NAMES.map((name, index) => [name, index]));
-const RGBA = NAMES.map((name) => {
-  const value = PALETTE[name];
-  if (Array.isArray(value)) return value;
-  return [1, 3, 5]
-    .map((start) => parseInt(value.slice(start, start + 2), 16))
-    .concat(255);
-});
+/** Transparency and the white of the outline included. */
+const MAX_COLOURS = 32;
+const WHITE = [255, 255, 255];
 
 const THUMBNAIL = { width: 150, height: 90 };
 
@@ -57,262 +29,161 @@ const YELLOW = "#f0da50";
 const PAPER = { light: "#f8f7f3", dark: "#111111" };
 
 // ---------------------------------------------------------------------------------------------
-// Drawing
+// Sprite
 
-const grid = new Uint8Array(SIZE * SIZE);
-/** Everything is drawn 3 px lower than its coordinates, to leave room for the outline above. */
-const OFFSET_Y = 3;
+const median = (values) => values.sort((a, b) => a - b)[values.length >> 1];
+const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+const distance = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
 
-const inside = (x, y) => x >= 0 && x < SIZE && y >= 0 && y < SIZE;
-const get = (x, y) => (inside(x, y) ? grid[y * SIZE + x] : 0);
-const is = (x, y, ...names) => names.some((name) => get(x, y) === INDEX[name]);
+/**
+ * The art as 92×92 RGBA. A generated image only looks like pixel art: its "pixels" are uneven
+ * blocks of a large JPEG. This takes one colour per cell of the real grid, cuts the flat
+ * background out and reduces what is left to a palette.
+ */
+async function spriteFromArt() {
+  const { data, info } = await sharp(ART)
+    .removeAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  const cell = info.width / SIZE;
+  const at = (x, y) => {
+    const start = (y * info.width + x) * 3;
+    return [data[start], data[start + 1], data[start + 2]];
+  };
 
-function set(x, y, name) {
-  if (inside(x, y)) grid[y * SIZE + x] = INDEX[name];
-}
-
-/** Paints every pixel for which `test(x, y)` holds; `only` restricts it to pixels of those colours. */
-function paint(name, test, only) {
-  for (let y = 0; y < SIZE; y += 1) {
-    for (let x = 0; x < SIZE; x += 1) {
-      if (only && !is(x, y, ...only)) continue;
-      if (test(x, y - OFFSET_Y)) set(x, y, name);
-    }
-  }
-}
-
-const ellipse = (cx, cy, rx, ry) => (x, y) =>
-  ((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 <= 1;
-const rect = (x0, y0, x1, y1) => (x, y) =>
-  x >= x0 && x <= x1 && y >= y0 && y <= y1;
-const either =
-  (...tests) =>
-  (x, y) =>
-    tests.some((test) => test(x, y));
-/** The same shape on both sides of the vertical axis of the face (between columns 45 and 46). */
-const mirrored = (test) => either(test, (x, y) => test(91 - x, y));
-
-/** Even-odd polygon test on pixel centres. */
-const polygon = (points) => (x, y) => {
-  let hit = false;
-  for (let i = 0, j = points.length - 1; i < points.length; j = i, i += 1) {
-    const [xi, yi] = points[i];
-    const [xj, yj] = points[j];
-    if (
-      yi > y + 0.5 !== yj > y + 0.5 &&
-      x + 0.5 < ((xj - xi) * (y + 0.5 - yi)) / (yj - yi) + xi
-    ) {
-      hit = !hit;
-    }
-  }
-  return hit;
-};
-
-const pixels = (name, list) =>
-  list.forEach(([x, y]) => set(x, y + OFFSET_Y, name));
-const row = (name, y, x0, x1) => {
-  for (let x = x0; x <= x1; x += 1) set(x, y + OFFSET_Y, name);
-};
-const mirrorRow = (name, y, x0, x1) => {
-  row(name, y, x0, x1);
-  row(name, y, 91 - x1, 91 - x0);
-};
-
-function drawSprite() {
-  // Shirt: shoulders that run off the bottom edge, like the reference.
-  paint(
-    "shirt",
-    polygon([
-      [30, 72],
-      [62, 72],
-      [79, 79],
-      [82, 92],
-      [10, 92],
-      [13, 79],
-    ]),
-  );
-  paint(
-    "shirtDark",
-    mirrored(
-      polygon([
-        [13, 79],
-        [21, 76],
-        [17, 92],
-        [10, 92],
-      ]),
-    ),
-    ["shirt"],
-  );
-
-  // Neck, and the chest inside the open collar.
-  paint("skin", rect(40, 60, 51, 73));
-  paint(
-    "skin",
-    polygon([
-      [40, 72],
-      [52, 72],
-      [46, 81],
-    ]),
-  );
-
-  // Collar flaps with a shadow under them, placket and a button.
-  const collar = mirrored(
-    polygon([
-      [39, 69],
-      [32, 73],
-      [36, 83],
-      [45, 79],
-      [41, 73],
-    ]),
-  );
-  paint("shirtLight", collar);
-  paint("shirtDark", (x, y) => collar(x, y - 1) && !collar(x, y), ["shirt"]);
-  paint("shirtDark", rect(45, 83, 46, 91), ["shirt"]);
-  pixels("button", [
-    [45, 86],
-    [46, 86],
-    [45, 87],
-    [46, 87],
-  ]);
-
-  // Head: a cranium and a narrower jaw. Ears behind the temples of the glasses.
-  const head = either(ellipse(45.5, 39, 15.5, 17), ellipse(45.5, 47, 12.6, 18));
-  paint("skin", mirrored(ellipse(29.6, 45, 2.6, 4.6)));
-  paint("skinShade", mirrored(ellipse(29.9, 45.5, 1.2, 2.6)), ["skin"]);
-  paint("skin", head);
-
-  // The chin casts a shadow on the neck that follows its curve.
-  paint("skinShade", (x, y) => head(x, y - 7) && !head(x, y), ["skin"]);
-  paint("skinDeep", (x, y) => head(x, y - 3) && !head(x, y), ["skinShade"]);
-
-  // Shade on the cheeks and the jaw, light on the forehead.
-  const core = either(ellipse(45.5, 39, 14.2, 17), ellipse(45.5, 46, 11, 17.6));
-  paint("skinShade", (x, y) => head(x, y) && !core(x, y) && y > 44, ["skin"]);
-  paint("skinLight", ellipse(45.5, 31, 8, 2.6), ["skin"]);
-
-  // Hair: short. A cap a little larger than the head, so the sides show as a thin strip, and
-  // more volume on top, brushed up towards the front.
-  const hairline = (x) => 25 + Math.round((Math.abs(x - 45.5) / 14) ** 2 * 2);
-  const cap = either(
-    ellipse(45.5, 30.5, 17, 18.5),
-    ellipse(48.5, 21.5, 12, 10.5),
-  );
-  const hair = (x, y) =>
-    cap(x, y) && y <= 39 && (y < hairline(x) || !head(x, y));
-  paint("hair", hair);
-  paint("hair", mirrored(rect(31, 33, 32, 40)));
-  paint(
-    "hairDark",
-    (x, y) => hair(x, y) && !ellipse(45.5, 31, 15.6, 17.4)(x, y),
-    ["hair"],
-  );
-  // Strands, running up and to the right.
-  [
-    [35, 23, 6],
-    [41, 22, 7],
-    [48, 21, 6],
-    [54, 22, 4],
-    [38, 17, 4],
-    [45, 16, 5],
-  ].forEach(([x, y, length]) => {
-    for (let step = 0; step < length; step += 1) {
-      if (is(x + step, y - step + OFFSET_Y, "hair")) {
-        set(x + step, y - step + OFFSET_Y, "hairLight");
-      }
-    }
-  });
-  // The hair casts a thin shadow on the forehead.
-  paint("skinShade", (x, y) => head(x, y) && y === hairline(x), ["skin"]);
-
-  // Eyebrows.
-  mirrorRow("hair", 36, 34, 41);
-  mirrorRow("hair", 37, 33, 35);
-
-  // Glasses: thick rectangular frames, heavier on top, with a hint of glass.
-  const frame = mirrored(rect(31, 39, 43, 48));
-  const lens = mirrored(rect(32, 41, 42, 47));
-  paint("ink", (x, y) => frame(x, y) && !lens(x, y));
-  paint("ink", rect(44, 41, 47, 42));
-  paint("ink", mirrored(rect(28, 41, 30, 42)));
-  // Rounded outer corners.
-  [
-    [31, 39],
-    [43, 39],
-    [31, 48],
-    [43, 48],
-  ].forEach(([x, y]) => {
-    set(x, y + OFFSET_Y, "skin");
-    set(91 - x, y + OFFSET_Y, "skin");
-  });
-  mirrorRow("lens", 41, 33, 35);
-  mirrorRow("lens", 42, 33, 33);
-
-  // Eyes: open, looking ahead.
-  mirrorRow("hairDark", 43, 35, 40);
-  mirrorRow("eyeWhite", 44, 35, 40);
-  mirrorRow("eyeWhite", 45, 35, 40);
-  mirrorRow("eyeWhite", 46, 36, 39);
-  for (let y = 44; y <= 46; y += 1) mirrorRow("iris", y, 37, 38);
-
-  // Nose.
-  for (let y = 48; y <= 52; y += 1) set(47, y + OFFSET_Y, "skinShade");
-  row("skinShade", 53, 44, 47);
-
-  // Moustache, a closed smile, and the beard on the chin.
-  row("hair", 55, 41, 50);
-  pixels("hair", [
-    [40, 56],
-    [51, 56],
-  ]);
-  row("mouth", 59, 42, 49);
-  pixels("mouth", [
-    [41, 58],
-    [50, 58],
-  ]);
-  row("skinLight", 60, 44, 47);
-  row("hair", 62, 44, 47);
-  row("hair", 63, 43, 48);
-  row("hair", 64, 43, 48);
-  row("hair", 65, 44, 47);
-}
-
-/** The shirt runs off the bottom edge: nothing is outlined there, since no pixel below is empty. */
-const solid = (x, y) => inside(x, y) && get(x, y) !== 0;
-
-/** Paints `name` on every empty pixel within `radius` of the figure. */
-function outline(name, radius) {
-  const reach = Math.ceil(radius);
-  const additions = [];
-  for (let y = 0; y < SIZE; y += 1) {
-    for (let x = 0; x < SIZE; x += 1) {
-      if (get(x, y) !== 0) continue;
-      let near = false;
-      for (let dy = -reach; dy <= reach && !near; dy += 1) {
-        for (let dx = -reach; dx <= reach && !near; dx += 1) {
-          if (dx * dx + dy * dy <= radius * radius && solid(x + dx, y + dy)) {
-            near = true;
-          }
+  // One colour per cell: the median of its middle half, which ignores the blurred edges.
+  const colours = [];
+  for (let cy = 0; cy < SIZE; cy += 1) {
+    for (let cx = 0; cx < SIZE; cx += 1) {
+      const samples = [[], [], []];
+      for (let y = (cy + 0.25) * cell; y < (cy + 0.75) * cell; y += 1) {
+        for (let x = (cx + 0.25) * cell; x < (cx + 0.75) * cell; x += 1) {
+          at(Math.floor(x), Math.floor(y)).forEach((value, channel) =>
+            samples[channel].push(value),
+          );
         }
       }
-      if (near) additions.push([x, y]);
+      colours.push(samples.map(median));
     }
   }
-  additions.forEach(([x, y]) => set(x, y, name));
+
+  // The background is what is connected to the corners and made of their colour. A cell on the
+  // edge of the white outline is a mix of the two, and goes with whichever it has more of.
+  const background = colours[0];
+  const towardsWhite = WHITE.map(
+    (value, channel) => value - background[channel],
+  );
+  const isBackground = (colour) => {
+    const offset = colour.map((value, channel) => value - background[channel]);
+    const whiteness =
+      dot(offset, towardsWhite) / dot(towardsWhite, towardsWhite);
+    const mixed = towardsWhite.map((value) => value * whiteness);
+    return whiteness < 0.75 && distance(offset, mixed) < 40;
+  };
+  const transparent = new Uint8Array(SIZE * SIZE);
+  const queue = [0, SIZE - 1, SIZE * (SIZE - 1), SIZE * SIZE - 1];
+  while (queue.length > 0) {
+    const position = queue.pop();
+    if (transparent[position] || !isBackground(colours[position])) continue;
+    transparent[position] = 1;
+    const x = position % SIZE;
+    const y = (position - x) / SIZE;
+    if (x > 0) queue.push(position - 1);
+    if (x < SIZE - 1) queue.push(position + 1);
+    if (y > 0) queue.push(position - SIZE);
+    if (y < SIZE - 1) queue.push(position + SIZE);
+  }
+
+  // The sticker outline is pure white, whatever the JPEG made of it, and it is the only thing
+  // that touches the background.
+  const touchesBackground = (position) => {
+    const x = position % SIZE;
+    const y = (position - x) / SIZE;
+    for (
+      let ny = Math.max(y - 1, 0);
+      ny <= Math.min(y + 1, SIZE - 1);
+      ny += 1
+    ) {
+      for (
+        let nx = Math.max(x - 1, 0);
+        nx <= Math.min(x + 1, SIZE - 1);
+        nx += 1
+      ) {
+        if (transparent[ny * SIZE + nx]) return true;
+      }
+    }
+    return false;
+  };
+  const white = colours.map(
+    (colour, position) =>
+      !transparent[position] &&
+      (Math.min(...colour) > 225 || touchesBackground(position)),
+  );
+
+  const palette = reduce(
+    colours.filter((_, position) => !transparent[position] && !white[position]),
+    MAX_COLOURS - 2,
+  );
+  const nearest = (colour) =>
+    palette.reduce((best, candidate) =>
+      distance(candidate, colour) < distance(best, colour) ? candidate : best,
+    );
+
+  const pixels = Buffer.alloc(SIZE * SIZE * 4);
+  colours.forEach((colour, position) => {
+    if (transparent[position]) return;
+    pixels.set(
+      [...(white[position] ? WHITE : nearest(colour)), 255],
+      position * 4,
+    );
+  });
+  return pixels;
 }
 
-drawSprite();
-outline("ink", 1);
-outline("white", 4.3);
+/**
+ * At most `count` colours that stand for all of `colours`. Pixel art has few real colours, each
+ * with JPEG noise around it, so a colour joins the first one within reach, most frequent first.
+ * sharp cannot do this: it caps a palette at a bit depth, 16 or 256 colours, and a split by
+ * population (median cut) spends the palette on the noise of the large flat areas.
+ */
+function reduce(colours, count) {
+  const frequency = new Map();
+  for (const colour of colours) {
+    const key = colour.join();
+    frequency.set(key, (frequency.get(key) ?? 0) + 1);
+  }
+  const ordered = [...frequency]
+    .sort(([a, timesA], [b, timesB]) => timesB - timesA || (a < b ? -1 : 1))
+    .map(([key]) => key.split(",").map(Number));
+
+  for (let reach = 8; ; reach += 1) {
+    const palette = [];
+    for (const colour of ordered) {
+      if (!palette.some((kept) => distance(kept, colour) <= reach)) {
+        palette.push(colour);
+      }
+    }
+    if (palette.length <= count) return palette;
+  }
+}
 
 // ---------------------------------------------------------------------------------------------
 // Export
 
-const rgba = Buffer.alloc(SIZE * SIZE * 4);
-grid.forEach((index, position) => rgba.set(RGBA[index], position * 4));
+const rgba = await spriteFromArt();
+
+/** Where the face sits on the grid, which the square crops of the icons depend on. */
+const CROPS = {
+  favicon: { left: 30, top: 24 },
+  face: { left: 22, top: 11, size: 48 },
+  apple: { left: 23, top: 12, size: 45 },
+  bust: { left: 14, top: 6, size: 64 },
+};
 
 const sprite = () =>
   sharp(rgba, { raw: { width: SIZE, height: SIZE, channels: 4 } });
-const png = { palette: true, colours: 32, dither: 0, compressionLevel: 9 };
+// No palette size: the sprite already has at most MAX_COLOURS.
+const png = { palette: true, dither: 0, compressionLevel: 9 };
 
 /** A square crop of the sprite on the yellow tile, scaled by a whole factor. */
 function tile({ left, top, size, scale }) {
@@ -357,13 +228,13 @@ async function exportAssets() {
   );
 
   console.log("Icons");
-  const face = { left: 22, top: 22, size: 48 };
+  const { face } = CROPS;
   // Next decodes the ICO at build time and only accepts a 32-bit RGBA PNG inside it.
   await write(
     "src/app/favicon.ico",
     ico(
       await sprite()
-        .extract({ left: 30, top: 34, width: 32, height: 32 })
+        .extract({ ...CROPS.favicon, width: 32, height: 32 })
         .flatten({ background: YELLOW })
         .ensureAlpha()
         .png({ compressionLevel: 9 })
@@ -374,7 +245,7 @@ async function exportAssets() {
   await write("src/app/icon.png", await tile({ ...face, scale: 2 }).toBuffer());
   await write(
     "src/app/apple-icon.png",
-    await tile({ left: 23, top: 24, size: 45, scale: 4 }).toBuffer(),
+    await tile({ ...CROPS.apple, scale: 4 }).toBuffer(),
   );
   await write(
     "public/avatar/icon-192.png",
@@ -382,10 +253,10 @@ async function exportAssets() {
   );
   await write(
     "public/avatar/icon-512.png",
-    await tile({ left: 14, top: 16, size: 64, scale: 8 }).toBuffer(),
+    await tile({ ...CROPS.bust, scale: 8 }).toBuffer(),
   );
 
-  // The 8-bit version of every project thumbnail: 150×90 in 24 colours, shown enlarged with
+  // The 8-bit version of every project thumbnail: 150×90 in 16 colours, shown enlarged with
   // `image-rendering: pixelated`.
   console.log("8-bit thumbnails");
   const projects = await readFile("src/app/data/projects.ts", "utf8");
@@ -397,13 +268,13 @@ async function exportAssets() {
           fit: "cover",
           position: "top",
         })
-        .png({ ...png, colours: 24 })
+        .png({ ...png, colours: 16 })
         .toBuffer(),
     );
   }
 }
 
-async function exportSheet(output, reference) {
+async function exportSheet(output) {
   const photo = await sharp("public/images/matheus-kerscher.jpg")
     .resize(368, 368)
     .png()
@@ -432,15 +303,13 @@ async function exportSheet(output, reference) {
   const height = gap * 4 + 368 + rowHeight * 2;
   const layers = [
     { input: photo, left: gap, top: gap },
-    { input: await onTile(4), left: gap * 3 + 368 * 2, top: gap },
-  ];
-  if (reference) {
-    layers.push({
-      input: await sharp(reference).resize(368, 368).png().toBuffer(),
+    {
+      input: await sharp(ART).resize(368, 368).png().toBuffer(),
       left: gap * 2 + 368,
       top: gap,
-    });
-  }
+    },
+    { input: await onTile(4), left: gap * 3 + 368 * 2, top: gap },
+  ];
   for (const [index, theme] of ["light", "dark"].entries()) {
     const top = gap * 2 + 368 + index * (rowHeight + gap);
     layers.push({
@@ -483,5 +352,5 @@ const options = Object.fromEntries(
   }),
 );
 
-if (options.sheet) await exportSheet(options.sheet, options.reference);
+if (options.sheet) await exportSheet(options.sheet);
 else await exportAssets();

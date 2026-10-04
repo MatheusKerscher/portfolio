@@ -1,6 +1,6 @@
 /**
  * A 16×16 version of the pixel-art portrait, drawn inline so it costs no request. One character
- * per pixel; the colours are those of `scripts/pixel-assets.mjs`.
+ * per pixel; the colours are taken from the sprite that `scripts/pixel-assets.mjs` exports.
  */
 const PIXELS = [
   "................",
@@ -22,14 +22,14 @@ const PIXELS = [
 ];
 
 const COLOURS: Record<string, string> = {
-  H: "#3b2b22",
-  S: "#f0bf9d",
-  I: "#111111",
-  W: "#f6f2ea",
-  K: "#3a2416",
-  M: "#a8514f",
-  B: "#28345a",
-  L: "#3b4b7c",
+  H: "#482c26",
+  S: "#f7ab93",
+  I: "#322b3a",
+  W: "#f8d3a7",
+  K: "#301411",
+  M: "#bc606f",
+  B: "#333b69",
+  L: "#3a4775",
 };
 
 /** Horizontal runs of the same colour, so the SVG has few rectangles. */
