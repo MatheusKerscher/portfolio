@@ -1,11 +1,19 @@
 import { Mail } from "lucide-react";
+import type { PixelGrid } from "@/lib/pixel-grid";
 import type { SocialId } from "../data/site";
+import PixelIcon from "./pixel-icon";
+import { github, instagram, linkedin, mail } from "./pixel-icons";
 
-type IconProps = { size?: number; className?: string };
+type IconProps = {
+  size?: number;
+  className?: string;
+  "data-icon"?: string;
+};
 
-export function GithubIcon({ size = 24, className }: IconProps) {
+export function GithubIcon({ size = 24, className, ...rest }: IconProps) {
   return (
     <svg
+      {...rest}
       width={size}
       height={size}
       viewBox="0 0 24 24"
@@ -18,9 +26,10 @@ export function GithubIcon({ size = 24, className }: IconProps) {
   );
 }
 
-export function LinkedinIcon({ size = 24, className }: IconProps) {
+export function LinkedinIcon({ size = 24, className, ...rest }: IconProps) {
   return (
     <svg
+      {...rest}
       width={size}
       height={size}
       viewBox="0 0 24 24"
@@ -33,9 +42,10 @@ export function LinkedinIcon({ size = 24, className }: IconProps) {
   );
 }
 
-export function InstagramIcon({ size = 24, className }: IconProps) {
+export function InstagramIcon({ size = 24, className, ...rest }: IconProps) {
   return (
     <svg
+      {...rest}
       width={size}
       height={size}
       viewBox="0 0 24 24"
@@ -48,16 +58,35 @@ export function InstagramIcon({ size = 24, className }: IconProps) {
   );
 }
 
-/** The icon of a social network, by the id used in `data/site.ts`. */
+const VECTOR = {
+  email: Mail,
+  linkedin: LinkedinIcon,
+  github: GithubIcon,
+  instagram: InstagramIcon,
+} satisfies Record<SocialId, unknown>;
+
+const PIXEL: Record<SocialId, PixelGrid> = {
+  email: mail,
+  linkedin,
+  github,
+  instagram,
+};
+
+/**
+ * The icon of a social network, by the id used in `data/site.ts`: the vector one and, for the
+ * 8-bit skin, the pixel one.
+ */
 export function SocialIcon({ id, size = 18 }: { id: SocialId; size?: number }) {
-  switch (id) {
-    case "email":
-      return <Mail size={size} aria-hidden="true" />;
-    case "linkedin":
-      return <LinkedinIcon size={size} />;
-    case "github":
-      return <GithubIcon size={size} />;
-    case "instagram":
-      return <InstagramIcon size={size} />;
-  }
+  const Vector = VECTOR[id];
+  return (
+    <>
+      <Vector
+        size={size}
+        aria-hidden="true"
+        data-icon="vector"
+        className="pixel:hidden"
+      />
+      <PixelIcon grid={PIXEL[id]} />
+    </>
+  );
 }

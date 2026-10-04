@@ -1,7 +1,8 @@
 "use client";
 
-import { motion, useInView, type Transition } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { ElementType, CSSProperties, Fragment, useRef } from "react";
+import { useRevealEase } from "@/lib/skin";
 
 type AnimatedTextProps = {
   children: string;
@@ -12,12 +13,6 @@ type AnimatedTextProps = {
   delay?: number;
   stagger?: number;
 };
-
-const makeTransition = (delay: number): Transition => ({
-  duration: 0.75,
-  delay,
-  ease: [0.19, 1, 0.22, 1] as [number, number, number, number],
-});
 
 /**
  * Reveals a line word by word when it scrolls into view. The spaces between the words are not
@@ -36,6 +31,7 @@ export default function AnimatedText({
   const words = children.split(" ");
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, margin: "0px" });
+  const ease = useRevealEase();
 
   return (
     <Tag
@@ -52,7 +48,7 @@ export default function AnimatedText({
               style={{ display: "inline-block" }}
               initial={{ y: "110%" }}
               animate={{ y: inView ? "0%" : "110%" }}
-              transition={makeTransition(delay + i * stagger)}
+              transition={{ duration: 0.75, delay: delay + i * stagger, ease }}
             >
               {word}
             </motion.span>

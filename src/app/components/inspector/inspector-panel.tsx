@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { X } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Locale } from "../../data/locales";
 import AccessibilityTab from "./accessibility-tab";
@@ -10,6 +9,8 @@ import CodeTab from "./code-tab";
 import { InspectorContext, inspectorValue } from "./inspector-context";
 import Overlays, { type OverlayKind } from "./overlays";
 import PerformanceTab from "./performance-tab";
+import PixelIcon from "../pixel-icon";
+import { close } from "../pixel-icons";
 import SeoTab from "./seo-tab";
 
 const TABS = ["performance", "accessibility", "seo", "code"] as const;
@@ -88,7 +89,7 @@ export default function InspectorPanel({
             onClick={onClose}
             className="flex h-8 w-8 shrink-0 items-center justify-center border-2 border-paper hover:bg-paper hover:text-ink focus-visible:outline-paper"
           >
-            <X size={16} aria-hidden="true" />
+            <PixelIcon grid={close} />
           </button>
         </header>
 

@@ -16,7 +16,8 @@ export default function SkinToggle({ label }: { label: string }) {
       aria-pressed={active}
       aria-label={label}
       title={label}
-      onClick={toggleSkin}
+      data-px="skin"
+      onClick={() => toggleSkin()}
       className="group hidden h-8 w-8 items-center justify-center max-lg:h-11 max-lg:w-11 pixel:flex"
     >
       {/* The button is the touch target; the framed sprite keeps its size inside it. */}

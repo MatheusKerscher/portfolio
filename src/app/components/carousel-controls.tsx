@@ -9,6 +9,8 @@ import {
   dotWindowStart,
   dotWindowWidth,
 } from "@/lib/carousel-dots";
+import PixelIcon from "./pixel-icon";
+import { chevronLeft, chevronRight } from "./pixel-icons";
 
 type CarouselControlsProps = {
   viewportId: string;
@@ -128,7 +130,7 @@ export default function CarouselControls({
   }
 
   const buttonClass =
-    "flex h-11 w-11 items-center justify-center border border-line-strong text-ink transition-colors duration-200 hover:border-brand hover:text-brand aria-disabled:cursor-not-allowed aria-disabled:opacity-40 aria-disabled:hover:border-line-strong aria-disabled:hover:text-ink max-md:hidden";
+    "carousel-button flex h-11 w-11 items-center justify-center border border-line-strong text-ink transition-colors duration-200 hover:border-brand hover:text-brand aria-disabled:cursor-not-allowed aria-disabled:opacity-40 aria-disabled:hover:border-line-strong aria-disabled:hover:text-ink max-md:hidden";
 
   // Which dot is lit is a discrete choice, so it rounds. The ends of the window follow it, and
   // the window itself follows the unrounded position: it glides with the scroll.
@@ -166,7 +168,13 @@ export default function CarouselControls({
           onClick={() => move(-1)}
           className={`${buttonClass} max-lg:order-1`}
         >
-          <ChevronLeft size={18} aria-hidden="true" />
+          <ChevronLeft
+            size={18}
+            aria-hidden="true"
+            data-icon="vector"
+            className="pixel:hidden"
+          />
+          <PixelIcon grid={chevronLeft} />
         </button>
         <button
           type="button"
@@ -176,7 +184,13 @@ export default function CarouselControls({
           onClick={() => move(1)}
           className={`${buttonClass} max-lg:order-3`}
         >
-          <ChevronRight size={18} aria-hidden="true" />
+          <ChevronRight
+            size={18}
+            aria-hidden="true"
+            data-icon="vector"
+            className="pixel:hidden"
+          />
+          <PixelIcon grid={chevronRight} />
         </button>
       </div>
 

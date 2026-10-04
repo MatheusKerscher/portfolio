@@ -27,10 +27,13 @@ export default function SkinEasterEgg({ label }: { label: string }) {
   useEffect(() => {
     let typed: string[] = [];
     const onKeyDown = (event: KeyboardEvent) => {
-      // Keys typed in a form field are text, not an attempt at the code.
+      // Keys typed in a form field are text, or a choice, not an attempt at the code. A checkbox
+      // takes neither letters nor arrows, and a press on one leaves the focus on it.
       if (
         event.target instanceof Element &&
-        event.target.closest("input, textarea, select, [contenteditable]")
+        event.target.closest(
+          'input:not([type="checkbox"]), textarea, select, [contenteditable]',
+        )
       ) {
         return;
       }
@@ -38,7 +41,7 @@ export default function SkinEasterEgg({ label }: { label: string }) {
       typed = [...typed, key].slice(-KONAMI.length);
       if (KONAMI.every((expected, index) => typed[index] === expected)) {
         typed = [];
-        toggleSkin();
+        toggleSkin("konami");
       }
     };
     document.addEventListener("keydown", onKeyDown);
@@ -51,7 +54,8 @@ export default function SkinEasterEgg({ label }: { label: string }) {
       type="button"
       aria-pressed={active}
       aria-label={label}
-      onClick={toggleSkin}
+      data-px="skin"
+      onClick={() => toggleSkin("pixel")}
       className="group flex h-6 w-6 items-center justify-center"
     >
       <span

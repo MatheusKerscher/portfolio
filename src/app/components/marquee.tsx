@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import { Pause, Play } from "lucide-react";
+import PixelIcon from "./pixel-icon";
+import { pause, play } from "./pixel-icons";
 
 type MarqueeProps = {
   /** Shown above the band, and the accessible name of its region. */
@@ -40,12 +42,25 @@ export function Marquee({ label, pauseLabel, children }: MarqueeProps) {
             aria-label={pauseLabel}
             className="peer sr-only"
           />
-          <Pause size={16} aria-hidden="true" className="peer-checked:hidden" />
-          <Play
-            size={16}
-            aria-hidden="true"
-            className="hidden peer-checked:block"
-          />
+          {/* Each state holds both drawings of its icon; the wrappers swap the states. */}
+          <span className="contents peer-checked:hidden">
+            <Pause
+              size={16}
+              aria-hidden="true"
+              data-icon="vector"
+              className="pixel:hidden"
+            />
+            <PixelIcon grid={pause} />
+          </span>
+          <span className="hidden peer-checked:contents">
+            <Play
+              size={16}
+              aria-hidden="true"
+              data-icon="vector"
+              className="pixel:hidden"
+            />
+            <PixelIcon grid={play} />
+          </span>
         </label>
       </div>
       <div

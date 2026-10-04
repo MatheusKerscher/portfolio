@@ -24,4 +24,8 @@ export const palettePairs: PalettePair[] = [
   { foreground: "--danger", background: "--surface", minimum: 4.5 },
   { foreground: "--line-strong", background: "--paper", minimum: 3 },
   { foreground: "--line-strong", background: "--surface", minimum: 3 },
+  // The scenery of the 8-bit skin passes behind every text that sits on the page itself.
+  { foreground: "--ink", background: "--scenery", minimum: 4.5 },
+  { foreground: "--ink-muted", background: "--scenery", minimum: 4.5 },
+  { foreground: "--brand", background: "--scenery", minimum: 4.5 },
 ];

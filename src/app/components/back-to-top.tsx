@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLenis } from "./lenis-context";
+import PixelIcon from "./pixel-icon";
+import { chevronUp } from "./pixel-icons";
 
 /** How far the page has to move against the current direction before the button reacts. */
 const TURN = 8;
@@ -52,6 +54,7 @@ export default function BackToTop({ label }: { label: string }) {
           transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
           onClick={scrollToTop}
           aria-label={label}
+          data-px="top"
           className="fixed right-6 bottom-6 z-40 flex h-12 w-12 cursor-pointer items-center justify-center rounded-md border border-line-strong bg-paper text-ink-muted shadow-sm transition-colors duration-200 hover:border-brand hover:text-brand max-lg:right-4 max-lg:bottom-4"
         >
           <svg
@@ -65,9 +68,12 @@ export default function BackToTop({ label }: { label: string }) {
             strokeLinecap="round"
             strokeLinejoin="round"
             aria-hidden="true"
+            data-icon="vector"
+            className="pixel:hidden"
           >
             <path d="M18 15l-6-6-6 6" />
           </svg>
+          <PixelIcon grid={chevronUp} />
         </motion.button>
       )}
     </AnimatePresence>

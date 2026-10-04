@@ -123,6 +123,10 @@ export const technologies: Technology[] = [
   { id: "css", name: "CSS3", icon: "/css.svg" },
 ];
 
+/** The 8-bit version of a logo, written by `scripts/pixel-assets.mjs`. */
+export const pixelLogo = (technology: Technology) =>
+  `/tech/8bit/${technology.id}.png`;
+
 export type StackLayer = "frontend" | "mobile" | "backend" | "cms" | "tools";
 
 /** The stack as llms.txt lists it, grouped by layer. */

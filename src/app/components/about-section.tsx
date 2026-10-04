@@ -1,6 +1,12 @@
 import Image from "next/image";
 import { getDictionary } from "../data/dictionaries/server";
-import { headingId, socials, stats, technologies } from "../data/site";
+import {
+  headingId,
+  pixelLogo,
+  socials,
+  stats,
+  technologies,
+} from "../data/site";
 import AnimatedText from "./animated-text";
 import CountUp from "./count-up";
 import { Marquee, MarqueeItem } from "./marquee";
@@ -106,6 +112,17 @@ export default async function AboutSection() {
                         alt=""
                         width={24}
                         height={24}
+                        className="pixel:hidden"
+                      />
+                      {/* Shown by the 8-bit skin. Hidden and lazy, so the normal skin never requests it. */}
+                      <Image
+                        src={pixelLogo(technology)}
+                        alt=""
+                        width={16}
+                        height={16}
+                        loading="lazy"
+                        unoptimized
+                        className="hidden h-8 w-8 [image-rendering:pixelated] pixel:block"
                       />
                     </span>
                     <span

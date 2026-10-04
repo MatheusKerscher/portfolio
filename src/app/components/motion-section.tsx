@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ReactNode, CSSProperties } from "react";
+import { useRevealEase } from "@/lib/skin";
 
 type MotionSectionProps = {
   children: ReactNode;
@@ -29,13 +30,14 @@ export default function MotionSection({
   direction = "up",
 }: MotionSectionProps) {
   const { y, x } = directionMap[direction];
+  const ease = useRevealEase();
 
   return (
     <motion.div
       data-reveal
       initial={{ opacity: 0, y, x }}
       whileInView={{ opacity: 1, y: 0, x: 0 }}
-      transition={{ duration: 0.75, delay, ease: [0.19, 1, 0.22, 1] }}
+      transition={{ duration: 0.75, delay, ease }}
       viewport={{ once: true, amount: 0 }}
       className={className}
       style={style}
