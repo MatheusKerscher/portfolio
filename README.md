@@ -48,7 +48,7 @@ The site is served at <http://localhost:3000>.
 | `npm run test:e2e:ui`         | Opens the Playwright UI                                            |
 | `npm run test:e2e:install`    | Downloads the browsers Playwright needs                            |
 | `npm run audit`               | Measures the production build with Lighthouse, mobile and desktop  |
-| `npm run assets:pixel`        | Regenerates the pixel-art portrait, the icons and 8-bit thumbnails |
+| `npm run assets:pixel`        | Regenerates the pixel-art portrait, the icons and the 8-bit assets |
 | `npm run commit`              | Opens the Commitizen prompt for a commit                           |
 | `npm run update-dependencies` | Interactively updates dependencies                                 |
 
@@ -66,7 +66,9 @@ It covers the stacked sections, the carousels, keyboard focus, the contrast of t
 metadata and the structured data, and it runs axe in the light and dark themes. On the width of a phone
 it checks that the page is one centred column, that every link and button is a 44 px touch target, the
 full-screen menu and the dots of the carousels. The band of technologies is checked for its pause
-control, with JavaScript off as well, and for standing still under reduced motion. Whatever depends on the copy or on the layout runs in both languages.
+control, with JavaScript off as well, and for standing still under reduced motion. The Easter egg is
+checked for what it adds — sound, motion, a HUD, achievements — and for adding none of it to a visit
+that never enters it. Whatever depends on the copy or on the layout runs in both languages.
 
 ## Performance audit
 
@@ -87,23 +89,32 @@ and is served without a prefix, through the rewrites of [next.config.ts](next.co
 - **To use it**, a Server Component calls `getDictionary()`. A Client Component does not import a
   dictionary: its parent passes it the strings as props, which keeps the copy out of the browser bundle.
 - **To add a language**, add a row to [src/app/data/locales.ts](src/app/data/locales.ts) and a
-  dictionary for it in `dictionaries/` and in `dictionaries/inspector/`.
+  dictionary for it in `dictionaries/`, in `dictionaries/inspector/` and in `dictionaries/pixel/`.
 
 Facts that do not depend on the language (URLs, dates, the section anchors) stay in `site.ts`,
 `projects.ts` and `curriculum.ts`.
 
 ## Generated assets
 
-The pixel-art portrait, the favicon, the app icons and the 8-bit versions of the project thumbnails are
-generated, so they are not edited by hand. `npm run assets:pixel` rebuilds them from
-[scripts/assets/portrait-art.jpeg](scripts/assets/portrait-art.jpeg) and from the screenshots in
-[public/thumbnails/](public/thumbnails/). To change the portrait, replace that file and run the script.
+The pixel-art portrait, the favicon, the app icons, the 8-bit versions of the project thumbnails, the
+pixel-art technology logos and the cursors are generated, so they are not edited by hand.
+`npm run assets:pixel` rebuilds them from
+[scripts/assets/portrait-art.jpeg](scripts/assets/portrait-art.jpeg), from the screenshots in
+[public/thumbnails/](public/thumbnails/) and from the drawings in
+[scripts/assets/pixel-art.mjs](scripts/assets/pixel-art.mjs). To change the portrait, replace that file
+and run the script; to change a logo or a cursor, edit its grid of characters and run it.
+
+`npm run assets:pixel -- --icons=<out.png>` writes a contact sheet of every drawing of the 8-bit skin —
+its icons, which are in [src/app/components/pixel-icons.ts](src/app/components/pixel-icons.ts), its
+logos and its cursors — on both themes.
 
 A project thumbnail, or the one at the top of this file, is captured with
 `node scripts/capture-thumbnail.mjs <url> <output.png>`.
 
 The site has an Easter egg. Its two ways in are in
-[src/app/components/skin-easter-egg.tsx](src/app/components/skin-easter-egg.tsx).
+[src/app/components/skin-easter-egg.tsx](src/app/components/skin-easter-egg.tsx), and what happens
+inside it is in [src/app/components/pixel/](src/app/components/pixel/): a chunk of its own, which a
+visitor who never finds the way in does not download.
 
 ## Project structure
 

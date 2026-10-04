@@ -54,3 +54,35 @@ in the `2026-10-03_layout-redesign` spec.
   border row only, 46 against 45 of 255. Four more captures of the new build were identical to each
   other. A comparison of panels is read with that in mind: a one-level difference in a hairline is not
   a layout change.
+- **An assertion that retries passes for something that removes itself.** Evidence (2026-10-04, the
+  `2026-10-04_pixel-art-and-juice` spec): a burst of particles is removed 400 ms after it is added. The
+  test "no burst while the effects are off" was `toHaveCount(0)` after a wait, and it passed on a build
+  where the effects switch did nothing: the burst had come and gone. It counts additions with a
+  `MutationObserver` now, and fails on that build.
+- **The three engines run an `AudioContext` on a page nobody has pressed: they cannot show what a
+  gesture changes.** Corrected on 2026-10-04 (the `2026-10-04_skin-settings-konami-inspector-lock`
+  spec); this entry used to say only that they "run a context that a click creates", which is true and
+  proves less than it reads. Evidence: a context created by `page.evaluate` on a page with no press read
+  `running` after 400 ms in Chromium, Firefox and WebKit, and the same on the page reached through a
+  link and after a reload. It was not possible to make them hold it back: Chromium launched with
+  `--autoplay-policy=document-user-activation-required`, as the headless shell and as the full build
+  (`channel: "chromium"`), and Firefox launched with `media.autoplay.default: 5`,
+  `media.autoplay.blocking_policy: 0` and `media.autoplay.block-webaudio: true`, read `running` too.
+  With `OscillatorNode.prototype.start` and `AudioBufferSourceNode.prototype.start` wrapped by an init
+  script, the `juice` suite counts the sounds of a jingle, of a press and of a music loop in the five
+  projects: that proves the sounds are started, not that a browser would let them be heard.
+  **Rule:** what depends on the gesture is checked against a model — `holdAudioUntilPress` of
+  `e2e/helpers.ts` suspends a context created before the first press — and is reported as checked
+  against a model. Only a real browser is evidence of its policy.
+- **`locator.click()` does not press a control marked `aria-disabled="true"`.** Evidence (2026-10-04,
+  the same spec): the click on a button with that attribute waited for it to be "enabled" and timed out
+  after 30 s with `element is not enabled`, 59 retries in the log. A control that answers a press is
+  not marked that way; one that is can only be pressed with `{ force: true }`.
+- **A server left on port 3100 is reused, and it may be serving an older build.** Evidence (2026-10-04,
+  the same spec): a `next start -p 3100` started by hand was still up when `npm run test:e2e` ran. The
+  configuration reuses a server that answers on the port, outside CI, so nothing was started; the build
+  that had just been written replaced the chunks the old server pointed to, one of them answered 500,
+  and 15 tests timed out at 30 s, most of them in suites that had not changed.
+  `pkill -f "next start"` had not stopped it: the process renames itself `next-server (v16.3.8)`.
+  **Rule:** before the gate, `lsof -nP -iTCP:3100 -sTCP:LISTEN` prints nothing; a server started by
+  hand is stopped by its process id.
