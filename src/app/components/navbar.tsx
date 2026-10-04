@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { navCopy, site } from "../data/site";
+import InspectorToggle from "./inspector/inspector-toggle";
 import SkinToggle from "./skin-toggle";
 import ThemeToggle from "./theme-toggle";
 
@@ -58,6 +59,7 @@ export default function Navbar() {
 
         <div className="flex items-center gap-2">
           <SkinToggle variant="icon" />
+          <InspectorToggle />
           <ThemeToggle />
 
           <button

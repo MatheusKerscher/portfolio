@@ -250,6 +250,10 @@
     outline: none;
   }
 
+  .inspector-heading {
+    @apply mb-2 text-xs font-bold tracking-widest text-ink-muted uppercase;
+  }
+
   .nav-links-group:has(a:hover) a {
     opacity: 0.4;
   }

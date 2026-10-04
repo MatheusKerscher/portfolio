@@ -206,10 +206,12 @@ try {
 if (options.write) {
   const { stdout: commit } = await run("git", ["rev-parse", "--short", "HEAD"]);
   const data = {
-    measuredAt: new Date().toISOString().slice(0, 10),
+    // The local date, as YYYY-MM-DD.
+    measuredAt: new Date().toLocaleDateString("sv-SE"),
     commit: commit.trim(),
     lighthouseVersion,
     runs,
+    latency,
     ...Object.fromEntries(
       PRESETS.map((preset) => [
         preset,

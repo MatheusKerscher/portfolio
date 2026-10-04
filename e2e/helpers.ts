@@ -1,4 +1,16 @@
+import AxeBuilder from "@axe-core/playwright";
 import type { Locator, Page } from "@playwright/test";
+
+const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
+
+/** The axe violations of the page as it is now, one line per rule. */
+export async function violations(page: Page) {
+  const results = await new AxeBuilder({ page }).withTags(WCAG_TAGS).analyze();
+  return results.violations.map(
+    (violation) =>
+      `${violation.id}: ${violation.nodes.map((node) => node.target.join(" ")).join(", ")}`,
+  );
+}
 
 export const SECTION_IDS = [
   "hero",
