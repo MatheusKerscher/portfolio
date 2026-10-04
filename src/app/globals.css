@@ -321,6 +321,49 @@
     }
   }
 
+  /*
+   * Position dots of a carousel, below `md`. Squares, the pixel accent of the site; their
+   * measures, colours and transitions are those of the carousel they come from: 6 px dots 6 px
+   * apart, the current one in the accent colour over faint ones, 150 ms on the colour and on the
+   * size. The window clips a row that holds one dot per item. The row has no transition: its
+   * offset follows the scroll on every frame, and a transition would lag behind it.
+   */
+  .carousel-dots {
+    overflow: hidden;
+    padding-block: 0.5rem;
+  }
+
+  .carousel-dots-track {
+    display: flex;
+    gap: 6px;
+    width: max-content;
+  }
+
+  .carousel-dot {
+    flex: none;
+    width: 6px;
+    height: 6px;
+    background-color: var(--line);
+    transition:
+      background-color 150ms cubic-bezier(0.2, 0, 0, 1),
+      transform 150ms cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  .carousel-dot[data-active="true"] {
+    background-color: var(--brand);
+  }
+
+  /* An end of the window: smaller, the sign that there is more beyond it. */
+  .carousel-dot[data-edge="true"] {
+    transform: scale(0.6);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .carousel-dot {
+      transition: none;
+    }
+  }
+
   .slide-card {
     @apply relative flex h-full flex-col border border-line bg-surface;
     transition:
@@ -344,6 +387,80 @@
 
   .slide-card a:focus-visible {
     outline: none;
+  }
+
+  /*
+   * A band that moves on its own: two copies of a list side by side, shifted by the width of one
+   * copy, in a loop. Each copy starts with the gap that separates its items, so the seam between
+   * the two is one more gap.
+   */
+  .marquee-viewport {
+    overflow: hidden;
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 4%,
+      black 96%,
+      transparent
+    );
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 40s linear infinite;
+  }
+
+  .marquee-list {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 2.5rem;
+    padding-left: 2.5rem;
+  }
+
+  /* The control, a press on the band and keyboard focus stop it. */
+  .marquee:has(.marquee-pause :checked) .marquee-track,
+  .marquee-viewport:is(:active, :focus-visible) .marquee-track {
+    animation-play-state: paused;
+  }
+
+  /* A pointer over it as well; on a touch screen a hover would stick after a tap. */
+  @media (hover: hover) {
+    .marquee-viewport:hover .marquee-track {
+      animation-play-state: paused;
+    }
+  }
+
+  /* The checkbox is hidden; its label shows the focus ring. */
+  .marquee-pause:has(:focus-visible) {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+
+  /* Nothing moves: the list wraps so that every item is on screen, and there is nothing to pause. */
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-viewport {
+      mask-image: none;
+    }
+
+    .marquee-track {
+      width: auto;
+      animation: none;
+    }
+
+    .marquee-list {
+      flex: 1;
+      flex-wrap: wrap;
+      justify-content: center;
+      row-gap: 1rem;
+      padding-inline: 1.5rem;
+    }
+
+    .marquee-list[aria-hidden="true"],
+    .marquee-separator {
+      display: none;
+    }
   }
 
   .inspector-heading {
@@ -370,6 +487,15 @@
     .scroll-cue {
       animation: none;
     }
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
   }
 }
 

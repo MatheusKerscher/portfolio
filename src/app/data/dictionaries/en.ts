@@ -54,6 +54,8 @@ const en = {
     next: (list: string) => `Next in ${list}`,
   },
 
+  marquee: { pause: "Pause animation" },
+
   hero: {
     eyebrow: "Full-Stack Software Engineer · Curitiba, Brazil",
     tagline:
@@ -74,18 +76,6 @@ const en = {
       years: "years of exp.",
       clients: "clients",
     },
-  },
-
-  technologies: {
-    nextjs: "React framework with SSR and static generation",
-    react: "Library for declarative, reactive interfaces",
-    typescript: "JavaScript with static typing and more predictability",
-    nodejs: "JavaScript runtime for servers and APIs",
-    tailwindcss: "Utility-first CSS framework for fast styling",
-    git: "Distributed version control for collaboration",
-    javascript: "The dynamic language at the base of the modern web",
-    html: "Markup language for the structure of pages",
-    css: "Style language for design and animations",
   },
 
   projects: {

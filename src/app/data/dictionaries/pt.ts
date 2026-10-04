@@ -1,6 +1,6 @@
 import type { TimelineId } from "../curriculum";
 import type { ProjectId } from "../projects";
-import { site, type StackLayer, type StatId, type TechnologyId } from "../site";
+import { site, type StackLayer, type StatId } from "../site";
 
 /**
  * The copy of the site in Brazilian Portuguese. Its shape is the contract of every dictionary:
@@ -58,6 +58,8 @@ const pt = {
     next: (list: string) => `Próximo em ${list}`,
   },
 
+  marquee: { pause: "Pausar animação" },
+
   hero: {
     eyebrow: "Desenvolvedor FullStack · Curitiba, PR",
     tagline:
@@ -79,18 +81,6 @@ const pt = {
       clients: "clientes",
     } satisfies Record<StatId, string>,
   },
-
-  technologies: {
-    nextjs: "Framework React com SSR e geração estática",
-    react: "Biblioteca para interfaces declarativas e reativas",
-    typescript: "JavaScript com tipagem estática e maior previsibilidade",
-    nodejs: "Runtime JavaScript para servidores e APIs",
-    tailwindcss: "Framework CSS utilitário para estilização rápida",
-    git: "Controle de versão distribuído para colaboração",
-    javascript: "Linguagem dinâmica base da web moderna",
-    html: "Linguagem de marcação para estrutura de páginas",
-    css: "Linguagem de estilo para design e animações",
-  } satisfies Record<TechnologyId, string>,
 
   projects: {
     label: "02 — Projetos",

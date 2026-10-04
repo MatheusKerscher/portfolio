@@ -24,11 +24,9 @@ for (const locale of LOCALES) {
       for (const item of timeline) {
         expect(html, item.id).toContain(copy.curriculum.items[item.id].title);
       }
-      // Slides that start outside the carousel viewport are in the HTML too.
+      // Every technology of the band, the ones that start off screen included.
       for (const technology of technologies) {
-        expect(html, technology.name).toContain(
-          copy.technologies[technology.id],
-        );
+        expect(html, technology.name).toContain(`>${technology.name}<`);
       }
       // The stats are the real numbers, not the start of a count-up animation.
       for (const stat of stats) {

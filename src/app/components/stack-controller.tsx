@@ -10,8 +10,12 @@ function navbarHeight() {
   return document.querySelector("[data-nav-bar]")?.clientHeight ?? 0;
 }
 
-/** Whether something else is painted over the centre of the element. */
-function isObscured(element: Element) {
+/**
+ * Whether something else is painted over the centre of the element. A checkbox drawn by its
+ * label is hidden itself, so its label is what is looked at.
+ */
+function isObscured(focused: Element) {
+  const element = focused.closest("label") ?? focused;
   const rect = element.getBoundingClientRect();
   const x = Math.min(
     Math.max(rect.left + rect.width / 2, 0),

@@ -1,18 +1,12 @@
 import { expect, test } from "@playwright/test";
 import { timeline } from "../src/app/data/curriculum";
 import { projects } from "../src/app/data/projects";
-import { technologies } from "../src/app/data/site";
 import { DEFAULT_COPY, scrollToNatural, waitForStack } from "./helpers";
 
 // How a carousel behaves does not depend on the language.
 const copy = DEFAULT_COPY;
 
 const CAROUSELS = [
-  {
-    id: "carousel-stacks",
-    label: copy.about.technologies,
-    count: technologies.length,
-  },
   {
     id: "carousel-projects",
     label: copy.projects.carousel,

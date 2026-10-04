@@ -154,13 +154,18 @@ export async function horizontalOverflow(page: Page) {
       }
       return false;
     };
+    // The band of technologies holds its items off screen on purpose and moves them in. That
+    // none is cut when it stands still is checked by the `marquee` suite.
+    const movesIntoView = (element: Element) =>
+      !!element.closest("[data-marquee]");
     return {
       overflow: Math.max(0, document.documentElement.scrollWidth - width),
       clipped: Array.from(document.querySelectorAll("main *, footer *, nav *"))
         .filter(
           (element) =>
             element.getBoundingClientRect().right > width + 1 &&
-            !scrollsSideways(element),
+            !scrollsSideways(element) &&
+            !movesIntoView(element),
         )
         .map((element) => element.tagName.toLowerCase()),
     };

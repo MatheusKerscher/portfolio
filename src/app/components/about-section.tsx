@@ -2,8 +2,8 @@ import Image from "next/image";
 import { getDictionary } from "../data/dictionaries/server";
 import { headingId, socials, stats, technologies } from "../data/site";
 import AnimatedText from "./animated-text";
-import { Carousel, CarouselItem } from "./carousel";
 import CountUp from "./count-up";
+import { Marquee, MarqueeItem } from "./marquee";
 import MotionSection from "./motion-section";
 import { SocialIcon } from "./social-icons";
 
@@ -96,19 +96,10 @@ export default async function AboutSection() {
           </MotionSection>
 
           <MotionSection delay={0.3}>
-            <Carousel
-              id="carousel-stacks"
-              label={about.technologies}
-              itemWidth="13rem"
-              header={
-                <h3 className="text-xs font-semibold tracking-widest text-ink-muted uppercase max-lg:text-center">
-                  {about.technologies}
-                </h3>
-              }
-            >
+            <Marquee label={about.technologies} pauseLabel={dict.marquee.pause}>
               {technologies.map((technology) => (
-                <CarouselItem key={technology.id}>
-                  <div className="slide-card gap-3 p-5 max-lg:items-center max-lg:text-center">
+                <MarqueeItem key={technology.id}>
+                  <span className="flex items-center gap-3">
                     <span className="flex h-11 w-11 items-center justify-center border border-line bg-paper">
                       <Image
                         src={technology.icon}
@@ -117,19 +108,16 @@ export default async function AboutSection() {
                         height={24}
                       />
                     </span>
-                    <p
-                      className="font-bold text-ink"
+                    <span
+                      className="text-2xl font-bold whitespace-nowrap text-ink sm:text-3xl"
                       style={{ fontFamily: "var(--font-display)" }}
                     >
                       {technology.name}
-                    </p>
-                    <p className="text-sm leading-relaxed text-ink-muted max-lg:text-phone-card max-lg:text-balance">
-                      {dict.technologies[technology.id]}
-                    </p>
-                  </div>
-                </CarouselItem>
+                    </span>
+                  </span>
+                </MarqueeItem>
               ))}
-            </Carousel>
+            </Marquee>
           </MotionSection>
         </div>
       </div>

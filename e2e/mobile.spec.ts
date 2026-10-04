@@ -143,6 +143,7 @@ async function offCentre(page: Page, headings: string[], cards: boolean) {
       lines("heading of the technologies", "#about h3");
       lines("number of projects", "#projects h2 + p");
       row("carousel controls", "[data-js-only]", "button");
+      box("pause control of the band", ".marquee-pause");
 
       lines("contact text", "#contact h2, #contact p:not(.section-label)");
       box("email", '#contact a[href^="mailto:"]');
@@ -180,7 +181,10 @@ async function lineCount(page: Page, selector: string) {
 async function smallTargets(page: Page) {
   return page.evaluate((minimum) => {
     const found: string[] = [];
-    for (const element of document.querySelectorAll<HTMLElement>("a, button")) {
+    // A label that holds its checkbox is a control too: the pause of the band.
+    for (const element of document.querySelectorAll<HTMLElement>(
+      "a, button, label:has(input)",
+    )) {
       const style = getComputedStyle(element);
       if (element.offsetParent === null && style.position !== "fixed") continue;
       if (style.visibility === "hidden") continue;

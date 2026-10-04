@@ -225,11 +225,13 @@ test.describe("stacked sections", () => {
         const problem = await page.evaluate(() => {
           const element = document.activeElement;
           if (!element || element === document.body) return null;
-          const rect = element.getBoundingClientRect();
+          // A checkbox drawn by its label is hidden itself: the label is what has to be seen.
+          const shown = element.closest("label") ?? element;
+          const rect = shown.getBoundingClientRect();
           const x = rect.left + rect.width / 2;
           const y = rect.top + rect.height / 2;
           const top = document.elementFromPoint(x, y);
-          if (top && (element === top || element.contains(top))) return null;
+          if (top && (shown === top || shown.contains(top))) return null;
           const name =
             element.getAttribute("aria-label") ??
             element.textContent?.trim().slice(0, 40);
@@ -303,6 +305,10 @@ test.describe("stacked sections", () => {
       const cut: string[] = [];
       for (let index = 0; index < total; index += 1) {
         const target = targets.nth(index);
+        // What is not displayed at this width, the buttons of a carousel, cannot be covered.
+        if (!(await target.evaluate((element) => element.checkVisibility()))) {
+          continue;
+        }
         await scrollToNatural(target);
         if (!(await isUnobscured(target))) {
           cut.push((await target.textContent())?.trim().slice(0, 40) ?? "");
