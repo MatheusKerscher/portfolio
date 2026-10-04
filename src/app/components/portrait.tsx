@@ -21,7 +21,7 @@ export default function Portrait({ className }: { className?: string }) {
     >
       <div
         aria-hidden="true"
-        className="absolute inset-0 translate-x-2 translate-y-2 bg-pixel-yellow sm:translate-x-3 sm:translate-y-3 pixel:bg-ink"
+        className="absolute inset-0 translate-x-2 translate-y-2 bg-brand sm:translate-x-3 sm:translate-y-3 pixel:bg-ink"
       />
       {/* Above the fold and a candidate for LCP: fetched eagerly and with high priority. */}
       <Image
@@ -42,7 +42,7 @@ export default function Portrait({ className }: { className?: string }) {
         height={SPRITE.size}
         loading="lazy"
         unoptimized
-        className="relative hidden h-full w-full border-2 border-ink bg-pixel-yellow [image-rendering:pixelated] pixel:block"
+        className="relative hidden h-full w-full border-2 border-ink bg-brand [image-rendering:pixelated] pixel:block"
       />
     </div>
   );

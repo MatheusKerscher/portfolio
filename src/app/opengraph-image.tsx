@@ -12,7 +12,6 @@ const PAPER = "#f8f7f3";
 const INK = "#111111";
 const MUTED = "#5f5f5f";
 const BRAND = "#137a3a";
-const YELLOW = "#f0da50";
 
 const [firstName, lastName] = heroCopy.heading.split(" ");
 
@@ -88,7 +87,7 @@ export default async function OgImage() {
           display: "flex",
           width: 460,
           height: 460,
-          background: YELLOW,
+          background: BRAND,
           boxShadow: `16px 16px 0 ${INK}`,
         }}
       >

@@ -37,7 +37,7 @@ const STYLES: Record<OverlayKind, { box: string; label: string }> = {
   },
   headings: {
     box: "outline-2 outline-dashed outline-ink",
-    label: "bg-pixel-yellow text-on-yellow",
+    label: "bg-surface text-ink outline-1 outline-ink",
   },
   focus: { box: "", label: "bg-ink text-paper" },
 };

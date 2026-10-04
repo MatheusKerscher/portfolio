@@ -22,7 +22,6 @@ export const palettePairs: PalettePair[] = [
   { foreground: "--on-brand", background: "--brand-hover", minimum: 4.5 },
   { foreground: "--danger", background: "--paper", minimum: 4.5 },
   { foreground: "--danger", background: "--surface", minimum: 4.5 },
-  { foreground: "--on-yellow", background: "--pixel-yellow", minimum: 4.5 },
   { foreground: "--line-strong", background: "--paper", minimum: 3 },
   { foreground: "--line-strong", background: "--surface", minimum: 3 },
 ];

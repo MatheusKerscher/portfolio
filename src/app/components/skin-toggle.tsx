@@ -18,7 +18,7 @@ export default function SkinToggle() {
       aria-label={skinCopy.toggle}
       title={skinCopy.toggle}
       onClick={toggleSkin}
-      className="hidden h-8 w-8 items-center justify-center overflow-hidden border border-ink bg-pixel-yellow shadow-[3px_3px_0_var(--brand)] transition-shadow duration-200 hover:shadow-[3px_3px_0_var(--ink)] pixel:flex"
+      className="hidden h-8 w-8 items-center justify-center overflow-hidden border border-ink bg-brand shadow-[3px_3px_0_var(--ink)] transition-shadow duration-200 hover:shadow-[1px_1px_0_var(--ink)] pixel:flex"
     >
       <MiniSprite size={30} />
     </button>

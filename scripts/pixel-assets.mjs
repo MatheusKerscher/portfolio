@@ -24,8 +24,8 @@ const WHITE = [255, 255, 255];
 
 const THUMBNAIL = { width: 150, height: 90 };
 
-/** The page tokens the sprite sits on. */
-const YELLOW = "#f0da50";
+/** The page tokens the sprite sits on. Icons have no theme, so the tile is the light `brand`. */
+const TILE = "#137a3a";
 const PAPER = { light: "#f8f7f3", dark: "#111111" };
 
 // ---------------------------------------------------------------------------------------------
@@ -185,11 +185,11 @@ const sprite = () =>
 // No palette size: the sprite already has at most MAX_COLOURS.
 const png = { palette: true, dither: 0, compressionLevel: 9 };
 
-/** A square crop of the sprite on the yellow tile, scaled by a whole factor. */
+/** A square crop of the sprite on the tile, scaled by a whole factor. */
 function tile({ left, top, size, scale }) {
   return sprite()
     .extract({ left, top, width: size, height: size })
-    .flatten({ background: YELLOW })
+    .flatten({ background: TILE })
     .resize(size * scale, size * scale, { kernel: "nearest" })
     .png(png);
 }
@@ -235,7 +235,7 @@ async function exportAssets() {
     ico(
       await sprite()
         .extract({ ...CROPS.favicon, width: 32, height: 32 })
-        .flatten({ background: YELLOW })
+        .flatten({ background: TILE })
         .ensureAlpha()
         .png({ compressionLevel: 9 })
         .toBuffer(),
@@ -290,7 +290,7 @@ async function exportSheet(output) {
         width: SIZE * scale,
         height: SIZE * scale,
         channels: 4,
-        background: YELLOW,
+        background: TILE,
       },
     })
       .composite([{ input: await scaled(scale) }])
