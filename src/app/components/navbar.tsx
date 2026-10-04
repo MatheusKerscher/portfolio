@@ -85,13 +85,6 @@ export default function Navbar({
     };
   }, [menuOpen, lenis]);
 
-  // Unlocked here, not only by the effect above: Lenis ignores a scroll while it is stopped, and
-  // it reads the click on `window`, which the event reaches after this handler.
-  function followMenuLink() {
-    setPageLocked(false, lenis.current);
-    setMenuOpen(false);
-  }
-
   return (
     // Opaque: the stacked sections pin at its bottom edge, and what scrolls past must not show
     // through it.
@@ -197,12 +190,16 @@ export default function Navbar({
                     ease: [0.19, 1, 0.22, 1],
                   }}
                 >
-                  {/* Lenis scrolls to the anchor; the menu has to close and to free the page. */}
+                  {/*
+                    Lenis scrolls to the anchor; the menu only has to close. The page is free by
+                    then: React runs the cleanup of the effect above inside the click, before the
+                    event reaches the listener of Lenis on `window`.
+                  */}
                   <a
                     href={link.href}
                     className="flex min-h-14 items-center px-6 text-3xl font-bold text-ink"
                     style={{ fontFamily: "var(--font-display)" }}
-                    onClick={followMenuLink}
+                    onClick={() => setMenuOpen(false)}
                   >
                     {link.label}
                   </a>
