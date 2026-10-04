@@ -17,7 +17,7 @@ The menu keeps its own breakpoint, `md`: it only exists below 768 px today and s
 | `src/app/globals.css`                                                                                                          | Type tokens, centred labels and headings, the carousel below `lg` |
 | `src/app/components/navbar.tsx`                                                                                                | 44 px targets, the full-screen menu                               |
 | `theme-toggle.tsx`, `skin-toggle.tsx`, `inspector/inspector-toggle.tsx`, `language-switch.tsx`                                 | 44 px targets below `lg`                                          |
-| `src/app/[lang]/layout.tsx`                                                                                                    | Passes the social links of the menu to the navbar                 |
+| `src/app/[lang]/layout.tsx`, `profile-links.tsx` (new)                                                                         | The icon links to the profiles, shared by the menu and the footer |
 | `hero-section.tsx`, `portrait.tsx`                                                                                             | Centred hero, larger portrait                                     |
 | `carousel.tsx`, `carousel-controls.tsx`                                                                                        | Controls below the track, centred snap                            |
 | `about-section.tsx`, `projects-section.tsx`, `project-card.tsx`, `curriculum-section.tsx`, `contact-section.tsx`, `footer.tsx` | Centred content                                                   |
@@ -39,29 +39,36 @@ regression there is invisible in a diff of class names.
 **Rejected alternative:** improving the touch targets at every width. It moves the navbar by a few
 pixels on desktop and makes the comparison useless.
 
-### The carousel controls are one element, moved by grid order
+### The carousel controls are one element, moved by `order`
 
-**Choice:** the header, the controls and the scrollable region stay in that order in the HTML; below
-`lg` the controls are placed after the region with `order`.
+**Choice:** the header, the controls and the scrollable region stay in that order in the HTML. Below
+`lg` the row that holds the header and the controls becomes `display: contents`, the carousel a flex
+column, and the controls are ordered last.
 **Why:** rendering the controls twice doubles a Client Component and its listeners, and changing the
-order in the HTML changes the tab order of the desktop.
+order in the HTML changes the tab order of the desktop. `contents` leaves the desktop structure as it
+was, which a grid for every width would not.
 **Rejected alternative:** hiding the buttons on a phone. A swipe is the main gesture, but the buttons are
 the visible sign that there is more, and the way in for assistive technology.
 
-### The width of a carousel item is a custom property
+### The width of a carousel item is a custom property, and the centred snap is for a phone
 
-**Choice:** `Carousel` takes the width of its items and sets `--item-w`; the track uses it to pad the
-first and the last item to the centre, in container units (`cqi`).
+**Choice:** `Carousel` takes the width of its items and sets `--item-w`. Below `sm` an item snaps to the
+centre and the track pads its first and last item to the centre, in container units (`cqi`). From `sm`
+up the items start at the left edge, as before.
 **Why:** a centred snap needs the first item to be able to reach the centre, which needs half of the
-free space as padding. Container units do not include a scrollbar, viewport units do.
+free space as padding. Container units do not include a scrollbar, viewport units do. On a tablet
+several items fit, and a centred first one leaves half of the row empty: seen on the 768 px screenshot
+of the first version, which centred below `lg`.
 
-### The menu locks the page with Lenis stopped, and unlocks in the click handler
+### The menu locks the page with Lenis stopped, in an effect
 
-**Choice:** opening the menu calls `lenis.stop()`, sets `overflow: hidden` on the root and `inert` on
-`main` and the footer. A click on a link of the menu unlocks synchronously, in the React handler.
-**Why:** Lenis ignores `scrollTo` while stopped (`lenis.mjs`: `if ((this.isStopped || this.isLocked) &&
-!force) return`) and handles anchor clicks in a listener on `window`. React listens on the document,
-which the event reaches first, so the unlock happens before Lenis reads the click.
+**Choice:** an effect that runs while the menu is open calls `lenis.stop()`, sets `overflow: hidden` on
+the root and `inert` on `main` and the footer; its cleanup undoes the three. A link of the menu only
+closes the menu.
+**Why:** one place owns the lock, and the cleanup also covers Escape, a viewport that grows past `md`
+and an unmount. The first version unlocked a second time in the click handler of the link, on the
+assumption that Lenis, which ignores `scrollTo` while stopped, would read the click before the cleanup
+ran. It does not: see `findings.md`.
 **Rejected alternative:** a `role="dialog"`. The bar with the close button stays operable above the
 panel, so it is a disclosure whose content happens to fill the screen; `inert` on the rest of the page
 gives the same containment.
@@ -75,15 +82,15 @@ the carousels and the text of the cards.
 
 ## Known risks
 
-| Risk                                         | How it shows up                                               | Mitigation                                       |
-| -------------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------ |
-| The desktop moves                            | A panel no longer fits a laptop screen                        | Pixel comparison; the "on a laptop screen" tests |
-| A menu link does not scroll                  | The menu closes and the page stays                            | The menu tests of `home` and `stacking`          |
-| The name overflows at 320 px                 | Sideways scroll, in the pixel font above all                  | The 320 px tests, in both skins                  |
-| The larger portrait slows the LCP of a phone | Lighthouse performance below 95                               | `npm run audit`, mobile                          |
-| The back-to-top button covers a control      | A target of a panel is obscured                               | The "reached un-obscured" test of `stacking`     |
-| Focus order of a carousel                    | The buttons are focused before the cards they follow visually | Accepted: keyboard in a narrow window only       |
-| Long centred text in a card                  | Harder to read; a matter of taste                             | Reviewed by the requester on screenshots         |
+| Risk                                         | How it shows up                                               | Mitigation                                                        |
+| -------------------------------------------- | ------------------------------------------------------------- | ----------------------------------------------------------------- |
+| The desktop moves                            | A panel no longer fits a laptop screen                        | Pixel comparison; the "on a laptop screen" tests                  |
+| A menu link does not scroll                  | The menu closes and the page stays                            | Measured (`findings.md`); the menu tests of `home` and `stacking` |
+| The name overflows at 320 px                 | Sideways scroll, in the pixel font above all                  | The 320 px tests, in both skins                                   |
+| The larger portrait slows the LCP of a phone | Lighthouse performance below 95                               | `npm run audit`, mobile                                           |
+| The back-to-top button covers a control      | A target of a panel is obscured                               | The "reached un-obscured" test of `stacking`                      |
+| Focus order of a carousel                    | The buttons are focused before the cards they follow visually | Accepted: keyboard in a narrow window only                        |
+| Long centred text in a card                  | Harder to read; a matter of taste                             | Reviewed by the requester on screenshots                          |
 
 ## Failing safely
 

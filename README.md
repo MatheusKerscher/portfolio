@@ -63,8 +63,9 @@ npm run test:e2e
 ```
 
 It covers the stacked sections, the carousels, keyboard focus, the contrast of the colour palette, the
-metadata and the structured data, and it runs axe in the light and dark themes. Whatever depends on the
-copy or on the layout runs in both languages.
+metadata and the structured data, and it runs axe in the light and dark themes. On the width of a phone
+it checks that the page is one centred column, that every link and button is a 44 px touch target, and
+the full-screen menu. Whatever depends on the copy or on the layout runs in both languages.
 
 ## Performance audit
 

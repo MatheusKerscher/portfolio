@@ -13,7 +13,8 @@ npm run lint:eslint:check && npm run lint:prettier:check && npm run build && npm
 
 `npm run build` is the type check. `npm run test:e2e` builds the site, serves it on port 3100 and runs
 Playwright in five projects; `npm run test:e2e:install` downloads the browsers once. For anything
-visual, also check `/` and `/en` on `npm run dev`, in light and dark.
+visual, also check `/` and `/en` on `npm run dev`, in light and dark, on a wide window and at the width
+of a phone.
 
 A change that can affect loading is also measured with `npm run audit`: Lighthouse, median of 5, at
 least 95 in every category. It serves the build through a 40 ms latency proxy on purpose; a score read
@@ -60,6 +61,11 @@ the English page; compare the script bytes it prints with the previous run.
   below the navbar through `--nav-h`, and a panel has to fit in that space on a laptop screen: its
   vertical spacing uses the `--panel-*` tokens, which tighten on a short, wide viewport. The "on a
   laptop screen" tests of `e2e/stacking.spec.ts` fail when a panel outgrows it.
+- **Two layouts, split at `lg`:** from 1024 px up it is the desktop layout; below it the page is one
+  centred column with its own type sizes, where every link and button is a 44 px touch target. A change
+  for the column is a `max-lg:` utility (or `max-md:`, `max-sm:`) or a rule inside a
+  `@media (width < 64rem)` block, never a change to a base class: the desktop fits a laptop screen by
+  a few pixels and must not move. `e2e/mobile.spec.ts` checks the centring, the targets and the type.
 - **8-bit mode is an Easter egg:** nothing in the normal skin announces it. The ways in are in
   `src/app/components/skin-easter-egg.tsx`, and the Inspector exists only inside that skin. Tests enter
   it with `storeSkin` from `e2e/helpers.ts`.

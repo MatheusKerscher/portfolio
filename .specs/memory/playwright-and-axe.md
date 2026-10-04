@@ -22,3 +22,15 @@ in the `2026-10-03_layout-redesign` spec.
 - **axe reads a colour in the middle of a CSS transition.** Evidence: a tab trigger whose background
   changes at once while its text colour fades was reported for `color-contrast` right after a click. The
   Inspector tabs have `transition-none`.
+- **axe reads a colour in the middle of a fade-in as well.** Evidence (2026-10-04, the
+  `2026-10-04_mobile-experience` spec): right after the full-screen menu opened, `mobile-safari` reported
+  `color-contrast` on its first link, which was still at a partial opacity. The `mobile` suite waits for
+  the menu and its items to reach an opacity of 1 before the scan.
+- **A range over an element includes its screen-reader-only text at its natural width.** Evidence: a
+  check that every line of a card title is centred reported the first line 97.6 px off, because the
+  `.sr-only` span inside the link ("opens in a new tab") returned a rectangle as wide as its text, not
+  the 1 px box it is clipped to. The check walks the text nodes and skips those inside `.sr-only`.
+- **`img.decode()` never settles for a hidden lazy image.** Evidence: a screenshot script that awaited
+  `decode()` on every image of the page hung on the first page; the 8-bit thumbnails are `display: none`
+  and `loading="lazy"` in the normal skin, so they never load. Waiting only for the displayed images that
+  are not complete finished in two minutes for 48 screenshots.

@@ -55,27 +55,27 @@ full-screen menu and a back-to-top button that stays out of the way; from 1024 p
 
 At 320, 360 and 390 px of width, in both languages, unless stated.
 
-- [ ] `npm run lint:eslint:check`, `npm run lint:prettier:check`, `npm run build` and `npm run test:e2e`
+- [x] `npm run lint:eslint:check`, `npm run lint:prettier:check`, `npm run build` and `npm run test:e2e`
       exit 0.
-- [ ] **Centred:** the portrait, the name, the buttons of the hero, every section label and heading, the
+- [x] **Centred:** the portrait, the name, the buttons of the hero, every section label and heading, the
       stats, the email of the contact section, the rows of the footer and the first card of each
       carousel have their centre within 1 px of the centre of the viewport.
-- [ ] **Touch targets:** every visible link and button measures at least 44×44 px, in both skins, except
+- [x] **Touch targets:** every visible link and button measures at least 44×44 px, in both skins, except
       the Easter-egg pixel of the footer.
-- [ ] **Hero type:** the name takes exactly two lines and the role line at most two, in both skins.
-- [ ] **Minimum sizes:** paragraphs are at least 16 px, card text at least 15 px, and no text is smaller
+- [x] **Hero type:** the name takes exactly two lines and the role line at most two, in both skins.
+- [x] **Minimum sizes:** paragraphs are at least 16 px, card text at least 15 px, and no text is smaller
       than 12 px.
-- [ ] **Menu:** it covers the viewport from the bottom edge of the navbar to the bottom; the page does
+- [x] **Menu:** it covers the viewport from the bottom edge of the navbar to the bottom; the page does
       not scroll while it is open; Escape closes it and returns the focus to its button; a link closes
       it and lands on its section; axe reports no violation with it open.
-- [ ] **Back to top:** below 1024 px it is hidden while scrolling down, shown after scrolling up, and
+- [x] **Back to top:** below 1024 px it is hidden while scrolling down, shown after scrolling up, and
       returns to the top.
-- [ ] **No sideways scroll** at 320 px in both skins (the existing tests).
-- [ ] **Every heading, link and button of a panel can be reached un-obscured** at 390×667 (the existing
+- [x] **No sideways scroll** at 320 px in both skins (the existing tests).
+- [x] **Every heading, link and button of a panel can be reached un-obscured** at 390×667 (the existing
       test).
-- [ ] **Desktop untouched:** screenshots of `/` and `/en` at 1440×900 and 1024×768, in both themes and
+- [x] **Desktop untouched:** screenshots of `/` and `/en` at 1440×900 and 1024×768, in both themes and
       both skins, are identical pixel by pixel before and after.
-- [ ] **Loading:** `npm run audit` scores at least 95 in every category on `/` and on `/en`, and the
+- [x] **Loading:** `npm run audit` scores at least 95 in every category on `/` and on `/en`, and the
       script bytes it prints are recorded next to the 196.5 KB of the previous run.
 
 ## Requester decisions
