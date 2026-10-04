@@ -132,6 +132,23 @@ and with a site that can be published.
 - [x] The panel is accessible — _verified by:_ axe with the Inspector open on each tab, in both themes;
       `Escape` returns focus to the toggle.
 
+### Phase 6.1 — adjustments asked by the requester on 2026-10-03
+
+Planned and approved in the conversation on 2026-10-03, with the three choices recorded in `spec.md`.
+
+- [ ] The stack below the navbar — _verified by:_ the `stacking` suite: the navbar is opaque, every
+      panel starts at its bottom edge and pins there; screenshots of the overlap on desktop and on a
+      phone.
+- [ ] 8-bit mode as an Easter egg: the pixel in the footer and the Konami code; the navbar toggle only
+      inside the skin; no chip on the portrait — _verified by:_ the `skin` suite.
+- [ ] The Inspector only inside 8-bit mode — _verified by:_ the `inspector` suite: the toggle is hidden
+      in the normal skin and leaving the skin removes the panel.
+- [ ] The pixel art sits on the `brand` green; `pixel-yellow` and `on-yellow` are removed — _verified
+      by:_ `grep -rn "yellow\|f0da50" src scripts e2e` returns nothing; the `palette` suite; the assets
+      regenerated and `/opengraph-image` looked at.
+- [ ] Measurement after the adjustments — _verified by:_ `npm run audit -- --write`; the medians are in
+      `findings.md` and in `audit.json`.
+
 ### Phase 7 — hardening and documentation
 
 - [ ] The whole suite in the five projects — _verified by:_ `npm run test:e2e` exits 0.

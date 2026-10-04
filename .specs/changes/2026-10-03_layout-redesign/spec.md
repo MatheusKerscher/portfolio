@@ -67,7 +67,9 @@ proving both.
    become panels. A panel pins when its end reaches the bottom of the viewport, and the next panel slides
    over it. A panel taller than the viewport scrolls in full before it pins. There is no pinning under
    `prefers-reduced-motion: reduce` or without JavaScript. Keyboard focus never rests on a covered
-   element, and in-page links land on the right panel in both directions.
+   element, and in-page links land on the right panel in both directions. The stack works in the space
+   below the navbar, which is opaque: a panel slides up to the navbar and pins under it, never behind
+   it.
 2. **Carousels instead of vertical lists.** Technologies (9), projects (5) and the timeline (experience
    and education, 4) become horizontal carousels with previous and next controls and a position
    indicator. Technology cards always show the name and the description. Project cards gain a thumbnail.
@@ -75,16 +77,19 @@ proving both.
    for assistive technology.
 3. **Portrait.** The new photo is shown in the hero. A 92×92 pixel-art version, made by a script from
    the pixel art the requester supplied, is used in 8-bit mode, the favicon, the app icons, the manifest
-   and the Open Graph image.
-4. **A little pixel art in the normal skin.** A mini sprite on the 8-bit toggle, square-dot dividers in
-   place of the green accent bars, a stepped scroll cue, a hard-edged offset shadow on hover and focus,
-   and the frame of the Inspector.
-5. **8-bit mode.** A toggle in the navbar and a chip on the portrait switch the whole site, including
+   and the Open Graph image, on a tile of the `brand` green.
+4. **A little pixel art in the normal skin.** Square-dot dividers in place of the green accent bars, a
+   stepped scroll cue, a hard-edged offset shadow on hover and focus, and one small pixel in the footer,
+   which is the way into 8-bit mode.
+5. **8-bit mode, an Easter egg.** Nothing in the normal skin announces it. It is entered with the pixel
+   in the footer or with the Konami code (↑ ↑ ↓ ↓ ← → ← → B A), and it switches the whole site, including
    `/email-signature`, to a retro skin: pixel font for headings, labels and buttons (body text keeps
    Catamaran), square corners, hard shadows, a stepped edge on the panels, the sprite as portrait and
-   pixelated project thumbnails. The choice persists across visits and is applied before the first paint.
-   The skin uses the same colour tokens as the normal skin.
-6. **Inspector mode.** A toggle in the navbar opens a non-modal panel with four tabs. _Performance_: the
+   pixelated project thumbnails. While it is on, the navbar shows a toggle with the mini sprite, which
+   leaves it. The choice persists across visits and is applied before the first paint. The skin uses the
+   same colour tokens as the normal skin.
+6. **Inspector mode, inside 8-bit mode only.** Its toggle is in the navbar only while the 8-bit skin is
+   on, and leaving the skin closes it. It opens a non-modal panel with four tabs. _Performance_: the
    Core Web Vitals of the current visit, the page weight and request count, and the last lab scores.
    _Acessibilidade_: overlays for landmarks, headings and focus order, and the contrast of every palette
    pair read from the live CSS variables. _SEO & GEO_: title, description, canonical, the JSON-LD graph
@@ -93,21 +98,21 @@ proving both.
 7. **Palette.** Semantic tokens replace the literals. Every text pair reaches 4.5:1 and every control
    boundary 3:1, in both themes:
 
-   | Token                         | Light                  | Ratio on `paper` / `surface` | Dark                   | Ratio on `paper` / `surface` | Minimum |
-   | ----------------------------- | ---------------------- | ---------------------------- | ---------------------- | ---------------------------- | ------- |
-   | `paper` / `surface`           | `#f8f7f3` / `#ffffff`  | —                            | `#111111` / `#1a1a1a`  | —                            | —       |
-   | `ink`                         | `#111111`              | 17.62 / 18.88                | `#fafafa`              | 18.09 / 16.67                | 4.5     |
-   | `ink-muted`                   | `#5f5f5f`              | 5.96 / 6.39                  | `#a3a3a3`              | 7.49 / 6.90                  | 4.5     |
-   | `brand`                       | `#137a3a`              | 5.06 / 5.42                  | `#4ade80`              | 10.84 / 9.99                 | 4.5     |
-   | `on-brand` on `brand`         | `#ffffff`              | 5.42                         | `#111111`              | 10.84                        | 4.5     |
-   | `on-brand` on `brand-hover`   | `#ffffff` on `#116d36` | 6.43                         | `#111111` on `#86efac` | 13.45                        | 4.5     |
-   | `line-strong`                 | `#8a8a8a`              | 3.22 / 3.45                  | `#737373`              | 3.98 / 3.67                  | 3.0     |
-   | `on-yellow` on `pixel-yellow` | `#111111` on `#f0da50` | 13.35                        | `#111111` on `#f0da50` | 13.35                        | 4.5     |
-   | `danger`                      | `#c10007`              | 5.99 / 6.42                  | `#ff6467`              | 6.54 / 6.03                  | 4.5     |
+   | Token                       | Light                  | Ratio on `paper` / `surface` | Dark                   | Ratio on `paper` / `surface` | Minimum |
+   | --------------------------- | ---------------------- | ---------------------------- | ---------------------- | ---------------------------- | ------- |
+   | `paper` / `surface`         | `#f8f7f3` / `#ffffff`  | —                            | `#111111` / `#1a1a1a`  | —                            | —       |
+   | `ink`                       | `#111111`              | 17.62 / 18.88                | `#fafafa`              | 18.09 / 16.67                | 4.5     |
+   | `ink-muted`                 | `#5f5f5f`              | 5.96 / 6.39                  | `#a3a3a3`              | 7.49 / 6.90                  | 4.5     |
+   | `brand`                     | `#137a3a`              | 5.06 / 5.42                  | `#4ade80`              | 10.84 / 9.99                 | 4.5     |
+   | `on-brand` on `brand`       | `#ffffff`              | 5.42                         | `#111111`              | 10.84                        | 4.5     |
+   | `on-brand` on `brand-hover` | `#ffffff` on `#116d36` | 6.43                         | `#111111` on `#86efac` | 13.45                        | 4.5     |
+   | `line-strong`               | `#8a8a8a`              | 3.22 / 3.45                  | `#737373`              | 3.98 / 3.67                  | 3.0     |
+   | `danger`                    | `#c10007`              | 5.99 / 6.42                  | `#ff6467`              | 6.54 / 6.03                  | 4.5     |
 
-   `line` (`#e5e5e5` light, `#2e2e2e` dark) is decorative only. `pixel-yellow` is a fill, never a text
-   colour. The focus indicator is a 2 px `brand` outline with an offset. The link colour in the generated
-   email signature changes to `#137a3a`.
+   `line` (`#e5e5e5` light, `#2e2e2e` dark) is decorative only. The focus indicator is a 2 px `brand`
+   outline with an offset. The link colour in the generated email signature changes to `#137a3a`. There
+   is no colour outside this table: the yellow of the style reference was dropped (see _Requester
+   decisions_).
 
 8. **Performance.** The hero becomes a static Server Component. The portrait is fetched with high
    priority in a modern format. `npm run audit` measures both Lighthouse presets and fails below the
@@ -160,6 +165,10 @@ All commands are run from the repository root. The Playwright projects are `chro
       past the end of the panel, its bottom edge stays within 1 px of the bottom of the viewport while the
       top edge of the next panel moves up, and a hit-test inside the overlap returns an element of the
       next panel.
+- [ ] **The navbar is respected**, in the five projects: the navbar has an opaque background. Scrolled
+      to its natural position, the top edge of every panel is within 1 px of the bottom edge of the
+      navbar, and a panel that fits below the navbar keeps that position while it is pinned. A fragment
+      link lands with the top of its panel at the bottom edge of the navbar.
 - [ ] **No pinning when it is not wanted:** with `prefers-reduced-motion: reduce`, and separately with
       JavaScript disabled, the top edge of every panel moves by the scrolled distance.
 - [ ] **Nothing is cut:** at a 390×667 viewport, every heading, link and button of every panel can be
@@ -176,12 +185,15 @@ All commands are run from the repository root. The Playwright projects are `chro
       over a track scrolls the track, and a vertical one scrolls the page.
 - [ ] **Hero:** the raw server HTML of `#hero` contains neither `opacity:0` nor `translateY(`. The `h1`
       has computed opacity 1 at load. Lighthouse reports the `h1` or the portrait as the LCP element.
-- [ ] **8-bit mode:** each toggle sets `data-skin="8bit"` on `<html>` and `aria-pressed="true"` on both
-      toggles. After a reload the attribute is already set when `DOMContentLoaded` fires. The portrait is
-      the sprite, with computed `image-rendering: pixelated`, and headings compute to the pixel font. In
-      the normal skin there is no request for the pixel font file, `/avatar/avatar.png` or
-      `/thumbnails/8bit/`.
-- [ ] **Inspector:** before it is opened its panel is not in the DOM, and opening it is what triggers
+- [ ] **8-bit mode:** in the normal skin the navbar shows neither the skin toggle nor the Inspector
+      toggle, and the portrait carries no control. The pixel in the footer, and separately the Konami
+      code, set `data-skin="8bit"` on `<html>`; the code is ignored while a form field has focus. In the
+      skin the navbar toggle is visible with `aria-pressed="true"`, and it removes the attribute. After a
+      reload the attribute is already set when `DOMContentLoaded` fires. The portrait is the sprite, with
+      computed `image-rendering: pixelated`, and headings compute to the pixel font. In the normal skin
+      there is no request for the pixel font file, `/avatar/avatar.png` or `/thumbnails/8bit/`.
+- [ ] **Inspector:** its toggle is visible only in the 8-bit skin, and leaving the skin removes the
+      panel. Before it is opened its panel is not in the DOM, and opening it is what triggers
       the first request for its script. It shows a dialog with four tabs. In Chromium the Performance tab
       shows a numeric LCP. A metric the browser does not support is labelled as unsupported. The contrast
       table lists every pair of the palette contract. `Escape` closes it and returns focus to the toggle.
@@ -219,22 +231,26 @@ All commands are run from the repository root. The Playwright projects are `chro
 - [ ] **Documentation:** every command named in `README.md` and `CLAUDE.md` exists in `package.json`
       `scripts`, every path they name exists, and the README thumbnail shows the new home page.
 - [ ] Manual check on `npm run dev`: `/` and `/email-signature` in light and dark, normal and 8-bit. The
-      theme toggle, smooth scroll, carousels, both mode toggles and the signature copy button work, and
+      theme toggle, smooth scroll, carousels, the Easter egg, the Inspector and the signature copy
+      button work, and
       the browser console shows no errors.
 
 ## Requester decisions
 
-| Decision                       | Choice                                                                                                                                             | When       |
-| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| Structure of the work          | One spec for the whole redesign, executed in phases                                                                                                | 2026-10-03 |
-| PageSpeed target               | Performance ≥ 95                                                                                                                                   | 2026-10-03 |
-| Interactive feature            | Inspector mode and 8-bit mode. "Entrevista 8-bit" and "Quest log" were proposed and not chosen                                                     | 2026-10-03 |
-| Pixel-art portrait             | Drawn by script; the requester approves the render before it is used; fallback is art he supplies                                                  | 2026-10-03 |
-| Pixel-art portrait, revised    | After seeing the drawn draft the requester added a generated pixel-art portrait to the branch. It replaces the drawn sprite, as the fallback above | 2026-10-03 |
-| Animation and scroll libraries | Keep `framer-motion` and Lenis; only the hero becomes static. A CSS-only replacement was declined                                                  | 2026-10-03 |
-| Portrait photo                 | The new photo in `public/images/`; `profile-photo.jpg` is removed                                                                                  | 2026-10-03 |
-| Canonical host                 | The apex, `https://kerscher.dev.br`; the requester switches the primary domain on Vercel                                                           | 2026-10-03 |
-| Contact email                  | `matheuskerscher@outlook.com` everywhere                                                                                                           | 2026-10-03 |
+| Decision                       | Choice                                                                                                                                                        | When       |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| Structure of the work          | One spec for the whole redesign, executed in phases                                                                                                           | 2026-10-03 |
+| PageSpeed target               | Performance ≥ 95                                                                                                                                              | 2026-10-03 |
+| Interactive feature            | Inspector mode and 8-bit mode. "Entrevista 8-bit" and "Quest log" were proposed and not chosen                                                                | 2026-10-03 |
+| Pixel-art portrait             | Drawn by script; the requester approves the render before it is used; fallback is art he supplies                                                             | 2026-10-03 |
+| Pixel-art portrait, revised    | After seeing the drawn draft the requester added a generated pixel-art portrait to the branch. It replaces the drawn sprite, as the fallback above            | 2026-10-03 |
+| Tile behind the pixel art      | The colours of the project instead of the yellow of the reference: the `brand` green. The `pixel-yellow` token is removed                                     | 2026-10-03 |
+| 8-bit mode                     | An Easter egg that is not easy to find, and the only place from which the Inspector is reachable. Entered with the Konami code or a small pixel in the footer | 2026-10-03 |
+| Stacking and the navbar        | The navbar gets a solid background and the panels stop and pin below it                                                                                       | 2026-10-03 |
+| Animation and scroll libraries | Keep `framer-motion` and Lenis; only the hero becomes static. A CSS-only replacement was declined                                                             | 2026-10-03 |
+| Portrait photo                 | The new photo in `public/images/`; `profile-photo.jpg` is removed                                                                                             | 2026-10-03 |
+| Canonical host                 | The apex, `https://kerscher.dev.br`; the requester switches the primary domain on Vercel                                                                      | 2026-10-03 |
+| Contact email                  | `matheuskerscher@outlook.com` everywhere                                                                                                                      | 2026-10-03 |
 
 Decided by Matheus Kerscher.
 

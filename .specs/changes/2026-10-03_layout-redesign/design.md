@@ -41,7 +41,7 @@ Inspector shows.
 | `src/app/components/stack-controller.tsx`                                                   | new — panel heights and focus reveal                                                                        |
 | `src/app/components/count-up.tsx`, `motion-provider.tsx`                                    | new — ported from `rafael-goncalves`                                                                        |
 | `src/app/components/motion-section.tsx`, `animated-text.tsx`                                | gain `data-reveal`; become the only reveal primitives                                                       |
-| `src/app/components/portrait.tsx`, `skin-toggle.tsx`                                        | new — photo and sprite; the 8-bit toggle                                                                    |
+| `src/app/components/portrait.tsx`, `skin-toggle.tsx`, `skin-easter-egg.tsx`                 | new — photo and sprite; the way out of the 8-bit skin and the hidden way in                                 |
 | `src/app/components/inspector/*`                                                            | new — toggle, lazy panel, four tabs, overlays                                                               |
 | `src/app/components/navbar.tsx`, `footer.tsx`, `back-to-top.tsx`, `theme-toggle.tsx`        | tokens; the two new toggles; anchors handled by Lenis                                                       |
 | `src/app/components/smooth-scroll-provider.tsx`                                             | Lenis options `autoRaf`, `anchors`, `allowNestedScroll`                                                     |
@@ -81,59 +81,80 @@ memory: `image.md`, `json-ld.md`, `preventing-flash-before-hydration.md`, `lazy-
 
 ## Technical decisions
 
-### Pinning with `position: sticky` inside overlapping slots
+### Pinning with `position: sticky` inside overlapping slots, below the navbar
 
 **Choice:**
 
 ```css
+:root {
+  --nav-h: 4rem;
+}
+.stack {
+  padding-top: var(--nav-h);
+}
 .stack-slot {
   position: relative;
+  scroll-margin-top: var(--nav-h);
 }
 .stack-panel {
-  min-height: 100svh;
+  min-height: calc(100svh - var(--nav-h));
   background: var(--paper);
 }
 @media (prefers-reduced-motion: no-preference) {
   .stack-slot:not(:last-child)::after {
     content: "";
     display: block;
-    height: 100svh;
+    height: calc(100svh - var(--nav-h));
   }
   .stack-slot + .stack-slot {
-    margin-top: -100svh;
+    margin-top: calc(var(--nav-h) - 100svh);
   }
   .stack-slot:not(:last-child) > .stack-panel {
     position: sticky;
-    top: min(0px, calc(100svh - var(--panel-h, 100000px)));
+    top: min(var(--nav-h), calc(100svh - var(--panel-h, 100000px)));
   }
 }
 ```
 
 `StackController` sets `--panel-h` on each panel from a `ResizeObserver`. A panel pins when its bottom
-reaches the bottom of the small viewport, stays pinned for one viewport of scrolling while the next slot
-moves over it, and is released once it is fully covered. The last panel (`contato`) never pins, and the
-footer stays outside the stack.
+reaches the bottom of the small viewport, stays pinned while the next slot moves over it, and is
+released once it is fully covered. The last panel (`contato`) never pins, and the footer stays outside
+the stack.
+
+The navbar is fixed, `--nav-h` tall and opaque, and the stack is laid out in what is left of the
+viewport: the first panel starts under the navbar, a panel is at least that space tall, and it pins with
+its top at the bottom edge of the navbar. The next panel therefore travels from the bottom of the
+viewport to the navbar and stops there. Only a panel taller than that space goes behind the navbar, by
+scrolling, as on any page with a fixed header; the opaque background hides it. The slot has a
+`scroll-margin-top` of the same height, which both the browser's fragment navigation and Lenis apply.
 
 **Why:** sticky positioning is done by the browser, with no script on the scroll path. The spacer and the
 negative margin cancel out, so the layout positions and the document height are those of the unstyled
 page. Without a measured height the fallback `top` can never be reached, so without JavaScript the page
-scrolls normally and nothing is hidden. Releasing a panel after one viewport keeps at most two pinned
+scrolls normally and nothing is hidden. Releasing a panel once it is covered keeps at most two pinned
 panels near the viewport instead of four stacked ones. The slot is not sticky, so the browser's own
 fragment navigation, and Lenis reading the slot's rectangle, land on the natural position in both
 directions. `svh` keeps the pinning point inside the viewport whatever the state of the mobile browser
 toolbar.
 
+The first version pinned at the top of the viewport, under a navbar that was transparent over the hero
+and translucent with a blur after it. The top of every panel then slid behind the navbar and showed
+through it, which the requester asked to change. A translucent navbar cannot be kept: whatever passes
+behind it is content.
+
 **Rejected alternative:** every panel as a sticky sibling with `top: 0` — one rule and no script, but a
 panel taller than the viewport is cut, which happens on phones and at 200% zoom. CSS scroll-driven
 animations that translate the leaving panel — no script either, but the three engines do not support
 them equally, and they need the same focus handling. `framer-motion` `useScroll` transforms — work on
-the main thread for every frame.
+the main thread for every frame. Keeping the pinning at the top and adding top padding to every panel —
+offered to the requester and declined: the content would clear the navbar, but the edge of the panel
+would still slide behind it.
 
 ### A covered focus target is scrolled to its natural position
 
 **Choice:** on `focusin`, `StackController` hit-tests the centre of the focused element. If another
 element is on top, it scrolls to
-`clamp(naturalY − navbar height − 16, slotTop, slotTop + panelHeight − innerHeight)`, where `naturalY` is
+`clamp(naturalY − navbar height − 16, slotTop − navbar height, slotTop + panelHeight − innerHeight)`, where `naturalY` is
 the top of the slot plus the offset of the element inside its panel. That range is the part of the scroll
 in which the panel is in normal flow and not yet covered.
 
@@ -219,9 +240,30 @@ the normal skin pays nothing for it.
 must combine with light and dark. Rendering the two image versions from React state — the skin is known
 only on the client, so the server HTML would be wrong for returning 8-bit visitors.
 
+### The 8-bit skin is entered through an Easter egg
+
+**Choice:** nothing in the normal skin names the mode. `SkinEasterEgg`, in the footer of both routes,
+is a 24×24 button that shows one 6 px square, with the accessible name of the mode and `aria-pressed`;
+it also listens for the Konami code on `keydown`, ignoring keys typed in a form field. Both call
+`toggleSkin()` of `src/lib/skin.ts`. `SkinToggle` and `InspectorToggle` are always in the navbar markup
+and are displayed by the `pixel` variant, so inside the skin there is an obvious way out and the
+Inspector next to it.
+
+**Why:** the requester wants the mode to be found, not offered, and the Inspector to be the reward for
+finding it. Two triggers because neither covers everyone: the code needs a keyboard, and the pixel is the
+only one a touch screen or a screen reader can use. The pixel is a real button with a name, so being
+hidden from a glance does not make it unreachable. Showing the navbar toggles with CSS, from the
+attribute the inline script sets before paint, has no flash for a returning visitor and needs no state.
+
+**Rejected alternative:** a pixel that blinks to call attention — blinking that never stops needs a way
+to pause it (WCAG 2.2.2), and it makes the mode announced again. Only the Konami code — no way in on a
+phone. Five taps on the portrait in place of the pixel — no new element on the page, but no way in for
+a screen reader. The last two were offered to the requester and declined.
+
 ### The Inspector shows only what it measured
 
-**Choice:** `InspectorToggle` is in the navbar. The panel is `next/dynamic` with `ssr: false`, rendered
+**Choice:** `InspectorToggle` is in the navbar, shown by the `pixel` variant only: the Inspector belongs
+to the 8-bit skin, and its state is reset when the skin is left. The panel is `next/dynamic` with `ssr: false`, rendered
 through a portal to `body`, non-modal, with `Tabs` from `src/components/ui/tabs.tsx`. Live metrics come
 from `web-vitals` (`onLCP`, `onCLS`, `onINP`, `onFCP`, `onTTFB`), imported inside the panel chunk. Weight
 and request count come from Resource Timing. Lab scores come from `src/app/data/audit.json`, shown with
@@ -239,8 +281,8 @@ stay readable and scrollable behind the panel.
 ### Colour tokens with a tested contract
 
 **Choice:** the tokens of the table in `spec.md` are CSS variables in `globals.css`, exposed to Tailwind
-as `paper`, `surface`, `ink`, `ink-muted`, `brand`, `brand-hover`, `on-brand`, `line`, `line-strong`,
-`pixel-yellow`, `on-yellow` and `danger`. The shadcn variables point at them. `palette-contract.ts` lists
+as `paper`, `surface`, `ink`, `ink-muted`, `brand`, `brand-hover`, `on-brand`, `line`, `line-strong`
+and `danger`. The shadcn variables point at them. `palette-contract.ts` lists
 each pair with its minimum, and both the `palette` suite and the Inspector read that list.
 
 **Why:** one name per role removes the 32 literals and the 59 `dark:` pairs, and a contract that is
@@ -259,7 +301,8 @@ background by a flood fill from the corners, makes the sticker outline pure whit
 to at most 30 colours. `sharp` then writes `public/avatar/avatar.png`, the favicon, `icon.png`,
 `apple-icon.png`, the manifest icons, a 5× render for the Open Graph image and the quantised 8-bit
 thumbnails. The site shows the sprite with `unoptimized` and `image-rendering: pixelated` at 138, 276 and
-368 CSS px. The mini sprite on the toggle is inline SVG in the colours of the sprite. The requester
+368 CSS px, on a tile of the `brand` colour; the icons and the Open Graph image, which have no theme,
+use the light value, `#137a3a`. The mini sprite on the toggle is inline SVG in the colours of the sprite. The requester
 approves a contact sheet (photo, art, sprite at 1×, 4× and 8× on both themes) before the branch is
 merged.
 
