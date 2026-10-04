@@ -127,7 +127,7 @@ export async function isUnobscured(locator: Locator) {
 
 /**
  * How far the page scrolls sideways, and which elements stick out past the right edge without
- * being inside something that scrolls sideways on purpose (a carousel, the signature preview).
+ * being inside something that scrolls sideways on purpose (a carousel).
  */
 export async function horizontalOverflow(page: Page) {
   return page.evaluate(() => {

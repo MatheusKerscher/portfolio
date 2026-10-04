@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { revealAll, storeSkin, violations } from "./helpers";
 
-const ROUTES = ["/", "/email-signature"];
+const ROUTES = ["/"];
 const THEMES = ["light", "dark"] as const;
 const SKINS = ["normal", "8-bit"] as const;
 

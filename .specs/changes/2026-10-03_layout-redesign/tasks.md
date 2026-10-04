@@ -181,8 +181,9 @@ The requester's screenshot (1512×749) showed "Sobre" pinned with its heading be
 
 - [x] Commits follow the conventional format — _verified by:_ the `commit-msg` hook accepted each one.
 - [ ] Pull request opened and CI green — _verified by:_ the `Linting` and `E2E` workflows pass.
-- [ ] Manual check on the Vercel preview: both routes in the four modes, and the stacking on an iPhone
-      and an Android phone — _verified by:_ the requester's confirmation, recorded here.
+- [ ] Manual check on the Vercel preview: the home page in the four modes, and the stacking on an
+      iPhone and an Android phone — _verified by:_ the requester's confirmation, recorded here.
+      `/email-signature` was removed afterwards, by `2026-10-04_i18n-and-experience`.
 - [ ] PageSpeed Insights on the preview, mobile and desktop, median of 3 — _verified by:_ the numbers are
       in `findings.md`.
 - [ ] Vercel primary domain switched to the apex — _verified by:_ `curl -sI https://kerscher.dev.br/`

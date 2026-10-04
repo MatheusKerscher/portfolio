@@ -51,14 +51,6 @@ export const site = {
   themeColor: { light: "#f8f7f3", dark: "#111111" },
 };
 
-/** The email signature tool: its route, and how metadata, the sitemap and llms.txt describe it. */
-export const signaturePage = {
-  path: "/email-signature",
-  title: "Gerador de assinatura de email",
-  description:
-    "Preencha seus dados, veja o preview em tempo real e copie uma assinatura de email pronta para colar no Gmail, no Outlook ou em outro cliente de email.",
-};
-
 export type SocialId = "email" | "linkedin" | "github" | "instagram";
 
 export type Social = {

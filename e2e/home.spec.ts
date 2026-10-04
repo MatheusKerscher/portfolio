@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { heroCopy, navCopy, site } from "../src/app/data/site";
+import { heroCopy, navCopy } from "../src/app/data/site";
 import { SECTION_IDS } from "./helpers";
 
 test.describe("home page", () => {
@@ -50,38 +50,5 @@ test.describe("home page", () => {
     await expect(menu).toBeHidden();
     await expect(page).toHaveURL(/#projetos$/);
     await expect(page.locator("#projetos-heading")).toBeInViewport();
-  });
-});
-
-test.describe("email signature page", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto("/email-signature");
-  });
-
-  test("renders its heading and the preview", async ({ page }) => {
-    await expect(page.locator("h1")).toHaveText(
-      "Gerador de assinatura de email",
-    );
-    await expect(
-      page.getByRole("button", { name: "Copiar assinatura" }),
-    ).toBeVisible();
-  });
-
-  test("copy button puts the signature on the clipboard", async ({
-    page,
-    context,
-    browserName,
-    isMobile,
-  }) => {
-    test.skip(
-      browserName !== "chromium" || isMobile,
-      "clipboard permissions can only be granted in desktop Chromium",
-    );
-    await context.grantPermissions(["clipboard-read", "clipboard-write"]);
-    await page.getByRole("button", { name: "Copiar assinatura" }).click();
-    await expect(page.getByRole("button", { name: "Copiado!" })).toBeVisible();
-    const text = await page.evaluate(() => navigator.clipboard.readText());
-    expect(text).toContain(site.name);
-    expect(text).toContain(site.email);
   });
 });

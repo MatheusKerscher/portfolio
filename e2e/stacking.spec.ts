@@ -304,14 +304,12 @@ test.describe("stacked sections", () => {
     });
 
     test("the page does not scroll sideways at 320 px", async ({ page }) => {
-      for (const path of ["/", "/email-signature"]) {
-        await page.setViewportSize({ width: 320, height: 640 });
-        await page.goto(path);
-        expect(await horizontalOverflow(page), path).toEqual({
-          overflow: 0,
-          clipped: [],
-        });
-      }
+      await page.setViewportSize({ width: 320, height: 640 });
+      await page.goto("/");
+      expect(await horizontalOverflow(page)).toEqual({
+        overflow: 0,
+        clipped: [],
+      });
     });
   });
 });

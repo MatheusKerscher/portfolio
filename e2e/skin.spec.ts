@@ -3,7 +3,6 @@ import {
   heroCopy,
   inspectorCopy,
   navCopy,
-  signaturePage,
   skinCopy,
 } from "../src/app/data/site";
 import {
@@ -96,11 +95,15 @@ test.describe("8-bit mode", () => {
 
   test("the Konami code is not read from a form field", async ({ page }) => {
     await storeSkin(page);
-    await page.goto(signaturePage.path);
+    await page.goto("/");
     // The stored skin reaches the toggle only once the page has hydrated and is listening.
     await expect(exit(page)).toHaveAttribute("aria-pressed", "true");
 
-    const field = page.getByRole("textbox").first();
+    // The site has no form: the field is added for the test.
+    await page.evaluate(() =>
+      document.body.append(document.createElement("input")),
+    );
+    const field = page.locator("body > input");
     await field.focus();
     await typeCode(page);
     await field.blur();
@@ -204,13 +207,11 @@ test.describe("8-bit mode", () => {
   test("the 8-bit skin fits a 320 px wide screen", async ({ page }) => {
     await storeSkin(page);
     await page.setViewportSize({ width: 320, height: 640 });
-    for (const path of ["/", signaturePage.path]) {
-      await page.goto(path);
-      await page.evaluate(() => document.fonts.ready);
-      expect(await horizontalOverflow(page), path).toEqual({
-        overflow: 0,
-        clipped: [],
-      });
-    }
+    await page.goto("/");
+    await page.evaluate(() => document.fonts.ready);
+    expect(await horizontalOverflow(page)).toEqual({
+      overflow: 0,
+      clipped: [],
+    });
   });
 });

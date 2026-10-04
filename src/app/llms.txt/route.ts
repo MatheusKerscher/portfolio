@@ -1,6 +1,6 @@
 import { education, experience, type TimelineItem } from "../data/curriculum";
 import { projects } from "../data/projects";
-import { signaturePage, site, socials, stackSummary } from "../data/site";
+import { site, socials, stackSummary } from "../data/site";
 
 export const dynamic = "force-static";
 
@@ -45,7 +45,6 @@ export function GET() {
     "## Páginas",
     "",
     `- [${site.title}](${site.url}): ${site.description}`,
-    `- [${signaturePage.title}](${site.url}${signaturePage.path}): ${signaturePage.description}`,
     "",
     "## Contato",
     "",

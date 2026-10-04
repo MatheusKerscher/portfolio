@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { projects } from "../src/app/data/projects";
-import { signaturePage, site } from "../src/app/data/site";
+import { site } from "../src/app/data/site";
 import { parseColor } from "../src/lib/contrast";
 import { readJsonLd } from "./helpers";
 
@@ -44,23 +44,14 @@ test.describe("SEO and GEO", () => {
     );
   });
 
-  test("email signature page has its own title, description and canonical", async ({
-    page,
+  test("the removed email signature page redirects to the home page", async ({
+    request,
   }) => {
-    await page.goto(signaturePage.path);
-    await expect(page).toHaveTitle(`${signaturePage.title} | ${site.name}`);
-    await expect(page.locator('meta[name="description"]')).toHaveAttribute(
-      "content",
-      signaturePage.description,
-    );
-    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
-      "href",
-      `${site.url}${signaturePage.path}`,
-    );
-    await expect(page.locator('meta[property="og:url"]')).toHaveAttribute(
-      "content",
-      `${site.url}${signaturePage.path}`,
-    );
+    const response = await request.get("/email-signature", {
+      maxRedirects: 0,
+    });
+    expect(response.status()).toBe(308);
+    expect(response.headers().location).toBe("/");
   });
 
   test("one JSON-LD graph describes the site, the page, the person and the projects", async ({
@@ -84,7 +75,6 @@ test.describe("SEO and GEO", () => {
   });
 
   test("only one email address is published", async ({ request }) => {
-    // The signature page is left out: its form has a placeholder address.
     for (const path of ["/", "/llms.txt"]) {
       const body = await (await request.get(path)).text();
       const found = [...new Set(body.match(EMAIL) ?? [])];
@@ -109,10 +99,10 @@ test.describe("SEO and GEO", () => {
     }
   });
 
-  test("sitemap lists both routes", async ({ request }) => {
+  test("sitemap lists the home page", async ({ request }) => {
     const xml = await (await request.get("/sitemap.xml")).text();
     expect(xml).toContain(`<loc>${site.url}</loc>`);
-    expect(xml).toContain(`<loc>${site.url}${signaturePage.path}</loc>`);
+    expect(xml).not.toContain("email-signature");
     expect(xml).toContain(`<lastmod>${site.contentUpdatedAt}`);
   });
 
@@ -136,7 +126,7 @@ test.describe("SEO and GEO", () => {
         `[${project.title}](${project.websiteUrl ?? project.repositoryUrl})`,
       );
     }
-    expect(text).toContain(`${site.url}${signaturePage.path}`);
+    expect(text).not.toContain("email-signature");
   });
 
   for (const scheme of ["light", "dark"] as const) {

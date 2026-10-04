@@ -15,7 +15,6 @@ with, selected projects, my professional experience and ways to get in touch. It
 - [Framer Motion](https://www.framer.com/motion) 14 for animations and [Lenis](https://lenis.darkroom.engineering)
   for smooth scrolling
 - [next-themes](https://github.com/pacocoursey/next-themes) for the light and dark themes
-- [Zod](https://zod.dev) 4 for validation
 - [Playwright](https://playwright.dev) with [axe-core](https://github.com/dequelabs/axe-core) for the
   end-to-end and accessibility tests, and [Lighthouse](https://developer.chrome.com/docs/lighthouse) for
   the performance audit
@@ -93,7 +92,6 @@ src/
 ├── app/
 │   ├── components/        page sections and site-specific components
 │   ├── data/              content: site facts and copy, projects, curriculum
-│   ├── email-signature/   email signature generator page
 │   ├── layout.tsx         root layout, fonts and metadata
 │   └── page.tsx           home page
 ├── components/ui/         shadcn/ui components

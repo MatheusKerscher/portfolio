@@ -13,7 +13,7 @@ npm run lint:eslint:check && npm run lint:prettier:check && npm run build && npm
 
 `npm run build` is the type check. `npm run test:e2e` builds the site, serves it on port 3100 and runs
 Playwright in five projects; `npm run test:e2e:install` downloads the browsers once. For anything
-visual, also check `/` and `/email-signature` on `npm run dev`, in light and dark.
+visual, also check `/` on `npm run dev`, in light and dark.
 
 A change that can affect loading is also measured with `npm run audit`: Lighthouse, median of 5, at
 least 95 in every category. It serves the build through a 40 ms latency proxy on purpose; a score read
