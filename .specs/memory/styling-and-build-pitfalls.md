@@ -49,3 +49,15 @@ Next.js 16.3.8, Tailwind CSS 4, sharp 0.35.5 and Lenis 1.3.26.
 - **Evidence:** the slots of the stack have `scroll-margin-top: var(--nav-h)`. In the `stacking` suite a
   click on an in-page link, which Lenis handles (`anchors: true`), ends with the top of the panel within
   1 px of the bottom edge of the navbar in the five Playwright projects.
+
+## Where a Client Component is rendered from can change what framer-motion ships
+
+- **Evidence:** on 2026-10-04, with Next.js 16.3.8 (Turbopack) and framer-motion 14.0.0, the theme toggle
+  was moved from an import inside the navbar to an element the root layout, a Server Component, passed
+  to the navbar. The chunks named by the prerendered page went from 759,358 to 771,140 bytes, and the
+  drag, pan and layout projection features of framer-motion (`DragGesture`, `PanGesture`,
+  `HTMLProjectionNode`) appeared in them; no component uses them. Imported by the navbar again, the
+  page names 757,145 bytes and those features are gone. `BackToTop`, which also uses `motion` and is
+  rendered by the layout, does not cause it.
+- **Rule:** the composition of Client Components is not free of cost. After changing which component
+  renders another, compare the script bytes `npm run audit` prints with the previous run.

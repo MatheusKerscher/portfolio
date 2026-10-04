@@ -34,7 +34,8 @@ Server Component parent passes the resolved strings as props.
 | `src/app/data/dictionaries/{pt,en,index}.ts`       | new: the copy and `getDictionary`                                             |
 | `src/app/data/dictionaries/inspector/{pt,en}.ts`   | new: the Inspector copy, imported only by the lazy panel                      |
 | `src/app/components/*`                             | sections read the dictionary; Client Components take copy as props            |
-| `src/app/components/language-switch.tsx`           | new                                                                           |
+| `src/app/components/language-switch.tsx`           | new: the two links, in the navbar, the mobile menu and the footer             |
+| `src/lib/scroll-position.ts`                       | new: remembers and restores the place across a change of language             |
 | `src/lib/metadata.ts`, `sitemap.ts`, `json-ld.tsx` | canonical, `hreflang`, `og:locale`, alternates, `inLanguage`                  |
 | `scripts/lighthouse.mjs`                           | `--path`, to measure `/en`                                                    |
 | `e2e/*`                                            | suites read the dictionaries; `i18n.spec.ts` is new                           |
@@ -102,6 +103,10 @@ strings a Client Component shows are a handful of labels, which serialize as pro
 has about 60 strings and one function, and the panel is already a lazy chunk fetched only when it is
 opened, so both languages cost nothing on load.
 
+One composition rule came out of the measurements: the theme toggle is imported by the navbar, not
+passed to it by the layout. Rendered by the layout as a Client Component of its own, it made the bundler
+ship the gesture and layout features of framer-motion, 14 KB that nothing uses (`findings.md`).
+
 **Rejected alternative:** a React context with the dictionary — the whole dictionary would be
 serialized into the page for the sake of five labels. A locale-keyed dynamic import of the Inspector
 copy — two more chunks and a loading state to save about 2 KB of an on-demand chunk.
@@ -128,17 +133,28 @@ deploy, so the number of years is at most one deploy old.
 **Rejected alternative:** `Intl.DateTimeFormat` — in `pt-BR` the short month is "mai. de 2024", not the
 "Mai 2024" of the design, and its output depends on the ICU data of the build machine.
 
-### The language switch is two plain links
+### The language switch is two plain links, and it keeps the place
 
 **Choice:** `PT · EN` as `<a>` elements with `hreflang` and `lang`, the current one with
-`aria-current="true"`; in the navbar from `md` up and inside the mobile menu below it.
+`aria-current="true"`: in the navbar from `md` up, inside the mobile menu below it, and in the footer.
+On a click, `rememberScrollPosition()` stores in `sessionStorage` the section under the navbar and how
+far into it the page is scrolled, as a share of its height. An inline script at the end of `<body>`
+reads it, removes it and scrolls there (`src/lib/scroll-position.ts`).
 
 **Why:** a change of language is a change of root parameter, which is a full page load in any case, so
 a link is the honest control and works without JavaScript. The theme and the skin are in `localStorage`
-and survive it. A small script adds the current fragment to the link.
+and survive it. The requester asked for the page not to return to the top. The fragment of the URL is
+the last section a link led to, not where the visitor is, so the first version, which kept the fragment,
+did not do that. A share of the section is used instead of pixels because a section is not as tall in
+every language on a phone. The script is inline for the same reason as the skin script: waiting for the
+client bundle would show the top of the page first. The position carries a timestamp and is ignored
+after 15 seconds, so a link opened in another tab does not move a later reload. The footer has the
+switch as well because, below `md`, the one of the navbar is inside a menu that needs JavaScript.
 
 **Rejected alternative:** a dropdown — two options do not need one. A single link showing only the other
-language — it does not say which language is current.
+language — it does not say which language is current. Keeping only the fragment — replaced, as above.
+Storing the scroll offset in pixels — wrong on a phone, where the panels differ in height between
+languages. A query parameter with the position — it would stay in the URL and in what is shared.
 
 ### `/email-signature` redirects instead of answering 404
 

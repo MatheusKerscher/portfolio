@@ -2,7 +2,8 @@
 
 Personal portfolio of Matheus Kerscher, FullStack developer. The site presents the technologies I work
 with, selected projects, my professional experience and ways to get in touch. It is live at
-[kerscher.dev.br](https://kerscher.dev.br).
+[kerscher.dev.br](https://kerscher.dev.br), in Brazilian Portuguese, and at
+[kerscher.dev.br/en](https://kerscher.dev.br/en), in English.
 
 ![Portfolio thumbnail](public/thumbnails/thumbnail.png)
 
@@ -62,7 +63,8 @@ npm run test:e2e
 ```
 
 It covers the stacked sections, the carousels, keyboard focus, the contrast of the colour palette, the
-metadata and the structured data, and it runs axe on both routes in the light and dark themes.
+metadata and the structured data, and it runs axe in the light and dark themes. Whatever depends on the
+copy or on the layout runs in both languages.
 
 ## Performance audit
 
@@ -70,7 +72,23 @@ metadata and the structured data, and it runs axe on both routes in the light an
 times with the mobile and the desktop presets. It fails when the median Performance, or any other
 category, is below 95. `npm run audit -- --write` also stores the medians in
 [src/app/data/audit.json](src/app/data/audit.json), which the site shows in its Inspector; run it after
-a change that can affect loading.
+a change that can affect loading. `npm run audit -- --path=/en` measures the English page.
+
+## Languages
+
+The site has no i18n library. A language is a segment of the route, `src/app/[lang]`, and its copy is a
+typed dictionary in [src/app/data/dictionaries/](src/app/data/dictionaries/). Portuguese is the default
+and is served without a prefix, through the rewrites of [next.config.ts](next.config.ts).
+
+- **To add or change a text**, edit it in `pt.ts` and in `en.ts`. `en.ts` has to satisfy the shape of
+  `pt.ts`, so a key missing in one of them fails `npm run build`.
+- **To use it**, a Server Component calls `getDictionary()`. A Client Component does not import a
+  dictionary: its parent passes it the strings as props, which keeps the copy out of the browser bundle.
+- **To add a language**, add a row to [src/app/data/locales.ts](src/app/data/locales.ts) and a
+  dictionary for it in `dictionaries/` and in `dictionaries/inspector/`.
+
+Facts that do not depend on the language (URLs, dates, the section anchors) stay in `site.ts`,
+`projects.ts` and `curriculum.ts`.
 
 ## Generated assets
 
@@ -90,10 +108,9 @@ The site has an Easter egg. Its two ways in are in
 ```
 src/
 ├── app/
+│   ├── [lang]/            root layout, home page, Open Graph image and llms.txt, per language
 │   ├── components/        page sections and site-specific components
-│   ├── data/              content: site facts and copy, projects, curriculum
-│   ├── layout.tsx         root layout, fonts and metadata
-│   └── page.tsx           home page
+│   └── data/              site facts, projects, curriculum, and the copy in dictionaries/
 ├── components/ui/         shadcn/ui components
 └── lib/                   shared utilities
 e2e/                       Playwright tests

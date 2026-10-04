@@ -33,7 +33,8 @@ tells search engines and AI assistants which version is which.
    stays at `/`; English is at `/en`.
 4. **Everything visible is translated**: the five sections, the navbar, the footer, the 8-bit mode
    labels, the Inspector, the metadata, the JSON-LD, the Open Graph image and `llms.txt`.
-5. **A language switch** in the navbar that works without JavaScript and keeps the current section.
+5. **A language switch** in the navbar and in the footer, which works without JavaScript and opens the
+   other language at the place where the page was being read, not at the top.
 6. **Anchors in English, the same in both languages**: `#about`, `#projects`, `#experience`,
    `#contact`.
 7. **SEO and GEO per language**: canonical, `hreflang` alternates with `x-default`, the sitemap, the
@@ -53,49 +54,51 @@ tells search engines and AI assistants which version is which.
 
 ## Acceptance criteria
 
-- [ ] `npm ci` succeeds without `--force` or `--legacy-peer-deps`, and `npm ls` reports no `invalid`.
-- [ ] `npm run lint:eslint:check`, `npm run lint:prettier:check`, `npm run build` and `npm run test:e2e`
+- [x] `npm ci` succeeds without `--force` or `--legacy-peer-deps`, and `npm ls` reports no `invalid`.
+- [x] `npm run lint:eslint:check`, `npm run lint:prettier:check`, `npm run build` and `npm run test:e2e`
       exit 0.
-- [ ] **Routes:** `/` and `/en` answer 200 and are prerendered (listed as static or SSG by the build);
+- [x] **Routes:** `/` and `/en` answer 200 and are prerendered (listed as static or SSG by the build);
       `/pt` and `/email-signature` answer 308 with `Location: /`; `/llms.txt` and `/en/llms.txt` answer
       200; an unknown path answers 404.
-- [ ] **Language of each page:** `<html lang>` is `pt-BR` at `/` and `en` at `/en`.
-- [ ] **Nothing is left untranslated:** no string of the Portuguese dictionary whose English counterpart
+- [x] **Language of each page:** `<html lang>` is `pt-BR` at `/` and `en` at `/en`.
+- [x] **Nothing is left untranslated:** no string of the Portuguese dictionary whose English counterpart
       differs appears in the text of `/en`, with the Inspector open as well; and
       `grep -rnE "[áéíóúâêôãõç]" src` matches only the Portuguese dictionaries and proper names.
-- [ ] **The dictionaries cannot drift:** removing a key from `en.ts` makes `npm run build` fail with a
+- [x] **The dictionaries cannot drift:** removing a key from `en.ts` makes `npm run build` fail with a
       type error.
-- [ ] **Language switch:** in both languages and in the five projects, it leads to the other language,
-      keeps the fragment of the current section, and marks the current language with `aria-current`.
-      It works with JavaScript disabled.
-- [ ] **Anchors:** the slots are `hero`, `about`, `projects`, `experience` and `contact` in both
+- [x] **Language switch:** in both languages and in the five projects, it marks the current language
+      with `aria-current` and leads to the other one, which opens on the same section and at the same
+      share of its height (within 5%). The remembered position is used once. With JavaScript disabled
+      the switch of the footer leads to the other language.
+- [x] **Anchors:** the slots are `hero`, `about`, `projects`, `experience` and `contact` in both
       languages, and no source or test file refers to the old ids.
-- [ ] **Experience:** the timeline shows the four jobs of the profile in its order, with Coopers Digital
+- [x] **Experience:** the timeline shows the four jobs of the profile in its order, with Coopers Digital
       as the current one and CWB Tecnologia ended in June 2026; the JSON-LD `worksFor` is Coopers
       Digital; the years of experience are computed from February 2022.
-- [ ] **SEO:** each page has its own canonical, `hreflang` links for `pt-BR`, `en` and `x-default`
+- [x] **SEO:** each page has its own canonical, `hreflang` links for `pt-BR`, `en` and `x-default`
       that are the same on both pages, and `og:locale`. The sitemap lists both URLs with their
       alternates. Each page has one JSON-LD graph with `inLanguage` of its language and the same
       `@id` for the person.
-- [ ] **Only one email address is published** in `/`, `/en` and both `llms.txt`, and no phone number.
-- [ ] **Accessibility:** axe reports no violation at `/en` in the four modes (light and dark, normal and
+- [x] **Only one email address is published** in `/`, `/en` and both `llms.txt`, and no phone number.
+- [x] **Accessibility:** axe reports no violation at `/en` in the four modes (light and dark, normal and
       8-bit).
-- [ ] **Layout:** at `/en`, every panel fits below the navbar at 1512×749 and 1366×641 in both skins,
+- [x] **Layout:** at `/en`, every panel fits below the navbar at 1512×749 and 1366×641 in both skins,
       and the page does not scroll sideways at 320 px.
-- [ ] **Performance:** `npm run audit` reports a median of at least 95 in every category for `/` and
+- [x] **Performance:** `npm run audit` reports a median of at least 95 in every category for `/` and
       for `/en`, mobile and desktop, and the script bytes transferred are not above the 197.9 KB of
       `1379c8b`.
 
 ## Requester decisions
 
-| Decision                 | Choice                                                                                                                              | When       |
-| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| Source of the experience | The LinkedIn profile exported as PDF; LinkedIn itself answers HTTP 999 without a session                                            | 2026-10-04 |
-| i18n approach            | No library: `app/[lang]`, typed dictionaries, `next/root-params`. `next-intl` was offered and not chosen                            | 2026-10-04 |
-| URLs                     | Portuguese stays at `/`, English at `/en`; a switch and `hreflang`. A hint for other browser languages and a redirect were declined | 2026-10-04 |
-| Branch                   | Everything on `feat/layout-redesign`; a separate branch was proposed and declined                                                   | 2026-10-04 |
-| Email signature page     | Deleted                                                                                                                             | 2026-10-04 |
-| Anchors                  | The same in both languages, in English                                                                                              | 2026-10-04 |
+| Decision                 | Choice                                                                                                                                                   | When       |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| Source of the experience | The LinkedIn profile exported as PDF; LinkedIn itself answers HTTP 999 without a session                                                                 | 2026-10-04 |
+| i18n approach            | No library: `app/[lang]`, typed dictionaries, `next/root-params`. `next-intl` was offered and not chosen                                                 | 2026-10-04 |
+| URLs                     | Portuguese stays at `/`, English at `/en`; a switch and `hreflang`. A hint for other browser languages and a redirect were declined                      | 2026-10-04 |
+| Branch                   | Everything on `feat/layout-redesign`; a separate branch was proposed and declined                                                                        | 2026-10-04 |
+| Email signature page     | Deleted                                                                                                                                                  | 2026-10-04 |
+| Language switch          | It keeps the place where the page was being read instead of returning to the top; asked while the work was in progress. It replaces "keeps the fragment" | 2026-10-04 |
+| Anchors                  | The same in both languages, in English                                                                                                                   | 2026-10-04 |
 
 Defaults stated in the approved plan, which the requester did not change: `#experience` as the anchor of
 the timeline; `/email-signature` redirects to `/`; the role is "Full-Stack Software Engineer" in English
