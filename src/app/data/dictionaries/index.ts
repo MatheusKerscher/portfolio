@@ -1,10 +1,11 @@
 import type { Locale } from "../locales";
+import en from "./en";
 import pt from "./pt";
 
 /** The shape every language has to satisfy. */
 export type Dictionary = typeof pt;
 
-const dictionaries: Record<Locale, Dictionary> = { pt };
+const dictionaries: Record<Locale, Dictionary> = { pt, en };
 
 /**
  * The copy of a language. Server Components use `getDictionary()` of `./server` instead, which

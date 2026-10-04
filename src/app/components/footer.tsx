@@ -1,12 +1,16 @@
-import { getDictionary } from "../data/dictionaries/server";
+import { dictionaryFor } from "../data/dictionaries";
+import { getLocale } from "../data/dictionaries/server";
+import { languageOptions } from "../data/locales";
 import { site, social } from "../data/site";
+import LanguageSwitch from "./language-switch";
 import SkinEasterEgg from "./skin-easter-egg";
 import { SocialIcon } from "./social-icons";
 
 const links = [social("github"), social("linkedin")];
 
 export default async function Footer() {
-  const dict = await getDictionary();
+  const locale = await getLocale();
+  const dict = dictionaryFor(locale);
   const currentYear = new Date().getFullYear();
 
   return (
@@ -21,6 +25,11 @@ export default async function Footer() {
         </div>
 
         <div className="flex items-center gap-4">
+          {/* Also here: below `md` the one of the navbar is inside a menu that needs JavaScript. */}
+          <LanguageSwitch
+            label={dict.nav.language}
+            options={languageOptions(locale)}
+          />
           {links.map((link) => (
             <a
               key={link.id}

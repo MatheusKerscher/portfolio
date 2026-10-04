@@ -6,6 +6,7 @@ import "../globals.css";
 import BackToTop from "../components/back-to-top";
 import Footer from "../components/footer";
 import InspectorToggle from "../components/inspector/inspector-toggle";
+import LanguageSwitch from "../components/language-switch";
 import { MotionProvider } from "../components/motion-provider";
 import Navbar from "../components/navbar";
 import SkinToggle from "../components/skin-toggle";
@@ -16,7 +17,12 @@ import { skinScript } from "@/lib/skin-script";
 import { dictionaryFor } from "../data/dictionaries";
 import { inspectorDictionaryFor } from "../data/dictionaries/inspector";
 import { getLocale } from "../data/dictionaries/server";
-import { hasLocale, localeParams, locales } from "../data/locales";
+import {
+  hasLocale,
+  languageOptions,
+  localeParams,
+  locales,
+} from "../data/locales";
 import { sections, site } from "../data/site";
 
 const catamaran = Catamaran({
@@ -132,6 +138,12 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
                   openMenu: nav.openMenu,
                   closeMenu: nav.closeMenu,
                 }}
+                languageSwitch={
+                  <LanguageSwitch
+                    label={nav.language}
+                    options={languageOptions(locale)}
+                  />
+                }
                 actions={
                   <>
                     {/* These two are displayed only inside the 8-bit skin. */}

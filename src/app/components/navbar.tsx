@@ -14,11 +14,13 @@ type NavbarProps = {
     openMenu: string;
     closeMenu: string;
   };
+  /** In the bar from `md` up, and inside the menu below it, where the bar has no room. */
+  languageSwitch: ReactNode;
   /** The toggles at the end of the bar. */
   actions: ReactNode;
 };
 
-export default function Navbar({ copy, actions }: NavbarProps) {
+export default function Navbar({ copy, languageSwitch, actions }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -71,6 +73,7 @@ export default function Navbar({ copy, actions }: NavbarProps) {
         </ul>
 
         <div className="flex items-center gap-2">
+          <div className="hidden md:block">{languageSwitch}</div>
           {actions}
 
           <button
@@ -133,6 +136,7 @@ export default function Navbar({ copy, actions }: NavbarProps) {
                   </a>
                 </motion.li>
               ))}
+              <li className="border-t border-line pt-2">{languageSwitch}</li>
             </ul>
           </motion.div>
         )}
