@@ -2,6 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  DOT_STEP,
+  MAX_DOTS,
+  dotProgress,
+  dotWindowStart,
+  dotWindowWidth,
+} from "@/lib/carousel-dots";
 
 type CarouselControlsProps = {
   viewportId: string;
@@ -17,6 +24,9 @@ type Position = {
   /** Share of the list that is visible, and how far it is scrolled, both from 0 to 1. */
   visible: number;
   progress: number;
+  /** Number of items, one dot each, and how far the list is scrolled in items. */
+  count: number;
+  dot: number;
 };
 
 const INITIAL: Position = {
@@ -25,9 +35,16 @@ const INITIAL: Position = {
   atEnd: false,
   visible: 0,
   progress: 0,
+  count: 0,
+  dot: 0,
 };
 
-/** Previous and next buttons and the position indicator of a `Carousel`. */
+/**
+ * What tells where a `Carousel` is and moves it. From `md` up: previous and next buttons and a
+ * position bar. Below it: dots, one per item. On a touch screen the gesture is to drag, so a
+ * button would spend space on what the finger already does; what is missing there is how much
+ * more there is. Both are rendered at every width and the stylesheet shows one of them.
+ */
 export default function CarouselControls({
   viewportId,
   previousLabel,
@@ -47,12 +64,16 @@ export default function CarouselControls({
     const measure = () => {
       frame = 0;
       const max = viewport.scrollWidth - viewport.clientWidth;
+      // One dot per item, not per screenful: the two disagree when they do not divide evenly.
+      const count = viewport.querySelectorAll(".carousel-item").length;
       setPosition({
         overflows: max > 1,
         atStart: viewport.scrollLeft <= 1,
         atEnd: viewport.scrollLeft >= max - 1,
         visible: viewport.clientWidth / viewport.scrollWidth,
         progress: max > 0 ? viewport.scrollLeft / max : 0,
+        count,
+        dot: dotProgress(viewport.scrollLeft, max, count),
       });
     };
     const schedule = () => {
@@ -65,6 +86,9 @@ export default function CarouselControls({
     viewport.addEventListener("scroll", schedule, { passive: true });
     const observer = new ResizeObserver(schedule);
     observer.observe(viewport);
+    // The box of the region does not change when an item is added or removed; its list does.
+    const track = viewport.firstElementChild;
+    if (track) observer.observe(track);
 
     return () => {
       cancelAnimationFrame(frame);
@@ -104,7 +128,14 @@ export default function CarouselControls({
   }
 
   const buttonClass =
-    "flex h-11 w-11 items-center justify-center border border-line-strong text-ink transition-colors duration-200 hover:border-brand hover:text-brand aria-disabled:cursor-not-allowed aria-disabled:opacity-40 aria-disabled:hover:border-line-strong aria-disabled:hover:text-ink";
+    "flex h-11 w-11 items-center justify-center border border-line-strong text-ink transition-colors duration-200 hover:border-brand hover:text-brand aria-disabled:cursor-not-allowed aria-disabled:opacity-40 aria-disabled:hover:border-line-strong aria-disabled:hover:text-ink max-md:hidden";
+
+  // Which dot is lit is a discrete choice, so it rounds. The ends of the window follow it, and
+  // the window itself follows the unrounded position: it glides with the scroll.
+  const { count, dot } = position;
+  const active = Math.round(dot);
+  const windowStart = dotWindowStart(active, count);
+  const windowEnd = windowStart + MAX_DOTS - 1;
 
   return (
     <div
@@ -115,7 +146,7 @@ export default function CarouselControls({
       {/* Below `lg` it sits between the two buttons, which are placed around it by `order`. */}
       <div
         aria-hidden="true"
-        className="relative h-0.5 w-24 bg-line max-lg:order-2 max-sm:w-20"
+        className="relative h-0.5 w-24 bg-line max-lg:order-2 max-md:hidden"
       >
         <div
           className="absolute inset-y-0 bg-brand"
@@ -148,6 +179,40 @@ export default function CarouselControls({
           <ChevronRight size={18} aria-hidden="true" />
         </button>
       </div>
+
+      {/*
+        Hidden from assistive technology and not clickable: it says nothing the scrollable region
+        does not already expose. Every dot is always rendered and the row slides inside a window
+        of `MAX_DOTS`; slicing the list instead would remount the dots on every step.
+      */}
+      {count > 1 && (
+        <div
+          aria-hidden="true"
+          data-carousel-dots={viewportId}
+          className="carousel-dots md:hidden"
+          style={{ width: dotWindowWidth(count) }}
+        >
+          <div
+            className="carousel-dots-track"
+            style={{
+              transform: `translateX(-${dotWindowStart(dot, count) * DOT_STEP}px)`,
+            }}
+          >
+            {Array.from({ length: count }, (_, index) => (
+              <span
+                key={index}
+                className="carousel-dot"
+                data-active={index === active}
+                // A dot at an end of the window is smaller when there are more beyond it.
+                data-edge={
+                  (index === windowStart && windowStart > 0) ||
+                  (index === windowEnd && windowEnd < count - 1)
+                }
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

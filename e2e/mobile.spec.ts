@@ -142,7 +142,9 @@ async function offCentre(page: Page, headings: string[], cards: boolean) {
       row("profiles of the about section", "#about dl + div > ul");
       lines("heading of the technologies", "#about h3");
       lines("number of projects", "#projects h2 + p");
-      row("carousel controls", "[data-js-only]", "button");
+      // Dots on a phone; buttons around the position bar from `md` up.
+      if (cards) box("dots of a carousel", "[data-carousel-dots]");
+      else row("carousel controls", "[data-js-only]", "button");
       box("pause control of the band", ".marquee-pause");
 
       lines("contact text", "#contact h2, #contact p:not(.section-label)");
