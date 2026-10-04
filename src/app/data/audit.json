@@ -1,6 +1,6 @@
 {
-  "measuredAt": "2026-10-04",
-  "commit": "8eb3687",
+  "measuredAt": "2026-10-03",
+  "commit": "75db4b7",
   "lighthouseVersion": "13.5.0",
   "runs": 5,
   "latency": 40,
