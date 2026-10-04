@@ -89,8 +89,12 @@ and with a site that can be published.
 - [x] Contact sheet of the sprite sent to the requester — _verified by:_ `sprite-contact-sheet.png` in
       this folder shows the photo and the sprite at 1×, 4× and 8× on both themes. The copy shown in the
       conversation also has the style reference, which is not ours to commit.
+- [x] Sprite rebuilt from the art the requester supplied — _verified by:_ `avatar.png` is 92×92 with
+      30 colours and 1,250 bytes; a second run is byte-identical; the contact sheet in this folder is
+      regenerated; the whole suite passes (211 passed, 99 skipped).
 - [!] Sprite approved — _verified by:_ explicit approval in the conversation, recorded here with its
-  date. Waiting for the requester. The sprite on the branch is draft v1.
+  date. The drawn draft was answered with supplied art, not with an approval. Waiting for the
+  requester's yes to the sprite made from that art.
 - [x] Favicon, `icon.png`, `apple-icon.png`, manifest icons and the Open Graph image from the sprite —
       _verified by:_ the metadata routes test of the `seo` suite; a look at `/opengraph-image`.
 - [x] Pixel accents of the normal skin — _verified by:_ screenshots taken during the phase (square-dot
@@ -116,14 +120,17 @@ and with a site that can be published.
 
 ### Phase 6 — Inspector mode
 
-- [ ] `web-vitals@6.2.2`; the toggle, the lazy panel and the four tabs — _verified by:_ the `inspector`
-      suite.
-- [ ] Overlays for landmarks, headings and focus order — _verified by:_ the `inspector` suite counts one
-      box per landmark of the page.
-- [ ] `npm run audit -- --write` and the lab scores in the Performance tab — _verified by:_ the panel
-      shows the values of `audit.json`.
-- [ ] The panel is accessible — _verified by:_ axe with the Inspector open; `Escape` returns focus to
-      the toggle.
+- [x] `web-vitals@6.2.2`; the toggle, the lazy panel and the four tabs — _verified by:_ the `inspector`
+      suite: no script of the panel is requested before it is opened.
+- [x] Overlays for landmarks, headings and focus order — _verified by:_ the `inspector` suite: the
+      landmarks on screen are outlined and labelled, and the boxes go away with the overlay. A box is
+      drawn only for what is on screen and not covered by another panel, so the count is not one per
+      landmark of the page.
+- [~] `npm run audit -- --write` and the lab scores in the Performance tab — _verified by:_ the panel
+  shows the values of `audit.json` (the `inspector` suite compares them). The file is measured again
+  after the last code change of the branch.
+- [x] The panel is accessible — _verified by:_ axe with the Inspector open on each tab, in both themes;
+      `Escape` returns focus to the toggle.
 
 ### Phase 7 — hardening and documentation
 

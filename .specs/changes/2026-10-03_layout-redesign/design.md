@@ -250,27 +250,31 @@ computed from the rendered variables cannot drift from the stylesheet.
 rule for choosing between them. Declaring the palette in TypeScript and generating the CSS — a build step
 for nine values.
 
-### The sprite is drawn by a script and shipped as an indexed PNG
+### The sprite is the supplied art snapped to its grid, shipped as an indexed PNG
 
-**Choice:** `scripts/pixel-assets.mjs` draws the bust on a 92×92 index buffer — the grid of the reference
-image, which is 460×460 at 5× with 82 colours — using a palette of at most 32 colours built from the
-tokens and from tones sampled from the photo, with a 1 px ink outline and a white sticker outline on a
-transparent background. `sharp` writes `public/avatar/avatar.png`, the favicon, `icon.png`,
+**Choice:** the source is `scripts/assets/portrait-art.jpeg`, the pixel art the requester supplied: a
+1024×1024 generated image whose "pixels" are uneven JPEG blocks. `scripts/pixel-assets.mjs` takes one
+colour per cell of a 92×92 grid (the median of the middle half of the cell), removes the flat
+background by a flood fill from the corners, makes the sticker outline pure white and reduces the rest
+to at most 30 colours. `sharp` then writes `public/avatar/avatar.png`, the favicon, `icon.png`,
 `apple-icon.png`, the manifest icons, a 5× render for the Open Graph image and the quantised 8-bit
 thumbnails. The site shows the sprite with `unoptimized` and `image-rendering: pixelated` at 138, 276 and
-368 CSS px. The mini sprite on the toggle is inline SVG. The requester approves a contact sheet (photo,
-reference, sprite at 1×, 4× and 8× on both themes) before the branch is merged. Until then the sprite on
-the branch is a draft: every derived file comes from the script, so a redrawn or supplied sprite replaces
-them all in one run.
+368 CSS px. The mini sprite on the toggle is inline SVG in the colours of the sprite. The requester
+approves a contact sheet (photo, art, sprite at 1×, 4× and 8× on both themes) before the branch is
+merged.
 
-**Why:** a script is reproducible and keeps the art on the project palette. A 92×92 indexed PNG is about
-2 KB, while the image optimiser would re-encode it to a lossy format and blur the pixel edges. The
-likeness to check against the photo: short dark hair with a high forehead, rectangular black glasses, a
-thin moustache and chin beard, a navy shirt with an open collar.
+**Why:** every derived file comes from one source through one script, so new art replaces them all in
+one run and a second run is byte-identical. A 92×92 indexed PNG is about 1 KB, while the image optimiser
+would re-encode it to a lossy format and blur the pixel edges. The palette is reduced in the script
+because `sharp` cannot cap one at 32 colours (see `findings.md`), and by merging colours within a
+distance of the most frequent ones because a split by population spends the palette on the JPEG noise
+of the large flat areas.
 
 **Rejected alternative:** the whole sprite as inline SVG — thousands of rectangles in the HTML. An
-algorithmic pixelation of the photo — offered and declined. An image generator — not available to the
-implementer; art supplied by the requester goes through the same export step, which is the fallback.
+algorithmic pixelation of the photo — offered and declined. A portrait drawn by the script from shapes
+on the grid — it was the first draft (commit `dab9e0e`, removed with the arrival of the art): the
+requester answered it with art of his own, and keeping a drawing that can no longer run would be dead
+code.
 
 ### One source for content and metadata
 

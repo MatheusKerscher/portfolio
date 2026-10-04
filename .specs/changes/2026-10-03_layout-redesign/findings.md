@@ -151,10 +151,28 @@ measurement is 100 without them and `design.md` applies them only when the measu
   covers the hero, so a test that clicks during the skin cross-fade must first wait for it to end.
 - The `no-img-element` rule does not fire in `opengraph-image.tsx`; a disable comment there is reported
   as unused.
+- `sharp` 0.35.5 does not cap a PNG palette at the number given in `colours`: the option only selects
+  the bit depth. Measured on a 150×90 resize of a project screenshot: `colours` 8 and 16 both write 16
+  colours; 17, 24, 32, 64 and 128 all write 254. `palette: true` changes nothing. The 8-bit thumbnails
+  had been asking for 24 and getting 254; they now ask for 16 (532 to 1,560 bytes each, from 1,976 to
+  4,783).
+- A test file imports JSON only with an import attribute, and spec files cannot import each other, so
+  `inspector.spec.ts` reads `audit.json` from disk and shared helpers live in `e2e/helpers.ts`.
+- axe reads a colour in the middle of a CSS transition. A tab trigger whose background flips at once
+  while its text colour fades reported `color-contrast`; the Inspector tabs have no transition.
 
 ## The sprite
 
-`public/avatar/avatar.png` is 92×92, indexed, 18 colours, 850 bytes. A second run of
-`npm run assets:pixel` produces byte-identical files. It was drawn from shapes on the grid (ellipses,
-polygons, rows of pixels) and reviewed by rendering it next to the photo and the reference, four rounds.
-It is a draft until the requester approves it.
+The drawn draft (92×92, 18 colours, 850 bytes, four rounds of review against the photo) was shown to the
+requester on a contact sheet. The answer was a generated pixel-art portrait added to the branch, which
+is now the source (`scripts/assets/portrait-art.jpeg`, 1024×1024, 331 KB, not served).
+
+- A generated image is not pixel art: resized straight to 92×92 it has 2,376 colours. One median colour
+  per cell, taken from the middle half of the cell, gives clean cells.
+- The first palette reduction was a median cut. It wrote three near-identical navy tones for the shirt
+  and seven for the skin, because it splits by population. Merging each colour into the most frequent
+  one within reach keeps one tone per flat area and leaves the palette for the details.
+- Cells on the edge of the white outline are a mix of white and background. Kept, they showed as a cream
+  fringe on a paper or dark background; they now go with whichever of the two they have more of.
+- Result: `public/avatar/avatar.png` is 92×92, indexed, 30 colours with transparency, 1,250 bytes. A
+  second run of `npm run assets:pixel` produces byte-identical files.

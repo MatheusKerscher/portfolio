@@ -73,9 +73,9 @@ proving both.
    indicator. Technology cards always show the name and the description. Project cards gain a thumbnail.
    Social links become one row. "Avoid lists" is read as a layout rule: the markup keeps list semantics
    for assistive technology.
-3. **Portrait.** The new photo is shown in the hero. A 92×92 pixel-art version, drawn by a script from
-   that photo in the style of the reference the requester sent, is used in 8-bit mode, the favicon, the
-   app icons, the manifest and the Open Graph image.
+3. **Portrait.** The new photo is shown in the hero. A 92×92 pixel-art version, made by a script from
+   the pixel art the requester supplied, is used in 8-bit mode, the favicon, the app icons, the manifest
+   and the Open Graph image.
 4. **A little pixel art in the normal skin.** A mini sprite on the 8-bit toggle, square-dot dividers in
    place of the green accent bars, a stepped scroll cue, a hard-edged offset shadow on hover and focus,
    and the frame of the Inspector.
@@ -224,16 +224,17 @@ All commands are run from the repository root. The Playwright projects are `chro
 
 ## Requester decisions
 
-| Decision                       | Choice                                                                                            | When       |
-| ------------------------------ | ------------------------------------------------------------------------------------------------- | ---------- |
-| Structure of the work          | One spec for the whole redesign, executed in phases                                               | 2026-10-03 |
-| PageSpeed target               | Performance ≥ 95                                                                                  | 2026-10-03 |
-| Interactive feature            | Inspector mode and 8-bit mode. "Entrevista 8-bit" and "Quest log" were proposed and not chosen    | 2026-10-03 |
-| Pixel-art portrait             | Drawn by script; the requester approves the render before it is used; fallback is art he supplies | 2026-10-03 |
-| Animation and scroll libraries | Keep `framer-motion` and Lenis; only the hero becomes static. A CSS-only replacement was declined | 2026-10-03 |
-| Portrait photo                 | The new photo in `public/images/`; `profile-photo.jpg` is removed                                 | 2026-10-03 |
-| Canonical host                 | The apex, `https://kerscher.dev.br`; the requester switches the primary domain on Vercel          | 2026-10-03 |
-| Contact email                  | `matheuskerscher@outlook.com` everywhere                                                          | 2026-10-03 |
+| Decision                       | Choice                                                                                                                                             | When       |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| Structure of the work          | One spec for the whole redesign, executed in phases                                                                                                | 2026-10-03 |
+| PageSpeed target               | Performance ≥ 95                                                                                                                                   | 2026-10-03 |
+| Interactive feature            | Inspector mode and 8-bit mode. "Entrevista 8-bit" and "Quest log" were proposed and not chosen                                                     | 2026-10-03 |
+| Pixel-art portrait             | Drawn by script; the requester approves the render before it is used; fallback is art he supplies                                                  | 2026-10-03 |
+| Pixel-art portrait, revised    | After seeing the drawn draft the requester added a generated pixel-art portrait to the branch. It replaces the drawn sprite, as the fallback above | 2026-10-03 |
+| Animation and scroll libraries | Keep `framer-motion` and Lenis; only the hero becomes static. A CSS-only replacement was declined                                                  | 2026-10-03 |
+| Portrait photo                 | The new photo in `public/images/`; `profile-photo.jpg` is removed                                                                                  | 2026-10-03 |
+| Canonical host                 | The apex, `https://kerscher.dev.br`; the requester switches the primary domain on Vercel                                                           | 2026-10-03 |
+| Contact email                  | `matheuskerscher@outlook.com` everywhere                                                                                                           | 2026-10-03 |
 
 Decided by Matheus Kerscher.
 
