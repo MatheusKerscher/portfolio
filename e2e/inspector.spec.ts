@@ -1,8 +1,8 @@
 import { expect, test, type Page } from "@playwright/test";
 import { readFileSync } from "node:fs";
-import { inspectorCopy, site } from "../src/app/data/site";
+import { inspectorCopy, navCopy, site, skinCopy } from "../src/app/data/site";
 import { palettePairs } from "../src/lib/palette-contract";
-import { violations, waitForStack } from "./helpers";
+import { storeSkin, violations, waitForStack } from "./helpers";
 
 // Read from disk: a JSON module would need an import attribute in the test runner.
 const audit = JSON.parse(readFileSync("src/app/data/audit.json", "utf8")) as {
@@ -14,7 +14,9 @@ const copy = inspectorCopy;
 const toggle = (page: Page) => page.getByRole("button", { name: copy.toggle });
 const panel = (page: Page) => page.locator("#inspector-panel");
 
+/** The Inspector is reachable only inside the 8-bit skin. */
 async function open(page: Page) {
+  await storeSkin(page);
   await page.goto("/");
   await waitForStack(page);
   await toggle(page).click();
@@ -22,12 +24,28 @@ async function open(page: Page) {
 }
 
 test.describe("Inspector mode", () => {
+  test("it exists only inside the 8-bit skin", async ({ page }) => {
+    await page.goto("/");
+    await waitForStack(page);
+    await expect(toggle(page)).toBeHidden();
+
+    await open(page);
+    await page
+      .getByRole("navigation", { name: navCopy.label })
+      .getByRole("button", { name: skinCopy.toggle })
+      .click();
+    await expect(page.locator("html")).not.toHaveAttribute("data-skin");
+    await expect(panel(page)).toHaveCount(0);
+    await expect(toggle(page)).toBeHidden();
+  });
+
   test("its code is fetched only when it is opened", async ({ page }) => {
     const scripts: string[] = [];
     page.on("request", (request) => {
       if (request.resourceType() === "script") scripts.push(request.url());
     });
 
+    await storeSkin(page);
     await page.goto("/");
     await waitForStack(page);
     await page.waitForLoadState("networkidle");

@@ -30,6 +30,18 @@ export function setSkin(skin: Skin) {
   apply(skin);
 }
 
+/** Switches to the other skin, with a stepped cross-fade where the browser supports it. */
+export function toggleSkin() {
+  const next: Skin = read() === "8bit" ? "normal" : "8bit";
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // The rule of the cross-fade is in globals.css.
+  if (!still && document.startViewTransition) {
+    document.startViewTransition(() => setSkin(next));
+  } else {
+    setSkin(next);
+  }
+}
+
 function subscribe(listener: () => void) {
   // Keeps other tabs of the site in step.
   const onStorage = (event: StorageEvent) => {

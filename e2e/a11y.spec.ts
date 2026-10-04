@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { revealAll, violations } from "./helpers";
+import { revealAll, storeSkin, violations } from "./helpers";
 
 const ROUTES = ["/", "/email-signature"];
 const THEMES = ["light", "dark"] as const;
@@ -21,11 +21,7 @@ test.describe("accessibility", () => {
             "the full theme and skin matrix runs in desktop Chromium",
           );
           await page.emulateMedia({ colorScheme: theme });
-          if (skin === "8-bit") {
-            await page.addInitScript(() =>
-              localStorage.setItem("skin", "8bit"),
-            );
-          }
+          if (skin === "8-bit") await storeSkin(page);
           await page.goto(route);
           await revealAll(page);
           expect(await violations(page)).toEqual([]);

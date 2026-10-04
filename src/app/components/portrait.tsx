@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { heroCopy, site } from "../data/site";
-import SkinToggle from "./skin-toggle";
 
 /** Native size of the sprite written by `scripts/pixel-assets.mjs`. */
 const SPRITE = { src: "/avatar/avatar.png", size: 92 };
@@ -45,7 +44,6 @@ export default function Portrait({ className }: { className?: string }) {
         unoptimized
         className="relative hidden h-full w-full border-2 border-ink bg-pixel-yellow [image-rendering:pixelated] pixel:block"
       />
-      <SkinToggle variant="chip" className="absolute -bottom-3 -left-3" />
     </div>
   );
 }

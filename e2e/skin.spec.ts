@@ -1,56 +1,113 @@
 import { expect, test, type Page } from "@playwright/test";
-import { heroCopy, signaturePage, skinCopy } from "../src/app/data/site";
+import {
+  heroCopy,
+  inspectorCopy,
+  navCopy,
+  signaturePage,
+  skinCopy,
+} from "../src/app/data/site";
 import {
   horizontalOverflow,
   isUnobscured,
   revealAll,
   scrollToNatural,
+  storeSkin,
   waitForStack,
 } from "./helpers";
 
 type WithSkinProbe = Window & { skinAtDomContentLoaded?: string };
 
-const toggles = (page: Page) =>
-  page.getByRole("button", { name: skinCopy.toggle });
+const KONAMI = [
+  "ArrowUp",
+  "ArrowUp",
+  "ArrowDown",
+  "ArrowDown",
+  "ArrowLeft",
+  "ArrowRight",
+  "ArrowLeft",
+  "ArrowRight",
+  "b",
+  "a",
+];
 
-/** Starts the next navigation with the 8-bit skin already stored, as for a returning visitor. */
-const storeSkin = (page: Page) =>
-  page.addInitScript(() => localStorage.setItem("skin", "8bit"));
+const html = (page: Page) => page.locator("html");
+const navbar = (page: Page) =>
+  page.getByRole("navigation", { name: navCopy.label });
+/** The hidden way in: the pixel in the footer. */
+const pixel = (page: Page) =>
+  page.getByRole("contentinfo").getByRole("button", { name: skinCopy.toggle });
+/** The way out, displayed in the navbar only inside the skin. */
+const exit = (page: Page) =>
+  navbar(page).getByRole("button", { name: skinCopy.toggle });
+const inspector = (page: Page) =>
+  navbar(page).getByRole("button", { name: inspectorCopy.toggle });
+
+async function typeCode(page: Page) {
+  for (const key of KONAMI) await page.keyboard.press(key);
+}
 
 test.describe("8-bit mode", () => {
-  test("both toggles switch the skin and stay in step", async ({ page }) => {
+  test("nothing in the normal skin announces it", async ({ page }) => {
     await page.goto("/");
     await waitForStack(page);
-    await expect(toggles(page)).toHaveCount(2);
-    await expect(page.locator("html")).not.toHaveAttribute("data-skin");
-    for (const index of [0, 1]) {
-      await expect(toggles(page).nth(index)).toHaveAttribute(
-        "aria-pressed",
-        "false",
-      );
-    }
+    await expect(html(page)).not.toHaveAttribute("data-skin");
 
-    // The mini sprite in the navbar.
-    await toggles(page).first().click();
-    await expect(page.locator("html")).toHaveAttribute("data-skin", "8bit");
-    for (const index of [0, 1]) {
-      await expect(toggles(page).nth(index)).toHaveAttribute(
-        "aria-pressed",
-        "true",
-      );
-    }
+    await expect(exit(page)).toBeHidden();
+    await expect(inspector(page)).toBeHidden();
+    await expect(page.locator("#hero").getByRole("button")).toHaveCount(0);
+    // The pixel is the only control with the name of the mode.
+    await expect(
+      page.getByRole("button", { name: skinCopy.toggle }),
+    ).toHaveCount(1);
+    await expect(pixel(page)).toHaveAttribute("aria-pressed", "false");
+  });
 
-    // The chip on the portrait. While the skin cross-fades, the view transition is on top of
-    // the page; clicking then would make Playwright scroll, and a scrolled hero is covered.
-    await expect.poll(() => isUnobscured(toggles(page).nth(1))).toBe(true);
-    await toggles(page).nth(1).click();
-    await expect(page.locator("html")).not.toHaveAttribute("data-skin");
-    for (const index of [0, 1]) {
-      await expect(toggles(page).nth(index)).toHaveAttribute(
-        "aria-pressed",
-        "false",
-      );
-    }
+  test("the pixel in the footer enters it and the navbar toggle leaves it", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await waitForStack(page);
+
+    await pixel(page).click();
+    await expect(html(page)).toHaveAttribute("data-skin", "8bit");
+    await expect(pixel(page)).toHaveAttribute("aria-pressed", "true");
+    await expect(exit(page)).toHaveAttribute("aria-pressed", "true");
+    await expect(inspector(page)).toBeVisible();
+
+    // While the skin cross-fades, the view transition is on top of the page; clicking then
+    // would make Playwright scroll and retry.
+    await expect.poll(() => isUnobscured(exit(page))).toBe(true);
+    await exit(page).click();
+    await expect(html(page)).not.toHaveAttribute("data-skin");
+    await expect(exit(page)).toBeHidden();
+    await expect(pixel(page)).toHaveAttribute("aria-pressed", "false");
+  });
+
+  test("the Konami code enters it", async ({ page }) => {
+    await page.goto("/");
+    await waitForStack(page);
+
+    // A wrong start does not spoil the code that follows it.
+    await page.keyboard.press("ArrowUp");
+    await typeCode(page);
+    await expect(html(page)).toHaveAttribute("data-skin", "8bit");
+    await expect(exit(page)).toBeVisible();
+  });
+
+  test("the Konami code is not read from a form field", async ({ page }) => {
+    await storeSkin(page);
+    await page.goto(signaturePage.path);
+    // The stored skin reaches the toggle only once the page has hydrated and is listening.
+    await expect(exit(page)).toHaveAttribute("aria-pressed", "true");
+
+    const field = page.getByRole("textbox").first();
+    await field.focus();
+    await typeCode(page);
+    await field.blur();
+    // Had the field let the code through, this second one would switch the skin back on.
+    await typeCode(page);
+    await expect(html(page)).not.toHaveAttribute("data-skin");
+    await expect(exit(page)).toBeHidden();
   });
 
   test("the choice persists and is applied before the first paint", async ({
@@ -58,8 +115,8 @@ test.describe("8-bit mode", () => {
   }) => {
     await page.goto("/");
     await waitForStack(page);
-    await toggles(page).first().click();
-    await expect(page.locator("html")).toHaveAttribute("data-skin", "8bit");
+    await pixel(page).click();
+    await expect(html(page)).toHaveAttribute("data-skin", "8bit");
 
     // DOMContentLoaded fires before the client bundle runs: only the inline script in <head>
     // can have set the attribute by then.
@@ -76,7 +133,7 @@ test.describe("8-bit mode", () => {
       ),
     ).toBe("8bit");
     await waitForStack(page);
-    await expect(toggles(page).first()).toHaveAttribute("aria-pressed", "true");
+    await expect(exit(page)).toHaveAttribute("aria-pressed", "true");
   });
 
   test("the 8-bit skin shows the sprite, pixelated thumbnails and the pixel font", async ({

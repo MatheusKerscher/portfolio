@@ -60,7 +60,8 @@ export default function Navbar() {
         </ul>
 
         <div className="flex items-center gap-2">
-          <SkinToggle variant="icon" />
+          {/* Both are displayed only inside the 8-bit skin. */}
+          <SkinToggle />
           <InspectorToggle />
           <ThemeToggle />
 

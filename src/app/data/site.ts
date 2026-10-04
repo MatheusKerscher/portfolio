@@ -187,7 +187,6 @@ export const navCopy = {
 
 export const skinCopy = {
   toggle: "Modo 8-bit",
-  chip: "8-bit",
 };
 
 export const inspectorCopy = {

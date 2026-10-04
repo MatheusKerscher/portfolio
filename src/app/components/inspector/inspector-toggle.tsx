@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useCallback, useRef, useState } from "react";
+import { useSkin } from "@/lib/skin";
 import { inspectorCopy } from "../../data/site";
 
 // Fetched when the Inspector is first opened, so it adds nothing to the page load it measures.
@@ -25,9 +26,14 @@ function Magnifier() {
   );
 }
 
+/** The Inspector belongs to the 8-bit skin: its toggle is displayed only there. */
 export default function InspectorToggle() {
+  const pixel = useSkin() === "8bit";
   const [open, setOpen] = useState(false);
   const button = useRef<HTMLButtonElement>(null);
+
+  // Leaving the skin closes the panel, and it stays closed when the skin comes back.
+  if (open && !pixel) setOpen(false);
 
   const close = useCallback(() => {
     setOpen(false);
@@ -44,7 +50,7 @@ export default function InspectorToggle() {
         aria-expanded={open}
         aria-controls={open ? "inspector-panel" : undefined}
         onClick={() => setOpen((current) => !current)}
-        className="flex h-8 w-8 items-center justify-center text-ink transition-colors duration-200 hover:text-brand aria-expanded:bg-ink aria-expanded:text-paper"
+        className="hidden h-8 w-8 items-center justify-center text-ink transition-colors duration-200 hover:text-brand aria-expanded:bg-ink aria-expanded:text-paper pixel:flex"
       >
         <Magnifier />
       </button>
