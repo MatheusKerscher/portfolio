@@ -92,9 +92,8 @@ and with a site that can be published.
 - [x] Sprite rebuilt from the art the requester supplied — _verified by:_ `avatar.png` is 92×92 with
       30 colours and 1,250 bytes; a second run is byte-identical; the contact sheet in this folder is
       regenerated; the whole suite passes (211 passed, 99 skipped).
-- [!] Sprite approved — _verified by:_ explicit approval in the conversation, recorded here with its
-  date. The drawn draft was answered with supplied art, not with an approval. Waiting for the
-  requester's yes to the sprite made from that art.
+- [x] Sprite approved — _verified by:_ the requester's answer in the conversation on 2026-10-04:
+      "aprovo a sprite". It is the sprite rebuilt from the art they supplied.
 - [x] Favicon, `icon.png`, `apple-icon.png`, manifest icons and the Open Graph image from the sprite —
       _verified by:_ the metadata routes test of the `seo` suite; a look at `/opengraph-image`.
 - [x] Pixel accents of the normal skin — _verified by:_ screenshots taken during the phase (square-dot
@@ -199,11 +198,10 @@ The requester's screenshot (1512×749) showed "Sobre" pinned with its heading be
 
 ## Blocked
 
-| Item                                        | Blocked by                                    | Who unblocks it                                |
-| ------------------------------------------- | --------------------------------------------- | ---------------------------------------------- |
-| Merging the branch with the draft sprite    | the requester's approval of the contact sheet | Matheus Kerscher                               |
-| PageSpeed Insights on the production URL    | the Vercel primary domain is still `www`      | Matheus Kerscher                               |
-| PageSpeed Insights baseline through the API | the anonymous quota, exhausted on 2026-10-03  | the quota reset, or a manual run or an API key |
+| Item                                        | Blocked by                                   | Who unblocks it                                |
+| ------------------------------------------- | -------------------------------------------- | ---------------------------------------------- |
+| PageSpeed Insights on the production URL    | the Vercel primary domain is still `www`     | Matheus Kerscher                               |
+| PageSpeed Insights baseline through the API | the anonymous quota, exhausted on 2026-10-03 | the quota reset, or a manual run or an API key |
 
 ## Dropped
 

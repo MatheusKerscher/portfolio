@@ -99,8 +99,8 @@ exiting 0. Every phase ends with the gate and with a site that can be published.
 
 ## Rollout
 
-- [ ] Requester reviewed the copy in both languages and the timeline — _verified by:_ their confirmation,
-      recorded here.
+- [x] Requester reviewed the copy in both languages and the timeline — _verified by:_ their answer in
+      the conversation on 2026-10-04: "textos estão certo".
 - [ ] The rollout of `2026-10-03_layout-redesign` covers the push, the pull request and the deploy: this
       work is on the same branch.
 - [ ] After the deploy: `hreflang` and both `llms.txt` answer on the production host — _verified by:_

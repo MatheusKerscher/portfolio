@@ -38,8 +38,10 @@ exiting 0.
 
 ## Rollout
 
-- [ ] The requester reviews `phone-before-after.jpg` and the site on a phone (type sizes, centred text
-      of the cards) — _verified by:_ their answer in the conversation.
+- [x] The requester reviews `phone-before-after.jpg` and the site on a phone (type sizes, centred text
+      of the cards) — _verified by:_ their answer in the conversation on 2026-10-04, with two
+      adjustments, which are the spec `2026-10-04_carousel-dots-and-stack-marquee`: dots instead of
+      arrows on a phone, and the technologies as a marquee band.
 - [ ] Push and pull request — _verified by:_ their go-ahead; nothing is pushed without it.
 
 ## Blocked
