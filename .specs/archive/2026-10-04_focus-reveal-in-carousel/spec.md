@@ -49,7 +49,7 @@ and the local gate fails when it is not.
       WebKit the walk includes the links: the test fails if it reaches fewer than ten.
 - [x] Without the fix that test fails locally. Measured: in `mobile-safari`; in `webkit` on the desktop
       it passes locally, as on one of its two tries in CI (`findings.md`).
-- [ ] The `E2E` workflow passes on the pull request of this branch.
+- [x] The `E2E` workflow passes on the pull request of this branch: 462 passed, 258 skipped, on #45.
 
 ## Requester decisions
 

@@ -240,3 +240,23 @@ is now the source (`scripts/assets/portrait-art.jpeg`, 1024×1024, 331 KB, not s
 - The tile behind it changed from the yellow of the reference to the `brand` green at the requester's
   request. The white outline keeps the figure apart from the tile in both themes (`#137a3a` and
   `#4ade80`); on a white or near-black tile it would disappear in one of them.
+
+## Rollout (2026-10-04)
+
+- **Pull requests:** #44 carried the four specs of the redesign and was merged with one test of the
+  `E2E` workflow red; #45 fixed what that test had found and was merged with every check green.
+- **Production**, `https://kerscher.dev.br`, checked with `curl` after the deploy of `24d20b1`:
+
+  | Request                        | Answer                                                         |
+  | ------------------------------ | -------------------------------------------------------------- |
+  | `/`                            | 200, `lang="pt-BR"`, canonical and three `hreflang` alternates |
+  | `/en`                          | 200, `lang="en"`, canonical and three `hreflang` alternates    |
+  | `https://www.kerscher.dev.br/` | 308 to the apex                                                |
+  | `/llms.txt`, `/en/llms.txt`    | 200; the second with `Content-Language: en`                    |
+  | `/pt`, `/email-signature`      | 308 to `/`                                                     |
+  | `/sitemap.xml`                 | 200                                                            |
+
+- **PageSpeed Insights:** the API answered 429 again, "Quota exceeded for quota metric 'Queries'", as on
+  2026-10-03. The requester ran it in the browser and reported 100 on mobile and on desktop.
+- **JSON-LD and real devices:** validated by the requester, in validator.schema.org and on phones.
+- **README thumbnail:** recaptured from `/en` on production, 1500×900.

@@ -36,9 +36,10 @@ exiting 0.
 
 ## Rollout
 
-- [ ] The requester reviews `review.jpg` and the site on a phone — _verified by:_ their answer in the
-      conversation.
-- [ ] Push and pull request — _verified by:_ their go-ahead; nothing is pushed without it.
+- [x] The requester reviews `review.jpg` and the site on a phone — _verified by:_ their answer in the
+      conversation on 2026-10-04: "revisei".
+- [x] Push and pull request — _verified by:_ the requester pushed the branch and asked for the pull
+      request, #44, merged on 2026-10-04.
 
 ## Blocked
 

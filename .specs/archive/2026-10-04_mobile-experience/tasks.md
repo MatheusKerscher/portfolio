@@ -42,7 +42,8 @@ exiting 0.
       of the cards) — _verified by:_ their answer in the conversation on 2026-10-04, with two
       adjustments, which are the spec `2026-10-04_carousel-dots-and-stack-marquee`: dots instead of
       arrows on a phone, and the technologies as a marquee band.
-- [ ] Push and pull request — _verified by:_ their go-ahead; nothing is pushed without it.
+- [x] Push and pull request — _verified by:_ the requester pushed the branch and asked for the pull
+      request, #44, merged on 2026-10-04.
 
 ## Blocked
 

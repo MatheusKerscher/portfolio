@@ -33,8 +33,8 @@ and with a site that can be published.
       `findings.md`.
 - [x] PageSpeed Insights baseline of production — _verified by:_ `findings.md` states why it could not
       be measured (API quota, 429).
-- [~] `.github/workflows/e2e.yaml` — _verified by:_ the workflow is green on the pull request. The file
-  exists; it runs for the first time when the pull request is opened.
+- [x] `.github/workflows/e2e.yaml` — _verified by:_ the workflow is green on pull request #45. Its first
+      run, on #44, failed one test, which was right: see `2026-10-04_focus-reveal-in-carousel`.
 
 ### Phase 1 — foundations, with no change to the layout
 
@@ -179,30 +179,39 @@ The requester's screenshot (1512×749) showed "Sobre" pinned with its heading be
 ## Rollout
 
 - [x] Commits follow the conventional format — _verified by:_ the `commit-msg` hook accepted each one.
-- [ ] Pull request opened and CI green — _verified by:_ the `Linting` and `E2E` workflows pass.
-- [ ] Manual check on the Vercel preview: the home page in the four modes, and the stacking on an
-      iPhone and an Android phone — _verified by:_ the requester's confirmation, recorded here.
+- [x] Pull request opened and CI green — _verified by:_ #44 was opened on 2026-10-04 and merged with
+      `Linting` green and one test of `E2E` red; #45 fixed the defect that test had found, and both
+      workflows passed on it (462 passed, 258 skipped).
+- [x] Manual check: the home page in the four modes, and the stacking on an iPhone and an Android phone
+      — _verified by:_ the requester's confirmation on 2026-10-04, after the merge: "validado em
+      dispositivos reais". It was done on production, not on the preview.
       `/email-signature` was removed afterwards, by `2026-10-04_i18n-and-experience`.
-- [ ] PageSpeed Insights on the preview, mobile and desktop, median of 3 — _verified by:_ the numbers are
-      in `findings.md`.
-- [ ] Vercel primary domain switched to the apex — _verified by:_ `curl -sI https://kerscher.dev.br/`
-      answers 200 and `https://www.kerscher.dev.br/` answers a redirect to the apex.
-- [ ] PageSpeed Insights on `https://kerscher.dev.br/` after the merge: Performance ≥ 95 on mobile and
-      desktop — _verified by:_ the numbers are in `findings.md`.
-- [ ] JSON-LD accepted by validator.schema.org — _verified by:_ no error reported for the production
-      URL.
-- [ ] `findings.md` complete — _verified by:_ it holds the baseline, the per-phase measurements and
-      anything that behaved differently from `design.md`.
-- [ ] Folder moved to `.specs/archive/2026-10-03_layout-redesign/` — _verified by:_ `.specs/changes/`
+- [-] PageSpeed Insights on the preview, mobile and desktop, median of 3 — dropped: the pull request
+  was merged before a preview was measured. Production was measured instead, below.
+- [x] Vercel primary domain switched to the apex — _verified by:_ on 2026-10-04
+      `https://kerscher.dev.br/` answers 200 and `https://www.kerscher.dev.br/` answers 308 to it.
+- [x] PageSpeed Insights on `https://kerscher.dev.br/` after the merge: Performance ≥ 95 on mobile and
+      desktop — _verified by:_ the requester ran it on 2026-10-04 and reported 100 on both devices. The
+      API could not be used: its anonymous quota answered 429 again (`findings.md`).
+- [x] JSON-LD accepted by validator.schema.org — _verified by:_ the requester's confirmation on
+      2026-10-04: "validado no validator.schema".
+- [x] `findings.md` complete — _verified by:_ it holds the baseline, the per-phase measurements, what
+      behaved differently from `design.md` and the checks of the rollout.
+- [x] README thumbnail recaptured from the published site — _verified by:_
+      `node scripts/capture-thumbnail.mjs https://kerscher.dev.br/en public/thumbnails/thumbnail.png`
+      wrote a 1500×900 image of the English home page. The requester uses the same image on LinkedIn.
+- [x] Folder moved to `.specs/archive/2026-10-03_layout-redesign/` — _verified by:_ `.specs/changes/`
       holds only `.gitkeep`.
 
 ## Blocked
 
-| Item                                        | Blocked by                                   | Who unblocks it                                |
-| ------------------------------------------- | -------------------------------------------- | ---------------------------------------------- |
-| PageSpeed Insights on the production URL    | the Vercel primary domain is still `www`     | Matheus Kerscher                               |
-| PageSpeed Insights baseline through the API | the anonymous quota, exhausted on 2026-10-03 | the quota reset, or a manual run or an API key |
+| Item | Blocked by | Who unblocks it |
+| ---- | ---------- | --------------- |
 
 ## Dropped
 
-Nothing yet.
+- **PageSpeed Insights on the preview.** The pull request was merged before one was measured;
+  production was measured instead.
+- **PageSpeed Insights baseline of the old site through the API.** The anonymous quota was exhausted on
+  2026-10-03 and again on 2026-10-04, and the old site is no longer published, so there is nothing left
+  to measure.
