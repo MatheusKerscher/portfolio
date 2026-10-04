@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import ThemeToggle from "./theme-toggle";
 
 type NavbarProps = {
   /** Resolved by the layout: a Client Component does not import a dictionary. */
@@ -13,10 +14,16 @@ type NavbarProps = {
     links: { label: string; href: string }[];
     openMenu: string;
     closeMenu: string;
+    lightTheme: string;
+    darkTheme: string;
   };
   /** In the bar from `md` up, and inside the menu below it, where the bar has no room. */
   languageSwitch: ReactNode;
-  /** The toggles at the end of the bar. */
+  /**
+   * The toggles of the 8-bit skin. The theme toggle is imported here instead: rendered by the
+   * layout as a Client Component of its own, it made the bundler ship the gesture and layout
+   * features of framer-motion, 14 KB that nothing uses.
+   */
   actions: ReactNode;
 };
 
@@ -75,6 +82,10 @@ export default function Navbar({ copy, languageSwitch, actions }: NavbarProps) {
         <div className="flex items-center gap-2">
           <div className="hidden md:block">{languageSwitch}</div>
           {actions}
+          <ThemeToggle
+            lightLabel={copy.lightTheme}
+            darkLabel={copy.darkTheme}
+          />
 
           <button
             className="flex flex-col gap-1.5 p-1 md:hidden"

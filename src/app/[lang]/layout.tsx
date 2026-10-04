@@ -12,7 +12,6 @@ import Navbar from "../components/navbar";
 import SkinToggle from "../components/skin-toggle";
 import SmoothScrollProvider from "../components/smooth-scroll-provider";
 import { ThemeProvider } from "../components/theme-provider";
-import ThemeToggle from "../components/theme-toggle";
 import { restoreScrollScript } from "@/lib/scroll-position";
 import { skinScript } from "@/lib/skin-script";
 import { dictionaryFor } from "../data/dictionaries";
@@ -138,6 +137,8 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
                   ),
                   openMenu: nav.openMenu,
                   closeMenu: nav.closeMenu,
+                  lightTheme: nav.lightTheme,
+                  darkTheme: nav.darkTheme,
                 }}
                 languageSwitch={
                   <LanguageSwitch
@@ -147,15 +148,11 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
                 }
                 actions={
                   <>
-                    {/* These two are displayed only inside the 8-bit skin. */}
+                    {/* Displayed only inside the 8-bit skin. */}
                     <SkinToggle label={dict.skin.toggle} />
                     <InspectorToggle
                       label={inspectorDictionaryFor(locale).toggle}
                       locale={locale}
-                    />
-                    <ThemeToggle
-                      lightLabel={nav.lightTheme}
-                      darkLabel={nav.darkTheme}
                     />
                   </>
                 }
