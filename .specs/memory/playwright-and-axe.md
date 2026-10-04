@@ -10,8 +10,14 @@ in the `2026-10-03_layout-redesign` spec.
 - **`mouse.wheel` does not exist in mobile WebKit.** Evidence: on the iPhone 15 device it throws
   `mouse.wheel: Mouse wheel is not supported in mobile WebKit`. The wheel test of the `carousel` suite is
   skipped on mobile.
-- **WebKit does not move focus to links with Tab**, as Safari does by default. Evidence: the focus test
-  reached only buttons and regions there; it covers links in Chromium and Firefox.
+- **WebKit moves focus to links with Tab on Linux and not on macOS.** On macOS it behaves as Safari does
+  by default: Tab reaches buttons, fields and regions, and Option+Tab reaches links as well. Evidence:
+  the focus test reached only buttons and regions locally; with `Alt+Tab` 33 of the 44 elements it
+  focused were links. On the Linux runner of CI plain Tab reached the links: the log of the first `E2E`
+  run (pull request #44) names project cards focused by Tab in `webkit` and `mobile-safari`.
+  **Rule:** a keyboard walk presses `Alt+Tab` when the browser is WebKit and the platform is macOS, and
+  asserts how many links it reached. Without that, the gate was green on macOS with a focus defect that
+  CI caught (`2026-10-04_focus-reveal-in-carousel`).
 - **A click that Playwright retries scrolls the page**, with a different alignment on each try. During
   the cross-fade of the skin the view transition is on top of the page, so a click is retried, the hero
   scrolls and the next panel covers it. Evidence: the skin test failed until it waited for a hit-test on

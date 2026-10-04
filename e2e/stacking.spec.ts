@@ -207,7 +207,7 @@ test.describe("stacked sections", () => {
     });
   });
 
-  test("keyboard focus is never obscured", async ({ page }) => {
+  test("keyboard focus is never obscured", async ({ page, browserName }) => {
     await page.goto("/");
     await waitForStack(page);
     await revealAll(page);
@@ -215,14 +215,19 @@ test.describe("stacked sections", () => {
     const focusable = await page
       .locator("a[href], button, [tabindex='0']")
       .count();
+    // Safari on macOS moves focus to links with Option+Tab; plain Tab skips them there, and a
+    // walk without links would not see a card that is focused outside its carousel.
+    const option =
+      browserName === "webkit" && process.platform === "darwin" ? "Alt+" : "";
     const obscured: string[] = [];
+    let links = 0;
 
-    for (const key of ["Tab", "Shift+Tab"]) {
+    for (const key of [`${option}Tab`, `${option}Shift+Tab`]) {
       for (let step = 0; step < focusable + 2; step += 1) {
         await page.keyboard.press(key);
         // The browser scrolls to the element, then StackController corrects on the next frame.
         await page.waitForTimeout(150);
-        const problem = await page.evaluate(() => {
+        const focused = await page.evaluate(() => {
           const element = document.activeElement;
           if (!element || element === document.body) return null;
           // A checkbox drawn by its label is hidden itself: the label is what has to be seen.
@@ -231,17 +236,25 @@ test.describe("stacked sections", () => {
           const x = rect.left + rect.width / 2;
           const y = rect.top + rect.height / 2;
           const top = document.elementFromPoint(x, y);
-          if (top && (shown === top || shown.contains(top))) return null;
           const name =
             element.getAttribute("aria-label") ??
             element.textContent?.trim().slice(0, 40);
-          return `${element.tagName.toLowerCase()} "${name}" at ${Math.round(x)},${Math.round(y)}`;
+          return {
+            link: element.tagName === "A",
+            problem:
+              top && (shown === top || shown.contains(top))
+                ? null
+                : `${element.tagName.toLowerCase()} "${name}" at ${Math.round(x)},${Math.round(y)}`,
+          };
         });
-        if (problem) obscured.push(`${key}: ${problem}`);
+        if (focused?.link) links += 1;
+        if (focused?.problem) obscured.push(`${key}: ${focused.problem}`);
       }
     }
 
     expect(obscured).toEqual([]);
+    // The walk went through the links, the cards of the carousels among them.
+    expect(links).toBeGreaterThan(10);
   });
 
   test("an in-page link lands on its panel when it is above", async ({
