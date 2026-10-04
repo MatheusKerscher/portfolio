@@ -13,6 +13,7 @@ import SkinToggle from "../components/skin-toggle";
 import SmoothScrollProvider from "../components/smooth-scroll-provider";
 import { ThemeProvider } from "../components/theme-provider";
 import ThemeToggle from "../components/theme-toggle";
+import { restoreScrollScript } from "@/lib/scroll-position";
 import { skinScript } from "@/lib/skin-script";
 import { dictionaryFor } from "../data/dictionaries";
 import { inspectorDictionaryFor } from "../data/dictionaries/inspector";
@@ -165,6 +166,8 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
             </SmoothScrollProvider>
           </MotionProvider>
         </ThemeProvider>
+        {/* After the content: it scrolls to a section, which has to exist by then. */}
+        <script dangerouslySetInnerHTML={{ __html: restoreScrollScript }} />
       </body>
     </html>
   );

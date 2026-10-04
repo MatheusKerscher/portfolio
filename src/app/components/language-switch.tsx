@@ -1,5 +1,7 @@
 "use client";
 
+import { rememberScrollPosition } from "@/lib/scroll-position";
+
 type LanguageSwitchProps = {
   /** Accessible name of the group, e.g. "Idioma". */
   label: string;
@@ -19,8 +21,8 @@ type LanguageSwitchProps = {
 
 /**
  * The same page in the other language. Plain links: a change of language is a full page load in
- * any case, and they work without JavaScript. The click keeps the section being read, because
- * the anchors are the same in every language.
+ * any case, and they work without JavaScript. The click remembers where the visitor is, and the
+ * other language opens at the same place instead of at the top (see `scroll-position.ts`).
  */
 export default function LanguageSwitch({
   label,
@@ -46,9 +48,7 @@ export default function LanguageSwitch({
             lang={option.hrefLang}
             title={option.name}
             aria-current={option.current ? "true" : undefined}
-            onClick={(event) => {
-              event.currentTarget.href = option.href + window.location.hash;
-            }}
+            onClick={rememberScrollPosition}
             className="flex min-h-8 min-w-8 items-center justify-center text-ink-muted transition-colors duration-200 hover:text-brand aria-[current]:text-ink aria-[current]:underline aria-[current]:decoration-brand aria-[current]:decoration-2 aria-[current]:underline-offset-4"
           >
             {option.label}

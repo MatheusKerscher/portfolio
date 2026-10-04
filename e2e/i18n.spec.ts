@@ -1,13 +1,13 @@
 import { expect, test, type Page } from "@playwright/test";
 import { defaultLocale, locales, type Locale } from "../src/app/data/locales";
-import { headingId, sections } from "../src/app/data/site";
+import { sections } from "../src/app/data/site";
 import {
   copyOf,
   homeOf,
   inspectorCopyOf,
-  isUnobscured,
   LOCALES,
   revealAll,
+  scrollToY,
   storeSkin,
   waitForStack,
 } from "./helpers";
@@ -60,6 +60,23 @@ const readable = (page: Page, selector: string) =>
     return [(root as HTMLElement).innerText, ...attributes].join("\n");
   });
 
+/** The section under the navbar and how far into it the page is scrolled, as a share of it. */
+const position = (page: Page) =>
+  page.evaluate(() => {
+    const navbar = document.querySelector("[data-nav-bar]")!.clientHeight;
+    const current = Array.from(
+      document.querySelectorAll<HTMLElement>(".stack-slot"),
+    )
+      .filter((slot) => slot.getBoundingClientRect().top <= navbar + 1)
+      .at(-1)!;
+    const panel = current.querySelector<HTMLElement>("[data-stack-panel]")!;
+    return {
+      section: current.id,
+      ratio:
+        (navbar - current.getBoundingClientRect().top) / panel.offsetHeight,
+    };
+  });
+
 const other = (locale: Locale) =>
   LOCALES.find((code) => code !== locale) ?? defaultLocale;
 
@@ -69,12 +86,29 @@ for (const locale of LOCALES) {
   const target = other(locale);
 
   test.describe(`languages, from ${locale}`, () => {
-    test("the switch marks the language and leads to the other one, on the same section", async ({
+    test("the switch marks the language and opens the other one at the same place", async ({
       page,
       isMobile,
     }) => {
-      await page.goto(`${home}#${sections.projects}`);
+      await page.goto(home);
       await waitForStack(page);
+      // A place no link leads to: part of the way into the experience section.
+      const start = await page.evaluate((id) => {
+        const slot = document.getElementById(id)!;
+        const panel = slot.querySelector<HTMLElement>("[data-stack-panel]")!;
+        const navbar = document.querySelector("[data-nav-bar]")!.clientHeight;
+        return (
+          slot.getBoundingClientRect().top +
+          window.scrollY -
+          navbar +
+          0.4 * panel.offsetHeight
+        );
+      }, sections.experience);
+      await scrollToY(page, start);
+      const before = await position(page);
+      expect(before.section).toBe(sections.experience);
+      expect(before.ratio).toBeCloseTo(0.4, 1);
+
       // Below `md` the switch of the navbar is inside the menu.
       if (isMobile) {
         await page.getByRole("button", { name: copy.nav.openMenu }).click();
@@ -95,16 +129,21 @@ for (const locale of LOCALES) {
       await expect(link).toContainText(locales[target].label);
       await link.click();
 
-      await expect(page).toHaveURL(
-        new RegExp(`${homeOf(target)}#${sections.projects}$`),
-      );
+      await expect(page).toHaveURL(new RegExp(`${homeOf(target)}$`));
       await expect(page.locator("html")).toHaveAttribute(
         "lang",
         locales[target].htmlLang,
       );
+      // The other language opens where this one was being read, not at the top.
       await expect
-        .poll(() => isUnobscured(page.locator(`#${headingId("projects")}`)))
-        .toBe(true);
+        .poll(async () => (await position(page)).section)
+        .toBe(before.section);
+      await waitForStack(page);
+      const after = await position(page);
+      expect(Math.abs(after.ratio - before.ratio)).toBeLessThan(0.05);
+
+      // The position was for that navigation only: nothing is left to apply to a later one.
+      expect(await page.evaluate(() => sessionStorage.length)).toBe(0);
     });
 
     test("nothing on the page is left in the source language", async ({
