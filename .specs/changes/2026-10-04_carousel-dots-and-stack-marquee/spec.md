@@ -31,7 +31,9 @@ motion.
 1. **Dots below 768 px**, with the logic of the reference: one dot per item, a position computed from
    the fraction of the scrollable distance, at most five dots on screen in a window that slides, smaller
    dots at the ends of the window when there is more, hidden from assistive technology, not clickable.
-   Squares of 6 px, the pixel accent of the site.
+   The dots are squares, the pixel accent of the site; their measures, the look of the current dot and
+   the transitions are those of the reference (the requester, on 2026-10-04, while the work was in
+   progress: "aplique o mesmo estilo e lógica de transição e dot atual usado no da nuvemshop").
 2. **The buttons and the position bar stay from 768 px up.**
 3. **A marquee band for the technologies**, at every width: a label, a pause control, and a strip of
    icon and name that loops.
@@ -77,6 +79,7 @@ motion.
 | Copy in both languages             | Correct as it is                                                                                                                                           | 2026-10-04 |
 | What an item of the band shows     | Icon and name; the descriptions leave the page                                                                                                             | 2026-10-04 |
 | Where the dots replace the buttons | Below 768 px                                                                                                                                               | 2026-10-04 |
+| Look of the dots                   | The measures, the transitions and the current dot of the reference, as squares (sent while the work was in progress)                                       | 2026-10-04 |
 | Defaults of the plan               | Approved without comments: the band at every width, a pause control that needs no JavaScript, a static wrapped list under reduced motion, 6 px square dots | 2026-10-04 |
 
 ## Dependencies and blockers
