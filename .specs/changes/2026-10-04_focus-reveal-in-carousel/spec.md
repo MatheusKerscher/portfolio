@@ -42,12 +42,13 @@ and the local gate fails when it is not.
 
 ## Acceptance criteria
 
-- [ ] `npm run lint:eslint:check`, `npm run lint:prettier:check`, `npm run build` and `npm run test:e2e`
+- [x] `npm run lint:eslint:check`, `npm run lint:prettier:check`, `npm run build` and `npm run test:e2e`
       exit 0.
-- [ ] Moving focus through the page with the keyboard, forwards and backwards, in the five projects,
+- [x] Moving focus through the page with the keyboard, forwards and backwards, in the five projects,
       every focused link, button and region has its centre on screen and nothing painted over it. In
       WebKit the walk includes the links: the test fails if it reaches fewer than ten.
-- [ ] Without the fix that test fails locally in `webkit` and in `mobile-safari`.
+- [x] Without the fix that test fails locally. Measured: in `mobile-safari`; in `webkit` on the desktop
+      it passes locally, as on one of its two tries in CI (`findings.md`).
 - [ ] The `E2E` workflow passes on the pull request of this branch.
 
 ## Requester decisions

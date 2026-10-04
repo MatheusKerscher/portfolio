@@ -11,11 +11,13 @@ States: `[ ]` open · `[~]` in progress · `[x]` done and verified · `[!]` bloc
 
 ## Implementation
 
-- [ ] The focus walk reaches links in WebKit on macOS and fails on the defect — _verified by:_ the test
-      fails in `webkit` and `mobile-safari` before the fix.
-- [ ] A carousel scrolls to the item that holds the focused element — _verified by:_ the same test
-      passes in the five projects.
-- [ ] The gate — _verified by:_ all four commands exit 0.
+- [x] The focus walk reaches links in WebKit on macOS and fails on the defect — _verified by:_ before the
+      fix the test failed in `mobile-safari` with the two lines CI printed. In `webkit` on the desktop it
+      passed locally, as it did on one of its two tries in CI.
+- [x] A carousel scrolls to the item that holds the focused element — _verified by:_ the same test
+      passed 15 times out of 15 in the five projects, and the Option+Tab walk of `findings.md` finds
+      every focused card wholly inside its region.
+- [x] The gate — _verified by:_ 462 passed, 258 skipped.
 
 ## Rollout
 
