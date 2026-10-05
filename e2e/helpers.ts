@@ -187,6 +187,51 @@ export const holdAudioUntilPress = (page: Page) =>
     };
   });
 
+/**
+ * A model of an audio output that is slow to start, as Firefox was on the CI runner and as a
+ * wireless headset is when it wakes up: an `AudioContext` reads `suspended` for `delay`
+ * milliseconds after it is created, whatever asks it to resume, and runs from then on.
+ *
+ * No private class field and no `super` in a callback: this function is sent to the page as the
+ * text Playwright compiled it to, and the helpers that syntax compiles to do not exist there.
+ */
+export const delayAudioStart = (page: Page, delay: number) =>
+  page.addInitScript((wait) => {
+    if (!window.AudioContext) return;
+    const Real = window.AudioContext;
+    const realState = Object.getOwnPropertyDescriptor(
+      BaseAudioContext.prototype,
+      "state",
+    )!.get!;
+    const started = new WeakSet<AudioContext>();
+    const starts = new WeakMap<AudioContext, Promise<void>>();
+
+    window.AudioContext = class extends Real {
+      constructor(options?: AudioContextOptions) {
+        super(options);
+        const context = this as AudioContext;
+        void Real.prototype.suspend.call(context);
+        starts.set(
+          context,
+          new Promise((resolve) => setTimeout(resolve, wait)).then(() => {
+            started.add(context);
+            return Real.prototype.resume.call(context);
+          }),
+        );
+      }
+
+      get state(): AudioContextState {
+        return started.has(this) ? realState.call(this) : "suspended";
+      }
+
+      resume() {
+        return started.has(this)
+          ? Real.prototype.resume.call(this)
+          : starts.get(this)!;
+      }
+    };
+  }, delay);
+
 /** Jumps to a scroll position and gives layout a moment to settle. */
 export async function scrollToY(page: Page, y: number) {
   await page.evaluate((top) => window.scrollTo(0, top), y);

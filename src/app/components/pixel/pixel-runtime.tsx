@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { unlockAudio } from "@/lib/audio-context";
-import { applyVolume, play } from "@/lib/pixel-audio";
+import { applyVolume, play, whenAudioRuns } from "@/lib/pixel-audio";
 import { startMusic } from "@/lib/pixel-music";
 import { setMusic, usePixelPrefs } from "@/lib/pixel-prefs";
 import { recentSkinEntry } from "@/lib/skin";
@@ -45,9 +45,14 @@ export default function PixelRuntime({ locale }: { locale: Locale }) {
   useEffect(applyVolume, [sound]);
 
   useEffect(() => {
-    // An entry is greeted; a page that loads with the skin stored is not.
+    // An entry is greeted; a page that loads with the skin stored is not. The press that
+    // entered the skin created the audio context a moment ago, and it may still be starting:
+    // the jingle waits for it, for as long as the entry is recent.
+    let forgetGreeting = () => {};
     if (recentSkinEntry()) {
-      play("enter");
+      forgetGreeting = whenAudioRuns(() => {
+        if (recentSkinEntry()) play("enter");
+      });
       animate(document.querySelector("main"), "px-shake", 260);
     }
 
@@ -58,6 +63,7 @@ export default function PixelRuntime({ locale }: { locale: Locale }) {
       document.addEventListener(type, unlockAudio, true),
     );
     return () => {
+      forgetGreeting();
       PRESSES.forEach((type) =>
         document.removeEventListener(type, unlockAudio, true),
       );

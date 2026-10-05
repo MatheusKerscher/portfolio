@@ -4,6 +4,7 @@ import { ACHIEVEMENTS } from "../src/lib/pixel-prefs";
 import {
   audioProbe,
   DEFAULT_COPY,
+  delayAudioStart,
   holdAudioUntilPress,
   homeOf,
   inspectorCopyOf,
@@ -211,6 +212,19 @@ test.describe("juice of the 8-bit skin", () => {
     await expect(page.locator(".px-scenery")).toHaveCount(1);
     // The context is created by the gesture, the jingle is played by the runtime.
     expect((await audioProbe(page)).contexts).toBe(1);
+    await expect
+      .poll(async () => (await audioProbe(page)).sounds)
+      .toBeGreaterThan(0);
+  });
+
+  test("the greeting waits for an audio output that is slow to start", async ({
+    page,
+  }) => {
+    // The press that enters the skin creates the context, and the runtime asks for the jingle
+    // a moment later. Where the context is not running by then, the jingle waits for it.
+    await spyOnAudio(page);
+    await delayAudioStart(page, 2000);
+    await enterSkin(page);
     await expect
       .poll(async () => (await audioProbe(page)).sounds)
       .toBeGreaterThan(0);

@@ -153,6 +153,28 @@ export function play(effect: Effect) {
   }
 }
 
+/**
+ * Runs `run` once the context is running: at once if it is, when it starts otherwise. A press
+ * creates the context, and a browser, or an audio output that has to wake up, may take a moment
+ * to start it. Returns what gives up the wait.
+ */
+export function whenAudioRuns(run: () => void) {
+  const context = currentAudio();
+  if (!context) return () => {};
+  if (context.state === "running") {
+    run();
+    return () => {};
+  }
+
+  const onChange = () => {
+    if (context.state !== "running") return;
+    context.removeEventListener("statechange", onChange);
+    run();
+  };
+  context.addEventListener("statechange", onChange);
+  return () => context.removeEventListener("statechange", onChange);
+}
+
 /** For the sequencer: one voice of the music at a time of the context. */
 export function playInMusic(
   context: AudioContext,
