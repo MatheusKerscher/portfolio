@@ -86,3 +86,22 @@ in the `2026-10-03_layout-redesign` spec.
   `pkill -f "next start"` had not stopped it: the process renames itself `next-server (v16.3.8)`.
   **Rule:** before the gate, `lsof -nP -iTCP:3100 -sTCP:LISTEN` prints nothing; a server started by
   hand is stopped by its process id.
+- **Firefox on the Linux runner of CI starts no `AudioContext` without an audio output.** Evidence
+  (2026-10-05, pull request #47): in the first `E2E` run of the `juice` suite, five tests failed, all in
+  `firefox` and all about sound: 0 sounds on entering the skin and on a press, and the music stopped
+  after the 5 sounds of its first step, which is what a context whose clock stands still gives.
+  `chromium` and `webkit` passed on the same runner, and the three engines pass on macOS. With
+  PulseAudio installed and started before the suites (`.github/workflows/e2e.yaml`), which gives a null
+  sink, the same five tests passed in the next run.
+- **A context can still be starting when the page asks for the first sound.** Evidence: in that next
+  run, the first audio test of `firefox` failed once with 0 sounds and passed on the retry. The entry
+  jingle and the sound of the first achievement, 700 ms later, were both asked for before the context
+  ran, and were dropped. The jingle now waits for the context (`whenAudioRuns`), and `delayAudioStart`
+  of `e2e/helpers.ts` models a context that takes two seconds to start: with it the test of the
+  greeting fails in the five projects on a build without the wait.
+- **The function of an init script reaches the page as the text Playwright compiled it to.** Evidence:
+  a class with a private field (`#started`) inside `page.addInitScript` made `new AudioContext()` throw
+  `ReferenceError: _classPrivateFieldInitSpec is not defined` in the three engines. The page caught the
+  error, as it does for a browser without audio, so the test failed for a reason that was not the one
+  it was written for, on a build with the fix and on one without it. Such a function uses closures in
+  place of private fields, and `Real.prototype.method.call(this)` in place of `super` in a callback.
