@@ -106,14 +106,19 @@ for (const skin of ["normal", "8-bit"] as const) {
       ).toBe(true);
 
       for (let pointed = 0; pointed < count; pointed += 1) {
-        await links.nth(pointed).hover();
-        await expect
-          .poll(() => opacities(links), `${name}, link ${pointed + 1}`)
-          .toEqual(
+        // Pointed at again on every try: a page that is still settling carries the link away
+        // from under the pointer, and the fade takes a moment.
+        await expect(async () => {
+          await links.nth(pointed).hover();
+          expect(
+            await opacities(links),
+            `${name}, link ${pointed + 1}`,
+          ).toEqual(
             Array.from({ length: count }, (_, index) =>
               index === pointed ? "1" : "0.4",
             ),
           );
+        }).toPass({ timeout: 10_000 });
       }
     }
 
@@ -121,14 +126,16 @@ for (const skin of ["normal", "8-bit"] as const) {
     const contact = page.locator(LINK_GROUPS.contact);
     const email = page.locator(`#${sections.contact} a[href^="mailto:"]`);
     const footer = page.locator(LINK_GROUPS.footer);
-    await contact.first().hover();
-    await expect.poll(() => opacities(contact)).toContain("0.4");
+    await expect(async () => {
+      await contact.first().hover();
+      expect(await opacities(contact)).toContain("0.4");
+    }).toPass({ timeout: 10_000 });
     expect(await opacities(email)).toEqual(["1"]);
     expect(new Set(await opacities(footer))).toEqual(new Set(["1"]));
 
-    await email.hover();
-    await expect
-      .poll(async () => new Set(await opacities(contact)))
-      .toEqual(new Set(["1"]));
+    await expect(async () => {
+      await email.hover();
+      expect(new Set(await opacities(contact))).toEqual(new Set(["1"]));
+    }).toPass({ timeout: 10_000 });
   });
 }
