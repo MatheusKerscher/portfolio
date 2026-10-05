@@ -28,7 +28,10 @@ function Magnifier() {
 
 type InspectorToggleProps = { label: string; locale: Locale };
 
-/** The Inspector belongs to the 8-bit skin: its toggle is displayed only there. */
+/**
+ * The Inspector belongs to the 8-bit skin, where an achievement unlocks it: its toggle is
+ * displayed by the stylesheet of the runtime of the skin (`pixel.css`), which knows when.
+ */
 export default function InspectorToggle({
   label,
   locale,
@@ -54,8 +57,9 @@ export default function InspectorToggle({
         title={label}
         aria-expanded={open}
         aria-controls={open ? "inspector-panel" : undefined}
+        data-px="inspector"
         onClick={() => setOpen((current) => !current)}
-        className="hidden h-8 w-8 items-center justify-center text-ink transition-colors duration-200 hover:text-brand aria-expanded:bg-ink aria-expanded:text-paper max-lg:h-11 max-lg:w-11 pixel:flex"
+        className="hidden h-8 w-8 items-center justify-center text-ink transition-colors duration-200 hover:text-brand aria-expanded:bg-ink aria-expanded:text-paper max-lg:h-11 max-lg:w-11"
       >
         <Magnifier />
       </button>

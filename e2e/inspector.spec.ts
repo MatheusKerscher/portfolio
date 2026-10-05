@@ -9,6 +9,7 @@ import {
   inspectorCopyOf,
   LOCALES,
   storeSkin,
+  unlockInspector,
   violations,
   waitForStack,
 } from "./helpers";
@@ -29,9 +30,13 @@ function suite(locale: Locale) {
   const toggle = (page: Page) =>
     page.getByRole("button", { name: copy.toggle });
 
-  /** The Inspector is reachable only inside the 8-bit skin. */
+  /**
+   * The Inspector is reachable only inside the 8-bit skin, once it is unlocked. How it is locked
+   * and unlocked is checked by the `juice` suite.
+   */
   async function open(page: Page) {
     await storeSkin(page);
+    await unlockInspector(page);
     await page.goto(home);
     await waitForStack(page);
     await toggle(page).click();
@@ -61,6 +66,7 @@ function suite(locale: Locale) {
       });
 
       await storeSkin(page);
+      await unlockInspector(page);
       await page.goto(home);
       await waitForStack(page);
       await page.waitForLoadState("networkidle");

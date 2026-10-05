@@ -6,9 +6,12 @@ import {
   homeOf,
   inspectorCopyOf,
   LOCALES,
+  pixelCopyOf,
   revealAll,
   scrollToY,
   storeSkin,
+  unlockInspector,
+  visitSections,
   waitForStack,
 } from "./helpers";
 
@@ -173,6 +176,7 @@ for (const locale of LOCALES) {
       test.skip(locale === defaultLocale, "the source language");
       const inspector = inspectorCopyOf(locale);
       await storeSkin(page);
+      await unlockInspector(page);
       await page.goto(home);
       await waitForStack(page);
       await page.getByRole("button", { name: inspector.toggle }).click();
@@ -190,6 +194,51 @@ for (const locale of LOCALES) {
         .filter(([, foreign]) => contains(text, foreign))
         .map(([path]) => path);
       expect(found).toEqual([]);
+    });
+
+    test("nothing of the runtime of the 8-bit skin is left in the source language", async ({
+      page,
+    }) => {
+      test.skip(locale === defaultLocale, "the source language");
+      const pixel = pixelCopyOf(locale);
+      await storeSkin(page);
+      await page.goto(home);
+      await waitForStack(page);
+
+      // The notice of the stage and the toast of the first achievement, while each is shown.
+      await expect(page.locator(".px-stage")).toBeVisible();
+      let text = await readable(page, ".px-notices");
+      await expect(page.locator(".px-toast")).toBeVisible();
+      text += `\n${await readable(page, ".px-notices")}`;
+
+      // The lock of the Inspector, in the navbar, and what a press on it says.
+      text += `\n${await readable(page, "[data-nav-bar]")}`;
+      await page.getByRole("button", { name: pixel.inspector.locked }).click();
+      await expect(page.locator(".px-toasts")).toContainText(
+        pixel.inspector.hint,
+      );
+      text += `\n${await readable(page, ".px-notices")}`;
+
+      await page.getByRole("button", { name: pixel.pause.open }).click();
+      await expect(page.locator("#pause-menu")).toBeVisible();
+      text += `\n${await readable(page, "#pause-menu")}`;
+      await page.keyboard.press("Escape");
+
+      // The toast of the five sections, which names what it unlocks.
+      await visitSections(page, locale);
+      await expect(page.locator(".px-toasts")).toContainText(
+        pixel.inspector.unlocked,
+      );
+      text += `\n${await readable(page, ".px-notices")}`;
+
+      const found = foreignStrings(pixelCopyOf(defaultLocale), pixel)
+        .filter(([, foreign]) => contains(text, foreign))
+        .map(([path]) => path);
+      expect(found).toEqual([]);
+      // What is compared is there: the menu was read in its own language.
+      expect(contains(text, pixel.pause.music)).toBe(true);
+      expect(contains(text, pixel.achievements.unlocked)).toBe(true);
+      expect(contains(text, pixel.inspector.locked)).toBe(true);
     });
 
     test.describe("without JavaScript", () => {

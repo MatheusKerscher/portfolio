@@ -2,6 +2,8 @@ import { ArrowRight } from "lucide-react";
 import { getDictionary } from "../data/dictionaries/server";
 import { headingId, site, socials } from "../data/site";
 import MotionSection from "./motion-section";
+import PixelIcon from "./pixel-icon";
+import { arrowRight } from "./pixel-icons";
 import { SocialIcon } from "./social-icons";
 
 export default async function ContactSection() {
@@ -58,21 +60,30 @@ export default async function ContactSection() {
               >
                 {site.email}
               </span>
-              <ArrowRight
-                size={20}
-                aria-hidden="true"
-                className="-translate-x-2 text-brand opacity-0 group-hover:translate-x-0 group-hover:opacity-100 max-lg:hidden"
-                style={{
-                  transition:
-                    "opacity 0.3s var(--ease-cubic), transform 0.4s var(--ease-expo)",
-                }}
-              />
+              {/* The wrapper hides both drawings of the arrow below `lg`. */}
+              <span className="contents max-lg:hidden">
+                <ArrowRight
+                  size={20}
+                  aria-hidden="true"
+                  data-icon="vector"
+                  className="-translate-x-2 text-brand opacity-0 group-hover:translate-x-0 group-hover:opacity-100 pixel:hidden"
+                  style={{
+                    transition:
+                      "opacity 0.3s var(--ease-cubic), transform 0.4s var(--ease-expo)",
+                  }}
+                />
+                <PixelIcon
+                  grid={arrowRight}
+                  className="-translate-x-2 text-brand opacity-0 group-hover:translate-x-0 group-hover:opacity-100"
+                  style={{ transition: "opacity 0.3s, transform 0.3s" }}
+                />
+              </span>
             </a>
           </MotionSection>
 
           <MotionSection delay={0.4} className="border-t border-line pt-8">
             {/* The narrower gap keeps the three of them on one row at 320 px. */}
-            <ul className="flex flex-wrap items-center gap-x-6 gap-y-3 max-lg:justify-center max-sm:gap-x-4">
+            <ul className="nav-links-group flex flex-wrap items-center gap-x-6 gap-y-3 max-lg:justify-center max-sm:gap-x-4">
               {socials
                 .filter((link) => link.id !== "email")
                 .map((link) => (
@@ -82,7 +93,10 @@ export default async function ContactSection() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex min-h-6 items-center gap-2 text-ink-muted hover:text-brand max-lg:min-h-11"
-                      style={{ transition: "color 0.3s var(--ease-cubic)" }}
+                      style={{
+                        transition:
+                          "color 0.3s var(--ease-cubic), opacity 0.3s var(--ease-cubic)",
+                      }}
                       aria-label={dict.layout.profileOf(link.name)}
                     >
                       <SocialIcon id={link.id} size={20} />

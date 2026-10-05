@@ -9,6 +9,7 @@ import InspectorToggle from "../components/inspector/inspector-toggle";
 import LanguageSwitch from "../components/language-switch";
 import { MotionProvider } from "../components/motion-provider";
 import Navbar from "../components/navbar";
+import PixelRuntimeGate from "../components/pixel/pixel-runtime-gate";
 import ProfileLinks from "../components/profile-links";
 import SkinToggle from "../components/skin-toggle";
 import SmoothScrollProvider from "../components/smooth-scroll-provider";
@@ -156,9 +157,25 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
                   <>
                     {/* Displayed only inside the 8-bit skin. */}
                     <SkinToggle label={dict.skin.toggle} />
-                    <InspectorToggle
-                      label={inspectorDictionaryFor(locale).toggle}
-                      locale={locale}
+                    {/* One box for the Inspector and for the lock that the runtime of the skin
+                        shows in its place until it is unlocked: the bar does not move when one
+                        replaces the other. */}
+                    <span className="hidden h-8 w-8 max-lg:h-11 max-lg:w-11 pixel:block">
+                      <InspectorToggle
+                        label={inspectorDictionaryFor(locale).toggle}
+                        locale={locale}
+                      />
+                      <span data-px-slot="inspector" className="contents" />
+                    </span>
+                    {/* Filled by the runtime of the skin, once it is fetched: the mute button,
+                        from `sm` up, and the PAUSE menu. Their room is kept from the first paint. */}
+                    <span
+                      data-px-slot="sound"
+                      className="hidden h-8 w-8 max-lg:h-11 max-lg:w-11 sm:pixel:block"
+                    />
+                    <span
+                      data-px-slot="pause"
+                      className="hidden h-8 w-8 max-lg:h-11 max-lg:w-11 pixel:block"
                     />
                   </>
                 }
@@ -166,6 +183,7 @@ export default async function RootLayout({ children }: LayoutProps<"/[lang]">) {
               <main id="main-content">{children}</main>
               <Footer />
               <BackToTop label={nav.backToTop} />
+              <PixelRuntimeGate locale={locale} />
             </SmoothScrollProvider>
           </MotionProvider>
         </ThemeProvider>

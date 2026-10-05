@@ -1,5 +1,7 @@
 import { getDictionary } from "../data/dictionaries/server";
 import { headingId, sections, site } from "../data/site";
+import PixelIcon from "./pixel-icon";
+import { arrowRight } from "./pixel-icons";
 import Portrait from "./portrait";
 
 /**
@@ -32,17 +34,30 @@ export default async function HeroSection() {
             {site.heading}
           </h1>
 
-          <p className="mb-10 max-w-xl text-lg leading-relaxed text-ink-muted max-lg:mx-auto max-lg:text-balance max-sm:text-phone-copy md:text-xl">
+          {/* Inside the 8-bit skin it is a dialogue box, typed by the runtime of the skin. */}
+          <p
+            data-px="dialogue"
+            className="mb-10 max-w-xl text-lg leading-relaxed text-ink-muted max-lg:mx-auto max-lg:text-balance max-sm:text-phone-copy md:text-xl"
+          >
             {hero.tagline}
           </p>
 
-          {/* On a phone the two buttons are stacked and share one width. */}
-          <div className="flex flex-wrap gap-4 max-lg:justify-center max-sm:mx-auto max-sm:max-w-xs max-sm:flex-col">
+          {/* On a phone the two buttons are stacked and share one width. The wider gap of the
+              8-bit skin is the room of their frames. */}
+          <div className="flex flex-wrap gap-4 max-lg:justify-center max-sm:mx-auto max-sm:max-w-xs max-sm:flex-col pixel:gap-6">
             <a
               href={`#${sections.projects}`}
               className="btn-accent max-sm:justify-center"
             >
-              {hero.primaryCta} <span aria-hidden="true">→</span>
+              {hero.primaryCta}{" "}
+              <span
+                aria-hidden="true"
+                data-icon="vector"
+                className="pixel:hidden"
+              >
+                →
+              </span>
+              <PixelIcon grid={arrowRight} />
             </a>
             <a
               href={`#${sections.contact}`}

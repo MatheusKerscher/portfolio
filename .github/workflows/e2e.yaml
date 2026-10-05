@@ -14,6 +14,13 @@ jobs:
 
       - run: npm ci
       - run: npx playwright install --with-deps chromium firefox webkit
+      # The runner has no audio output, and without one Firefox never starts an AudioContext:
+      # the tests that count the sounds of the 8-bit skin fail there. PulseAudio gives it a null
+      # sink. Chromium and WebKit run a context without it.
+      - run: |
+          sudo apt-get install --yes --no-install-recommends pulseaudio
+          pulseaudio --start --exit-idle-time=-1
+          pulseaudio --check
       - run: npm run test:e2e
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}

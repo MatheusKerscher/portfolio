@@ -24,7 +24,8 @@ type NavbarProps = {
   /** Shown at the bottom of the menu: the links to the profiles. */
   menuFooter: ReactNode;
   /**
-   * The toggles of the 8-bit skin. The theme toggle is imported here instead: rendered by the
+   * The toggles of the 8-bit skin and the slots of its runtime. The theme toggle is imported
+   * here instead: rendered by the
    * layout as a Client Component of its own, it made the bundler ship the gesture and layout
    * features of framer-motion, 14 KB that nothing uses.
    */
@@ -127,8 +128,9 @@ export default function Navbar({
         </ul>
 
         {/* Below `lg` the controls are 44 px targets: the margin puts the glyph of the last one,
-            not its box, at the edge of the content. */}
-        <div className="flex items-center gap-2 max-lg:-mr-2.5">
+            not its box, at the edge of the content. The 8-bit skin has one control more, which
+            fits a 320 px wide screen without the gap. */}
+        <div className="flex items-center gap-2 max-lg:-mr-2.5 max-sm:pixel:gap-0">
           <div className="hidden md:block">{languageSwitch}</div>
           {actions}
           <ThemeToggle

@@ -56,6 +56,8 @@
   --line: #e5e5e5;
   --line-strong: #8a8a8a;
   --danger: #c10007;
+  /* The shapes that drift behind the content of the 8-bit skin: text stays readable over them. */
+  --scenery: #eeede8;
 
   --font-display: var(--font-syne), sans-serif;
   --radius: 0.625rem;
@@ -95,6 +97,7 @@
   --line: #2e2e2e;
   --line-strong: #737373;
   --danger: #ff6467;
+  --scenery: #2c2c2c;
 }
 
 @layer base {
@@ -512,9 +515,24 @@
  * 8-bit skin. It changes type, shape and imagery and keeps the colour tokens, so the contrast
  * contract of the palette holds in both skins. Unlayered on purpose: these rules have to win over
  * Tailwind utilities.
+ *
+ * Only what changes the shape of the page is here, because a returning visitor has the skin
+ * before the first paint. What moves, sounds or decorates comes with the runtime of the skin
+ * (`src/app/components/pixel/`), which is fetched once the skin is on.
  */
 [data-skin="8bit"] {
   --font-display: var(--font-pixel), var(--font-syne), sans-serif;
+  /*
+   * A frame with notched corners and a hard shadow, drawn with shadows alone so it takes no room:
+   * one pixel of the skin (4 px) on the top and the left, two on the bottom and the right, and
+   * nothing in the corners but the step of the shadow.
+   */
+  --px-frame:
+    0 -4px 0 0 var(--ink), -4px 0 0 0 var(--ink), 4px 4px 0 0 var(--ink),
+    0 8px 0 0 var(--ink), 8px 0 0 0 var(--ink);
+  --px-frame-pressed:
+    0 -4px 0 0 var(--ink), -4px 0 0 0 var(--ink), 0 4px 0 0 var(--ink),
+    4px 0 0 0 var(--ink);
 }
 
 [data-skin="8bit"] * {
@@ -527,6 +545,11 @@
   color: var(--on-brand);
 }
 
+/* Every text is in the pixel font, body copy included. */
+[data-skin="8bit"] body {
+  font-family: var(--font-pixel), var(--font-catamaran), sans-serif;
+}
+
 /* Inline letter-spacing is tuned for the normal display font. */
 [data-skin="8bit"] :is(h1, h2, h3) {
   letter-spacing: 0 !important;
@@ -536,22 +559,38 @@
   font-family: var(--font-display);
 }
 
-[data-skin="8bit"] :is(.btn-accent, .btn-outline) {
-  border: 2px solid var(--ink);
-  box-shadow: 4px 4px 0 var(--ink);
+[data-skin="8bit"]
+  :is(.btn-accent, .btn-outline, .slide-card, [data-slot="card"]) {
+  border-color: transparent;
+  box-shadow: var(--px-frame);
 }
 
 [data-skin="8bit"] :is(.btn-accent, .btn-outline):active {
-  box-shadow: none;
+  box-shadow: var(--px-frame-pressed);
   transform: translate(4px, 4px);
 }
 
-[data-skin="8bit"] :is(.slide-card, [data-slot="card"]) {
-  border: 2px solid var(--ink);
-  box-shadow: 4px 4px 0 var(--ink);
+/* The ring goes around the frame, not across it. */
+[data-skin="8bit"] :is(.btn-accent, .btn-outline):focus-visible,
+[data-skin="8bit"] .slide-card:has(a:focus-visible) {
+  outline: 4px solid var(--brand);
+  outline-offset: 4px;
 }
 
-[data-skin="8bit"] :is(input, kbd) {
+[data-skin="8bit"] .slide-card:has(a:hover),
+[data-skin="8bit"] .slide-card:has(a:focus-visible) {
+  transform: translate(-4px, -4px);
+}
+
+/* The tagline of the hero is a dialogue box; the runtime types it. */
+[data-skin="8bit"] [data-px="dialogue"] {
+  padding: 1rem 1.25rem;
+  background: var(--surface);
+  box-shadow: var(--px-frame);
+}
+
+[data-skin="8bit"]
+  :is(input, kbd, .marquee-pause, .carousel-button, .slide-card ul > li) {
   border-width: 2px;
   border-color: var(--ink);
 }
@@ -560,7 +599,20 @@
   border-bottom: 2px solid var(--ink);
 }
 
-/* A stepped edge where one panel slides over the other. */
+/*
+ * The sections do not stack: the skin reads as the stages of a game, one screen after the other,
+ * in normal flow. Without the spacer and the negative margin a slot is as tall as its panel,
+ * which leaves a sticky panel nowhere to stick.
+ */
+[data-skin="8bit"] .stack-slot:not(:last-child)::after {
+  display: none;
+}
+
+[data-skin="8bit"] .stack-slot + .stack-slot {
+  margin-top: 0;
+}
+
+/* A stepped edge where one section ends and the next one starts. */
 [data-skin="8bit"] .stack-slot + .stack-slot > .stack-panel {
   border-top: 2px solid var(--ink);
   box-shadow: none;
@@ -579,11 +631,27 @@
   );
 }
 
-/* Switching skin cross-fades in steps, where the browser supports view transitions. */
+/*
+ * Switching skin wipes the new one in from the top, in bands, where the browser supports view
+ * transitions. The old one stands still underneath.
+ */
 @media (prefers-reduced-motion: no-preference) {
   ::view-transition-old(root),
   ::view-transition-new(root) {
-    animation-duration: 0.35s;
-    animation-timing-function: steps(5, end);
+    animation: none;
+    mix-blend-mode: normal;
+  }
+
+  ::view-transition-new(root) {
+    animation: skin-wipe 0.4s steps(8, end);
+  }
+}
+
+@keyframes skin-wipe {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0);
   }
 }

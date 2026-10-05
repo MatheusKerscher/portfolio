@@ -77,9 +77,15 @@ for (const locale of LOCALES) {
       // Away from the band, so the pointer is not what holds it.
       await page.mouse.move(0, 0);
       expect((await motion(page)).state).toBe("paused");
-      const stopped = await offset(page);
-      await page.waitForTimeout(300);
-      expect(await offset(page)).toBe(stopped);
+      // It comes to rest and stays there. On a busy runner WebKit moved the band 1.9 px more
+      // after its state read paused, so the first reading is not taken as the resting place.
+      await expect
+        .poll(async () => {
+          const before = await offset(page);
+          await page.waitForTimeout(300);
+          return (await offset(page)) === before;
+        })
+        .toBe(true);
 
       // From the keyboard: the checkbox is focusable, and Space toggles it.
       await pauseOf(page).focus();

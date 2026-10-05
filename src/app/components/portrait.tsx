@@ -17,6 +17,7 @@ export default async function Portrait({ className }: { className?: string }) {
 
   return (
     <div
+      data-px="portrait"
       className={cn(
         "relative h-[184px] w-[184px] shrink-0 sm:h-[276px] sm:w-[276px] xl:h-[368px] xl:w-[368px]",
         className,
@@ -45,6 +46,7 @@ export default async function Portrait({ className }: { className?: string }) {
         height={SPRITE.size}
         loading="lazy"
         unoptimized
+        data-px="sprite"
         className="relative hidden h-full w-full border-2 border-ink bg-brand [image-rendering:pixelated] pixel:block"
       />
     </div>

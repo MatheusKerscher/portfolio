@@ -136,7 +136,7 @@ test.describe("stacked sections", () => {
 
   test.describe("on a laptop screen", () => {
     // Where the space below the navbar is shortest on a wide screen: a 14-inch MacBook with the
-    // Dock showing, and a 1366×768 laptop.
+    // Dock showing, and a 1366×768 laptop. The 8-bit skin does not stack, so nothing has to fit.
     const VIEWPORTS = [
       { width: 1512, height: 749 },
       { width: 1366, height: 641 },
@@ -144,34 +144,31 @@ test.describe("stacked sections", () => {
 
     for (const locale of LOCALES) {
       for (const viewport of VIEWPORTS) {
-        for (const skin of ["normal", "8-bit"] as const) {
-          test(`every panel fits below the navbar at ${viewport.width}×${viewport.height}, ${skin} skin, ${locale}`, async ({
-            page,
-            isMobile,
-          }) => {
-            test.skip(isMobile, "a laptop screen is not a phone");
-            await page.setViewportSize(viewport);
-            if (skin === "8-bit") await storeSkin(page);
-            await page.goto(homeOf(locale));
-            await waitForStack(page);
-            await page.evaluate(() => document.fonts.ready);
-            const navbar = await navbarHeight(page);
-            const space = viewport.height - navbar;
+        test(`every panel fits below the navbar at ${viewport.width}×${viewport.height}, ${locale}`, async ({
+          page,
+          isMobile,
+        }) => {
+          test.skip(isMobile, "a laptop screen is not a phone");
+          await page.setViewportSize(viewport);
+          await page.goto(homeOf(locale));
+          await waitForStack(page);
+          await page.evaluate(() => document.fonts.ready);
+          const navbar = await navbarHeight(page);
+          const space = viewport.height - navbar;
 
-            for (const [index, id] of SECTION_IDS.entries()) {
-              const { naturalTop, height } = await panelBox(page, id);
-              expect(height, `#${id} fits`).toBeLessThanOrEqual(space + 1);
+          for (const [index, id] of SECTION_IDS.entries()) {
+            const { naturalTop, height } = await panelBox(page, id);
+            expect(height, `#${id} fits`).toBeLessThanOrEqual(space + 1);
 
-              // The last panel never pins. The others stay put while the next one covers them.
-              if (index === SECTION_IDS.length - 1) continue;
-              await scrollToY(page, naturalTop - navbar + space / 2);
-              expect(
-                Math.abs((await panelBox(page, id)).top - navbar),
-                `#${id} stays below the navbar while it is covered`,
-              ).toBeLessThanOrEqual(1);
-            }
-          });
-        }
+            // The last panel never pins. The others stay put while the next one covers them.
+            if (index === SECTION_IDS.length - 1) continue;
+            await scrollToY(page, naturalTop - navbar + space / 2);
+            expect(
+              Math.abs((await panelBox(page, id)).top - navbar),
+              `#${id} stays below the navbar while it is covered`,
+            ).toBeLessThanOrEqual(1);
+          }
+        });
       }
     }
   });
@@ -184,6 +181,21 @@ test.describe("stacked sections", () => {
     for (const [current, next] of PAIRS) {
       const during = await scrollToHalfOverlap(page, current, next);
       // In normal flow a panel ends exactly where the next one starts.
+      expect(
+        Math.abs(during.panelBottom - during.nextTop),
+        `#${current} scrolls with the page`,
+      ).toBeLessThanOrEqual(1);
+    }
+  });
+
+  test("panels do not pin in the 8-bit skin", async ({ page }) => {
+    await storeSkin(page);
+    await page.goto("/");
+    await waitForStack(page);
+
+    for (const [current, next] of PAIRS) {
+      const during = await scrollToHalfOverlap(page, current, next);
+      // The skin reads as one stage after the other: a section ends where the next one starts.
       expect(
         Math.abs(during.panelBottom - during.nextTop),
         `#${current} scrolls with the page`,

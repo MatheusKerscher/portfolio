@@ -51,3 +51,18 @@ Reverted to `typescript@6.0.3`. Retry when `typescript-eslint` supports TypeScri
 resolves only because npm hoists it from `eslint-config-next`; any change to the tree shape can remove
 it from the top level, as the TypeScript 7 attempt showed. Declare it as a devDependency, or take the
 plugin from `eslint-config-next`'s own exports.
+
+## B-004 — The React logo of the band is not rendered at the size its `<Image>` declares
+
+**Found:** 2026-10-04, during `2026-10-04_pixel-art-and-juice`. **Severity:** low.
+
+On `npm run dev` the console warns:
+
+```
+Image with src "/react.svg" has either width or height modified, but not the other.
+```
+
+`public/react.svg` is not square (`viewBox="175.7 78 490.6 436.9"`), and the base stylesheet sets
+`height: auto` on images, so the logo declared as 24×24 is rendered 24 px wide and 21.36 px tall. It is
+the same in the normal skin, with the 8-bit skin never entered. The other eight logos are square. Give
+the file a square `viewBox`, or the image an explicit height.

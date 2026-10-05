@@ -65,3 +65,26 @@ Next.js 16.3.8, Tailwind CSS 4, sharp 0.35.5 and Lenis 1.3.26.
   rendered by the layout, does not cause it.
 - **Rule:** the composition of Client Components is not free of cost. After changing which component
   renders another, compare the script bytes `npm run audit` prints with the previous run.
+
+## A stylesheet imported by a lazy Client Component is a chunk of its own
+
+- **Evidence:** on 2026-10-04, with Next.js 16.3.8 (Turbopack), `pixel.css` is imported by
+  `pixel-runtime.tsx`, which is loaded with `next/dynamic` and `ssr: false`. The stylesheet the page
+  links (`/_next/static/chunks/1ta7km19yz7s0.css`, 50,234 bytes) has no rule of it: `px-scenery` occurs
+  0 times. When the skin is entered the browser requests one script and one stylesheet
+  (`/_next/static/chunks/242wb5spsah__.css`, 6,265 bytes), in that order, and nothing else of `_next`.
+- **Consequence:** rules that only matter after a lazy component has mounted can live with it and cost
+  the first load nothing. Rules that shape the first paint cannot: the chunk arrives after hydration.
+
+## A root-relative `url()` in a stylesheet is left as it is
+
+- **Evidence:** `cursor: url("/pixel/cursor.png")` in `pixel.css` builds, and the browser requests
+  `/pixel/cursor.png`, the file in `public/`, when the rule first applies. In the normal skin, where no
+  rule of that stylesheet is even fetched, the `skin` suite records no request under `/pixel/`.
+
+## A sticky element in a container of its own height has nowhere to stick
+
+- **Evidence:** the 8-bit skin removes the spacer and the negative margin of the stacked slots and
+  leaves `position: sticky` on the panels. The `stacking` suite finds every panel ending where the next
+  one starts, within 1 px. A build that also reset the position passed the same test: the rule was
+  redundant and was removed.

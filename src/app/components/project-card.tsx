@@ -2,6 +2,8 @@ import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { getDictionary } from "../data/dictionaries/server";
 import { pixelThumbnail, type Project } from "../data/projects";
+import PixelIcon from "./pixel-icon";
+import { arrowUpRight } from "./pixel-icons";
 
 type ProjectCardProps = { project: Project; index: number };
 
@@ -15,7 +17,10 @@ export default async function ProjectCard({
 
   return (
     <article className="slide-card group">
-      <div className="aspect-5/3 max-h-(--thumbnail-h) overflow-hidden border-b border-line bg-paper">
+      <div
+        data-px="screen"
+        className="aspect-5/3 max-h-(--thumbnail-h) overflow-hidden border-b border-line bg-paper"
+      >
         <Image
           src={thumbnail.src}
           alt={copy.thumbnailAlt(title)}
@@ -47,11 +52,17 @@ export default async function ProjectCard({
           <ArrowUpRight
             size={18}
             aria-hidden="true"
-            className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-brand"
+            data-icon="vector"
+            className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-brand pixel:hidden"
             style={{
               transition:
                 "color 0.3s var(--ease-cubic), transform 0.4s var(--ease-expo)",
             }}
+          />
+          <PixelIcon
+            grid={arrowUpRight}
+            className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-brand"
+            style={{ transition: "color 0.3s, transform 0.3s" }}
           />
         </div>
 

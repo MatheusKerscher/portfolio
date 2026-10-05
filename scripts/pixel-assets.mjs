@@ -1,8 +1,10 @@
 /**
- * Snaps the pixel-art portrait to its grid and exports every asset derived from it.
+ * Snaps the pixel-art portrait to its grid and exports every asset derived from it, and the pixel
+ * art drawn in scripts/assets/pixel-art.mjs.
  *
  *   node scripts/pixel-assets.mjs
  *   node scripts/pixel-assets.mjs --sheet=<out.png>
+ *   node scripts/pixel-assets.mjs --icons=<out.png>
  *
  * The source is scripts/assets/portrait-art.jpeg, the art supplied by the owner of the site. The
  * sprite made from it is the single source of the avatar, the icons, the Open Graph render and,
@@ -10,11 +12,13 @@
  * reproduces the same files, and replacing the art replaces all of them.
  *
  * --sheet writes a contact sheet for review (photo, art, sprite at 1×, 4× and 8× on both themes)
- * instead of the assets.
+ * instead of the assets. --icons writes one of the icons of the 8-bit skin, its logos and its
+ * cursors, on both themes.
  */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { basename, dirname } from "node:path";
 import sharp from "sharp";
+import { cursors, logos } from "./assets/pixel-art.mjs";
 
 const ART = "scripts/assets/portrait-art.jpeg";
 const SIZE = 92;
@@ -168,6 +172,54 @@ function reduce(colours, count) {
 }
 
 // ---------------------------------------------------------------------------------------------
+// Drawn art
+
+const GRID = 16;
+
+/** Refuses a drawing that is not 16×16 or uses a character its palette does not have. */
+function checked(name, { grid, palette }) {
+  const known = new Set([".", ...Object.keys(palette)]);
+  const sound =
+    grid.length === GRID &&
+    grid.every(
+      (line) =>
+        line.length === GRID && [...line].every((cell) => known.has(cell)),
+    );
+  if (!sound) throw new Error(`${name} is not a ${GRID}×${GRID} drawing`);
+  return { grid, palette };
+}
+
+const channels = (hex) =>
+  [1, 3, 5].map((start) => parseInt(hex.slice(start, start + 2), 16));
+
+/** A drawing as an image, one pixel per character. */
+function drawn(name, art) {
+  const { grid, palette } = checked(name, art);
+  const pixels = Buffer.alloc(GRID * GRID * 4);
+  grid.forEach((line, y) =>
+    [...line].forEach((cell, x) => {
+      if (cell === ".") return;
+      pixels.set([...channels(palette[cell]), 255], (y * GRID + x) * 4);
+    }),
+  );
+  return sharp(pixels, { raw: { width: GRID, height: GRID, channels: 4 } });
+}
+
+/** The icons of the interface, read from the component that draws them. */
+async function interfaceIcons() {
+  const source = await readFile("src/app/components/pixel-icons.ts", "utf8");
+  return [
+    ...source.matchAll(/export const (\w+): PixelGrid = \[([^\]]+)\]/g),
+  ].map(([, name, rows]) => ({
+    name,
+    ...checked(name, {
+      grid: [...rows.matchAll(/"([^"]+)"/g)].map(([, row]) => row),
+      palette: { "#": "currentColor" },
+    }),
+  }));
+}
+
+// ---------------------------------------------------------------------------------------------
 // Export
 
 const rgba = await spriteFromArt();
@@ -272,6 +324,26 @@ async function exportAssets() {
         .toBuffer(),
     );
   }
+
+  console.log("8-bit logos");
+  for (const [id, art] of Object.entries(logos)) {
+    await write(
+      `public/tech/8bit/${id}.png`,
+      await drawn(id, art).png(png).toBuffer(),
+    );
+  }
+
+  // 2×: a cursor is shown at the size of its image, and 16 px is too small to find.
+  console.log("Cursors");
+  for (const [name, art] of Object.entries(cursors)) {
+    await write(
+      `public/pixel/${name}.png`,
+      await drawn(name, art)
+        .resize(GRID * 2, GRID * 2, { kernel: "nearest" })
+        .png(png)
+        .toBuffer(),
+    );
+  }
 }
 
 async function exportSheet(output) {
@@ -345,6 +417,82 @@ async function exportSheet(output) {
   console.log(`Contact sheet: ${output}`);
 }
 
+/** Every drawing of the 8-bit skin on both themes, enlarged and at the size it is shown. */
+async function exportIconSheet(output) {
+  const INK = { light: "#111111", dark: "#fafafa" };
+  const cell = 88;
+  const pad = 24;
+  const rows = [
+    {
+      title: "Icons — src/app/components/pixel-icons.ts (4× and 1×)",
+      items: await interfaceIcons(),
+      large: 4,
+      small: 1,
+    },
+    {
+      title: "Logos — public/tech/8bit/ (4× and 2×, the size on the page)",
+      items: Object.entries(logos).map(([name, art]) => ({ name, ...art })),
+      large: 4,
+      small: 2,
+    },
+    {
+      title: "Cursors — public/pixel/ (4× and 2×, the size on screen)",
+      items: Object.entries(cursors).map(([name, art]) => ({ name, ...art })),
+      large: 4,
+      small: 2,
+    },
+  ];
+  const columns = Math.max(...rows.map((row) => row.items.length));
+  const width = pad * 2 + columns * cell;
+  const rowHeight = 28 + GRID * 4 + 12 + GRID * 2 + 30;
+  const themeHeight = pad + rows.length * rowHeight;
+
+  const pixels = ({ grid, palette }, left, top, scale, ink) =>
+    grid
+      .flatMap((line, y) =>
+        [...line].map((character, x) =>
+          character === "."
+            ? ""
+            : `<rect x="${left + x * scale}" y="${top + y * scale}" width="${scale}" height="${scale}" fill="${palette[character] === "currentColor" ? ink : palette[character]}"/>`,
+        ),
+      )
+      .join("");
+
+  const parts = [];
+  for (const [index, theme] of ["light", "dark"].entries()) {
+    const ink = INK[theme];
+    const offset = index * themeHeight;
+    parts.push(
+      `<rect x="0" y="${offset}" width="${width}" height="${themeHeight}" fill="${PAPER[theme]}"/>`,
+    );
+    rows.forEach((row, rowIndex) => {
+      const top = offset + pad + rowIndex * rowHeight;
+      parts.push(
+        `<text x="${pad}" y="${top + 12}" font-size="13" font-weight="700" fill="${ink}">${row.title}</text>`,
+      );
+      row.items.forEach((item, column) => {
+        const left = pad + column * cell;
+        parts.push(pixels(item, left, top + 28, row.large, ink));
+        parts.push(
+          pixels(item, left, top + 28 + GRID * 4 + 12, row.small, ink),
+        );
+        parts.push(
+          `<text x="${left}" y="${top + rowHeight - 10}" font-size="10" fill="${ink}">${item.name}</text>`,
+        );
+      });
+    });
+  }
+
+  await sharp(
+    Buffer.from(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${themeHeight * 2}" shape-rendering="crispEdges" font-family="Menlo, monospace">${parts.join("")}</svg>`,
+    ),
+  )
+    .png()
+    .toFile(output);
+  console.log(`Icon sheet: ${output}`);
+}
+
 const options = Object.fromEntries(
   process.argv.slice(2).map((argument) => {
     const [key, value = "true"] = argument.replace(/^--/, "").split("=");
@@ -353,4 +501,5 @@ const options = Object.fromEntries(
 );
 
 if (options.sheet) await exportSheet(options.sheet);
+else if (options.icons) await exportIconSheet(options.icons);
 else await exportAssets();

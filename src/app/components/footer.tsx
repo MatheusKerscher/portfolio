@@ -25,7 +25,8 @@ export default async function Footer() {
           <SkinEasterEgg label={dict.skin.toggle} />
         </div>
 
-        <div className="flex items-center gap-4 max-lg:gap-1">
+        {/* One group of links: a pointer over one of them dims the others, as in the navbar. */}
+        <div className="nav-links-group flex items-center gap-4 max-lg:gap-1">
           {/* Also here: below `md` the one of the navbar is inside a menu that needs JavaScript. */}
           <LanguageSwitch
             label={dict.nav.language}
